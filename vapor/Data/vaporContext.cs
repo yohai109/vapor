@@ -25,5 +25,7 @@ namespace vapor.Data
         public DbSet<vapor.Models.Game> Game { get; set; }
 
         public DbSet<vapor.Models.Order> Order { get; set; }
+
+        public DbSet<vapor.Models.Customer> Customer { get; set; }
     }
 }
