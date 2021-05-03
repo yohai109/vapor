@@ -27,5 +27,6 @@ namespace vapor.Data
         public DbSet<vapor.Models.Order> Order { get; set; }
 
         public DbSet<vapor.Models.Customer> Customer { get; set; }
+        public DbSet<vapor.Models.Developer> Developer { get; set; }
     }
 }
