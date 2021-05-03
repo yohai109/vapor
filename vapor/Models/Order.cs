@@ -9,10 +9,12 @@ namespace vapor.Models
 {
     public class Order
     {
-        [Key]
+        
         public Game game { get; set; }
-        [Key]
+        public string gameID { get; set; }
+        
         public Customer customer { get; set; }
+        public string customerID { get; set; }
         public DateTime date { get; set; }
     }
 }

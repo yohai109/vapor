@@ -14,6 +14,16 @@ namespace vapor.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Order>().HasKey(table => new {
+                table.customerID,
+                table.gameID
+            });
+        }
+
         public DbSet<vapor.Models.Game> Game { get; set; }
+
+        public DbSet<vapor.Models.Order> Order { get; set; }
     }
 }
