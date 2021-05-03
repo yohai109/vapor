@@ -1,1 +1,1 @@
-# vapor - the appropreate alternative to Steam
+# vapor - the appropriate alternative to Steam
