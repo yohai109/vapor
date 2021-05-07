@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 
 namespace vapor.Models
 {
-    public class Developer
+    public class GameImage
     {
         public string id { get; set; }
-        public string name { get; set; }
-        public string avatar { get; set; }
-
-        public ICollection<Game> games { get; set; }
+        public string imageUrl { get; set; }
+        public Game game { get; set; }
     }
 }

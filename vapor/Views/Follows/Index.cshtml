@@ -1,4 +1,4 @@
-﻿@model IEnumerable<vapor.Models.Order>
+﻿@model IEnumerable<vapor.Models.Follow>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,13 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.date)
+                @Html.DisplayNameFor(model => model.followingCustomer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.game)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.customer)
+                @Html.DisplayNameFor(model => model.followedCustomer)
             </th>
             <th></th>
         </tr>
@@ -28,13 +25,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.date)
+                @Html.DisplayFor(modelItem => item.followingCustomer.id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.game.id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.customer.id)
+                @Html.DisplayFor(modelItem => item.followedCustomer.id)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

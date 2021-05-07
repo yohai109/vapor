@@ -10,23 +10,23 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    public class OrdersController : Controller
+    public class FollowsController : Controller
     {
         private readonly vaporContext _context;
 
-        public OrdersController(vaporContext context)
+        public FollowsController(vaporContext context)
         {
             _context = context;
         }
 
-        // GET: Orders
+        // GET: Follows
         public async Task<IActionResult> Index()
         {
-            var vaporContext = _context.Order.Include(o => o.customer).Include(o => o.game);
+            var vaporContext = _context.Follow.Include(f => f.followedCustomer).Include(f => f.followingCustomer);
             return View(await vaporContext.ToListAsync());
         }
 
-        // GET: Orders/Details/5
+        // GET: Follows/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -34,45 +34,45 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
-                .Include(o => o.customer)
-                .Include(o => o.game)
-                .FirstOrDefaultAsync(m => m.customerId == id);
-            if (order == null)
+            var follow = await _context.Follow
+                .Include(f => f.followedCustomer)
+                .Include(f => f.followingCustomer)
+                .FirstOrDefaultAsync(m => m.followingCustomerId == id);
+            if (follow == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            return View(follow);
         }
 
-        // GET: Orders/Create
+        // GET: Follows/Create
         public IActionResult Create()
         {
-            ViewData["customerId"] = new SelectList(_context.Customer, "id", "id");
-            ViewData["gameId"] = new SelectList(_context.Game, "id", "id");
+            ViewData["followedCustomerId"] = new SelectList(_context.Customer, "id", "id");
+            ViewData["followingCustomerId"] = new SelectList(_context.Customer, "id", "id");
             return View();
         }
 
-        // POST: Orders/Create
+        // POST: Follows/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("gameId,customerId,date")] Order order)
+        public async Task<IActionResult> Create([Bind("followingCustomerId,followedCustomerId")] Follow follow)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(order);
+                _context.Add(follow);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["customerId"] = new SelectList(_context.Customer, "id", "id", order.customerId);
-            ViewData["gameId"] = new SelectList(_context.Game, "id", "id", order.gameId);
-            return View(order);
+            ViewData["followedCustomerId"] = new SelectList(_context.Customer, "id", "id", follow.followedCustomerId);
+            ViewData["followingCustomerId"] = new SelectList(_context.Customer, "id", "id", follow.followingCustomerId);
+            return View(follow);
         }
 
-        // GET: Orders/Edit/5
+        // GET: Follows/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -80,24 +80,24 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order.FindAsync(id);
-            if (order == null)
+            var follow = await _context.Follow.FindAsync(id);
+            if (follow == null)
             {
                 return NotFound();
             }
-            ViewData["customerId"] = new SelectList(_context.Customer, "id", "id", order.customerId);
-            ViewData["gameId"] = new SelectList(_context.Game, "id", "id", order.gameId);
-            return View(order);
+            ViewData["followedCustomerId"] = new SelectList(_context.Customer, "id", "id", follow.followedCustomerId);
+            ViewData["followingCustomerId"] = new SelectList(_context.Customer, "id", "id", follow.followingCustomerId);
+            return View(follow);
         }
 
-        // POST: Orders/Edit/5
+        // POST: Follows/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("gameId,customerId,date")] Order order)
+        public async Task<IActionResult> Edit(string id, [Bind("followingCustomerId,followedCustomerId")] Follow follow)
         {
-            if (id != order.customerId)
+            if (id != follow.followingCustomerId)
             {
                 return NotFound();
             }
@@ -106,12 +106,12 @@ namespace vapor.Controllers
             {
                 try
                 {
-                    _context.Update(order);
+                    _context.Update(follow);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.customerId))
+                    if (!FollowExists(follow.followingCustomerId))
                     {
                         return NotFound();
                     }
@@ -122,12 +122,12 @@ namespace vapor.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["customerId"] = new SelectList(_context.Customer, "id", "id", order.customerId);
-            ViewData["gameId"] = new SelectList(_context.Game, "id", "id", order.gameId);
-            return View(order);
+            ViewData["followedCustomerId"] = new SelectList(_context.Customer, "id", "id", follow.followedCustomerId);
+            ViewData["followingCustomerId"] = new SelectList(_context.Customer, "id", "id", follow.followingCustomerId);
+            return View(follow);
         }
 
-        // GET: Orders/Delete/5
+        // GET: Follows/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -135,32 +135,32 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
-                .Include(o => o.customer)
-                .Include(o => o.game)
-                .FirstOrDefaultAsync(m => m.customerId == id);
-            if (order == null)
+            var follow = await _context.Follow
+                .Include(f => f.followedCustomer)
+                .Include(f => f.followingCustomer)
+                .FirstOrDefaultAsync(m => m.followingCustomerId == id);
+            if (follow == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            return View(follow);
         }
 
-        // POST: Orders/Delete/5
+        // POST: Follows/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var order = await _context.Order.FindAsync(id);
-            _context.Order.Remove(order);
+            var follow = await _context.Follow.FindAsync(id);
+            _context.Follow.Remove(follow);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrderExists(string id)
+        private bool FollowExists(string id)
         {
-            return _context.Order.Any(e => e.customerId == id);
+            return _context.Follow.Any(e => e.followingCustomerId == id);
         }
     }
 }

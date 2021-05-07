@@ -1,4 +1,4 @@
-﻿@model vapor.Models.Game
+﻿@model vapor.Models.Review
 
 @{
     ViewData["Title"] = "Details";
@@ -7,32 +7,32 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Game</h4>
+    <h4>Review</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.price)
+            @Html.DisplayNameFor(model => model.rating)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.price)
+            @Html.DisplayFor(model => model.rating)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
+            @Html.DisplayNameFor(model => model.comment)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
+            @Html.DisplayFor(model => model.comment)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.description)
+            @Html.DisplayNameFor(model => model.writtenAt)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.description)
+            @Html.DisplayFor(model => model.writtenAt)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.releaseDate)
+            @Html.DisplayNameFor(model => model.lastUpdate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.releaseDate)
+            @Html.DisplayFor(model => model.lastUpdate)
         </dd>
     </dl>
 </div>

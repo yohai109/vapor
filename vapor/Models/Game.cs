@@ -12,6 +12,10 @@ namespace vapor.Models
         public double price { get; set; }
         public string name { get; set; }
         public string description { get; set; }
-        public DateTime release_date { get; set; }
+        public DateTime releaseDate { get; set; }
+
+        public virtual ICollection<GameImage> images { get; set; }
+        public virtual ICollection<Review> reviews { get; set; }
+        public virtual ICollection<Genre> generes { get; set; }
     }
 }

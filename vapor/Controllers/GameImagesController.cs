@@ -10,22 +10,22 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    public class DevelopersController : Controller
+    public class GameImagesController : Controller
     {
         private readonly vaporContext _context;
 
-        public DevelopersController(vaporContext context)
+        public GameImagesController(vaporContext context)
         {
             _context = context;
         }
 
-        // GET: Developers
+        // GET: GameImages
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Developer.ToListAsync());
+            return View(await _context.GameImage.ToListAsync());
         }
 
-        // GET: Developers/Details/5
+        // GET: GameImages/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer
+            var gameImage = await _context.GameImage
                 .FirstOrDefaultAsync(m => m.id == id);
-            if (developer == null)
+            if (gameImage == null)
             {
                 return NotFound();
             }
 
-            return View(developer);
+            return View(gameImage);
         }
 
-        // GET: Developers/Create
+        // GET: GameImages/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Developers/Create
+        // POST: GameImages/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,name,avatar")] Developer developer)
+        public async Task<IActionResult> Create([Bind("id,imageUrl")] GameImage gameImage)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(developer);
+                _context.Add(gameImage);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(developer);
+            return View(gameImage);
         }
 
-        // GET: Developers/Edit/5
+        // GET: GameImages/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer.FindAsync(id);
-            if (developer == null)
+            var gameImage = await _context.GameImage.FindAsync(id);
+            if (gameImage == null)
             {
                 return NotFound();
             }
-            return View(developer);
+            return View(gameImage);
         }
 
-        // POST: Developers/Edit/5
+        // POST: GameImages/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,name,avatar")] Developer developer)
+        public async Task<IActionResult> Edit(string id, [Bind("id,imageUrl")] GameImage gameImage)
         {
-            if (id != developer.id)
+            if (id != gameImage.id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace vapor.Controllers
             {
                 try
                 {
-                    _context.Update(developer);
+                    _context.Update(gameImage);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DeveloperExists(developer.id))
+                    if (!GameImageExists(gameImage.id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace vapor.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(developer);
+            return View(gameImage);
         }
 
-        // GET: Developers/Delete/5
+        // GET: GameImages/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer
+            var gameImage = await _context.GameImage
                 .FirstOrDefaultAsync(m => m.id == id);
-            if (developer == null)
+            if (gameImage == null)
             {
                 return NotFound();
             }
 
-            return View(developer);
+            return View(gameImage);
         }
 
-        // POST: Developers/Delete/5
+        // POST: GameImages/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var developer = await _context.Developer.FindAsync(id);
-            _context.Developer.Remove(developer);
+            var gameImage = await _context.GameImage.FindAsync(id);
+            _context.GameImage.Remove(gameImage);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DeveloperExists(string id)
+        private bool GameImageExists(string id)
         {
-            return _context.Developer.Any(e => e.id == id);
+            return _context.GameImage.Any(e => e.id == id);
         }
     }
 }

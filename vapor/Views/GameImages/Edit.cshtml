@@ -1,4 +1,4 @@
-﻿@model vapor.Models.Order
+﻿@model vapor.Models.GameImage
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,18 +6,17 @@
 
 <h1>Edit</h1>
 
-<h4>Order</h4>
+<h4>GameImage</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="gameId" />
-            <input type="hidden" asp-for="customerId" />
+            <input type="hidden" asp-for="id" />
             <div class="form-group">
-                <label asp-for="date" class="control-label"></label>
-                <input asp-for="date" class="form-control" />
-                <span asp-validation-for="date" class="text-danger"></span>
+                <label asp-for="imageUrl" class="control-label"></label>
+                <input asp-for="imageUrl" class="form-control" />
+                <span asp-validation-for="imageUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

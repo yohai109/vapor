@@ -54,7 +54,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,name,mail,first_name,last_name,phone_number")] Customer customer)
+        public async Task<IActionResult> Create([Bind("id,name,email,firstName,lastName,phoneNumber")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,name,mail,first_name,last_name,phone_number")] Customer customer)
+        public async Task<IActionResult> Edit(string id, [Bind("id,name,email,firstName,lastName,phoneNumber")] Customer customer)
         {
             if (id != customer.id)
             {

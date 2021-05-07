@@ -11,6 +11,12 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.date)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.game)
         </dt>
         <dd class = "col-sm-10">
@@ -21,12 +27,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.customer.id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.date)
         </dd>
     </dl>
 </div>

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<vapor.Models.Developer>
+﻿@model IEnumerable<vapor.Models.GameImage>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.avatar)
+                @Html.DisplayNameFor(model => model.imageUrl)
             </th>
             <th></th>
         </tr>
@@ -25,10 +22,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.avatar)
+                @Html.DisplayFor(modelItem => item.imageUrl)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |

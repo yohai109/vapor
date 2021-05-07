@@ -9,7 +9,7 @@ namespace vapor.Data
 {
     public class vaporContext : DbContext
     {
-        public vaporContext (DbContextOptions<vaporContext> options)
+        public vaporContext(DbContextOptions<vaporContext> options)
             : base(options)
         {
         }
@@ -17,10 +17,15 @@ namespace vapor.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Order>().HasKey(table => new {
-                table.customerID,
-                table.gameID
+                table.customerId,
+                table.gameId
+            });
+            builder.Entity<Follow>().HasKey(table => new {
+                table.followingCustomerId,
+                table.followedCustomerId
             });
         }
+
 
         public DbSet<vapor.Models.Game> Game { get; set; }
 
@@ -28,5 +33,9 @@ namespace vapor.Data
 
         public DbSet<vapor.Models.Customer> Customer { get; set; }
         public DbSet<vapor.Models.Developer> Developer { get; set; }
+        public DbSet<vapor.Models.Follow> Follow { get; set; }
+        public DbSet<vapor.Models.Review> Review { get; set; }
+        public DbSet<vapor.Models.GameImage> GameImage { get; set; }
+        public DbSet<vapor.Models.Genre> Genre { get; set; }
     }
 }

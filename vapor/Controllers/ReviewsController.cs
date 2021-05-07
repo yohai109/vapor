@@ -10,22 +10,22 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    public class DevelopersController : Controller
+    public class ReviewsController : Controller
     {
         private readonly vaporContext _context;
 
-        public DevelopersController(vaporContext context)
+        public ReviewsController(vaporContext context)
         {
             _context = context;
         }
 
-        // GET: Developers
+        // GET: Reviews
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Developer.ToListAsync());
+            return View(await _context.Review.ToListAsync());
         }
 
-        // GET: Developers/Details/5
+        // GET: Reviews/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer
+            var review = await _context.Review
                 .FirstOrDefaultAsync(m => m.id == id);
-            if (developer == null)
+            if (review == null)
             {
                 return NotFound();
             }
 
-            return View(developer);
+            return View(review);
         }
 
-        // GET: Developers/Create
+        // GET: Reviews/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Developers/Create
+        // POST: Reviews/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,name,avatar")] Developer developer)
+        public async Task<IActionResult> Create([Bind("id,rating,comment,writtenAt,lastUpdate")] Review review)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(developer);
+                _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(developer);
+            return View(review);
         }
 
-        // GET: Developers/Edit/5
+        // GET: Reviews/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer.FindAsync(id);
-            if (developer == null)
+            var review = await _context.Review.FindAsync(id);
+            if (review == null)
             {
                 return NotFound();
             }
-            return View(developer);
+            return View(review);
         }
 
-        // POST: Developers/Edit/5
+        // POST: Reviews/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,name,avatar")] Developer developer)
+        public async Task<IActionResult> Edit(string id, [Bind("id,rating,comment,writtenAt,lastUpdate")] Review review)
         {
-            if (id != developer.id)
+            if (id != review.id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace vapor.Controllers
             {
                 try
                 {
-                    _context.Update(developer);
+                    _context.Update(review);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DeveloperExists(developer.id))
+                    if (!ReviewExists(review.id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace vapor.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(developer);
+            return View(review);
         }
 
-        // GET: Developers/Delete/5
+        // GET: Reviews/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer
+            var review = await _context.Review
                 .FirstOrDefaultAsync(m => m.id == id);
-            if (developer == null)
+            if (review == null)
             {
                 return NotFound();
             }
 
-            return View(developer);
+            return View(review);
         }
 
-        // POST: Developers/Delete/5
+        // POST: Reviews/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var developer = await _context.Developer.FindAsync(id);
-            _context.Developer.Remove(developer);
+            var review = await _context.Review.FindAsync(id);
+            _context.Review.Remove(review);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DeveloperExists(string id)
+        private bool ReviewExists(string id)
         {
-            return _context.Developer.Any(e => e.id == id);
+            return _context.Review.Any(e => e.id == id);
         }
     }
 }

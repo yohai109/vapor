@@ -10,22 +10,22 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    public class DevelopersController : Controller
+    public class GenresController : Controller
     {
         private readonly vaporContext _context;
 
-        public DevelopersController(vaporContext context)
+        public GenresController(vaporContext context)
         {
             _context = context;
         }
 
-        // GET: Developers
+        // GET: Genres
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Developer.ToListAsync());
+            return View(await _context.Genre.ToListAsync());
         }
 
-        // GET: Developers/Details/5
+        // GET: Genres/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer
+            var genre = await _context.Genre
                 .FirstOrDefaultAsync(m => m.id == id);
-            if (developer == null)
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            return View(developer);
+            return View(genre);
         }
 
-        // GET: Developers/Create
+        // GET: Genres/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Developers/Create
+        // POST: Genres/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,name,avatar")] Developer developer)
+        public async Task<IActionResult> Create([Bind("id,name")] Genre genre)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(developer);
+                _context.Add(genre);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(developer);
+            return View(genre);
         }
 
-        // GET: Developers/Edit/5
+        // GET: Genres/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer.FindAsync(id);
-            if (developer == null)
+            var genre = await _context.Genre.FindAsync(id);
+            if (genre == null)
             {
                 return NotFound();
             }
-            return View(developer);
+            return View(genre);
         }
 
-        // POST: Developers/Edit/5
+        // POST: Genres/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,name,avatar")] Developer developer)
+        public async Task<IActionResult> Edit(string id, [Bind("id,name")] Genre genre)
         {
-            if (id != developer.id)
+            if (id != genre.id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace vapor.Controllers
             {
                 try
                 {
-                    _context.Update(developer);
+                    _context.Update(genre);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DeveloperExists(developer.id))
+                    if (!GenreExists(genre.id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace vapor.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(developer);
+            return View(genre);
         }
 
-        // GET: Developers/Delete/5
+        // GET: Genres/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var developer = await _context.Developer
+            var genre = await _context.Genre
                 .FirstOrDefaultAsync(m => m.id == id);
-            if (developer == null)
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            return View(developer);
+            return View(genre);
         }
 
-        // POST: Developers/Delete/5
+        // POST: Genres/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var developer = await _context.Developer.FindAsync(id);
-            _context.Developer.Remove(developer);
+            var genre = await _context.Genre.FindAsync(id);
+            _context.Genre.Remove(genre);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DeveloperExists(string id)
+        private bool GenreExists(string id)
         {
-            return _context.Developer.Any(e => e.id == id);
+            return _context.Genre.Any(e => e.id == id);
         }
     }
 }

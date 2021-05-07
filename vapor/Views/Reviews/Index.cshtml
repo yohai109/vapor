@@ -1,4 +1,4 @@
-﻿@model IEnumerable<vapor.Models.Game>
+﻿@model IEnumerable<vapor.Models.Review>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,16 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.price)
+                @Html.DisplayNameFor(model => model.rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                @Html.DisplayNameFor(model => model.comment)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.description)
+                @Html.DisplayNameFor(model => model.writtenAt)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.releaseDate)
+                @Html.DisplayNameFor(model => model.lastUpdate)
             </th>
             <th></th>
         </tr>
@@ -31,16 +31,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.price)
+                @Html.DisplayFor(modelItem => item.rating)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                @Html.DisplayFor(modelItem => item.comment)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.description)
+                @Html.DisplayFor(modelItem => item.writtenAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.releaseDate)
+                @Html.DisplayFor(modelItem => item.lastUpdate)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |

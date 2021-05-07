@@ -54,7 +54,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,name,description,release_date")] Game game)
+        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,price,name,description,release_date")] Game game)
+        public async Task<IActionResult> Edit(string id, [Bind("id,price,name,description,releaseDate")] Game game)
         {
             if (id != game.id)
             {
