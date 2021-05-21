@@ -20,10 +20,6 @@ namespace vapor.Data
                 table.customerId,
                 table.gameId
             });
-            builder.Entity<Follow>().HasKey(table => new {
-                table.followingCustomerId,
-                table.followedCustomerId
-            });
         }
 
 
@@ -33,7 +29,6 @@ namespace vapor.Data
 
         public DbSet<vapor.Models.Customer> Customer { get; set; }
         public DbSet<vapor.Models.Developer> Developer { get; set; }
-        public DbSet<vapor.Models.Follow> Follow { get; set; }
         public DbSet<vapor.Models.Review> Review { get; set; }
         public DbSet<vapor.Models.GameImage> GameImage { get; set; }
         public DbSet<vapor.Models.Genre> Genre { get; set; }
