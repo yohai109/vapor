@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace vapor.Controllers
-{
+{ 
+    [Authorize]
     public class DevelopersController : Controller
     {
         private readonly vaporContext _context;
