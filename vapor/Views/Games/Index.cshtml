@@ -7,8 +7,33 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
 </p>
+
+<div class="container">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-3 mb-3">
+
+                <div class="card bg-dark text-black">
+                    <img class="card-img-top" src="https://d3m9l0v76dty0.cloudfront.net/system/photos/5804706/original/0e453e252c1e3c5cfda22500b3c3c49b.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.name</h5>
+                        @*<h6 class="card-title">@item.developer</h6>*@
+                        <h6 class="card-title">developer</h6>
+                        <p class="card-text">@item.description</p>
+                        <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary">Details</a>
+                        <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -28,26 +53,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.releaseDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.releaseDate)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
