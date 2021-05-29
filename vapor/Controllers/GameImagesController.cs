@@ -22,7 +22,8 @@ namespace vapor.Controllers
         // GET: GameImages
         public async Task<IActionResult> Index()
         {
-            return View(await _context.GameImage.ToListAsync());
+            var vaporContext = _context.GameImage.Include(g => g.game);
+            return View(await vaporContext.ToListAsync());
         }
 
         // GET: GameImages/Details/5
@@ -34,6 +35,7 @@ namespace vapor.Controllers
             }
 
             var gameImage = await _context.GameImage
+                .Include(g => g.game)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (gameImage == null)
             {
@@ -46,6 +48,7 @@ namespace vapor.Controllers
         // GET: GameImages/Create
         public IActionResult Create()
         {
+            ViewData["gameID"] = new SelectList(_context.Game, "id", "id");
             return View();
         }
 
@@ -54,7 +57,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,imageUrl")] GameImage gameImage)
+        public async Task<IActionResult> Create([Bind("id,imageUrl,gameID")] GameImage gameImage)
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +65,7 @@ namespace vapor.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["gameID"] = new SelectList(_context.Game, "id", "id", gameImage.gameID);
             return View(gameImage);
         }
 
@@ -78,6 +82,7 @@ namespace vapor.Controllers
             {
                 return NotFound();
             }
+            ViewData["gameID"] = new SelectList(_context.Game, "id", "id", gameImage.gameID);
             return View(gameImage);
         }
 
@@ -86,7 +91,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,imageUrl")] GameImage gameImage)
+        public async Task<IActionResult> Edit(string id, [Bind("id,imageUrl,gameID")] GameImage gameImage)
         {
             if (id != gameImage.id)
             {
@@ -113,6 +118,7 @@ namespace vapor.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["gameID"] = new SelectList(_context.Game, "id", "id", gameImage.gameID);
             return View(gameImage);
         }
 
@@ -125,6 +131,7 @@ namespace vapor.Controllers
             }
 
             var gameImage = await _context.GameImage
+                .Include(g => g.game)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (gameImage == null)
             {
