@@ -13,34 +13,52 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="id" class="control-label"></label>
-                <input asp-for="id" class="form-control" />
-                <span asp-validation-for="id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="rating" class="control-label"></label>
-                <input asp-for="rating" class="form-control" />
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="1" id="rating1" checked/><label class="form-check-label" for="rating1">1</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="2" id="rating2" /><label class="form-check-label" for="rating2">2</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="3" id="rating3" /><label class="form-check-label" for="rating3">3</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="4" id="rating4" /><label class="form-check-label" for="rating4">4</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="5" id="rating5" /><label class="form-check-label" for="rating5">5</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="6" id="rating6" /><label class="form-check-label" for="rating6">6</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="7" id="rating7" /><label class="form-check-label" for="rating7">7</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="8" id="rating8" /><label class="form-check-label" for="rating8">8</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="9" id="rating9" /><label class="form-check-label" for="rating9">9</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="rating" value="10" id="rating10" /><label class="form-check-label" for="rating10">10</label>
+                </div>
                 <span asp-validation-for="rating" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="comment" class="control-label"></label>
-                <input asp-for="comment" class="form-control" />
-                <span asp-validation-for="comment" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="writtenAt" class="control-label"></label>
-                <input asp-for="writtenAt" class="form-control" />
-                <span asp-validation-for="writtenAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="lastUpdate" class="control-label"></label>
-                <input asp-for="lastUpdate" class="form-control" />
-                <span asp-validation-for="lastUpdate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+            
+                <div class="form-floating mb-3">
+                    <div class="form-group">
+                        <input asp-for="comment" class="form-control" id="floatingInput" placeholder="comment" />
+                        <label asp-for="comment" class="control-label"></label>
+                    </div>
+                    <span asp-validation-for="comment" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+</form>
     </div>
 </div>
 

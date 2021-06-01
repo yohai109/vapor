@@ -58,6 +58,8 @@ namespace vapor.Controllers
         {
             if (ModelState.IsValid)
             {
+                review.writtenAt = DateTime.Now;
+                review.lastUpdate = DateTime.Now;
                 _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -97,6 +99,7 @@ namespace vapor.Controllers
             {
                 try
                 {
+                    review.lastUpdate = DateTime.Now;
                     _context.Update(review);
                     await _context.SaveChangesAsync();
                 }

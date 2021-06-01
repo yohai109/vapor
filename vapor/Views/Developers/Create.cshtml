@@ -13,18 +13,15 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="id" class="control-label"></label>
-                <input asp-for="id" class="form-control" />
-                <span asp-validation-for="id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="name" class="control-label"></label>
                 <input asp-for="name" class="form-control" />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="avatar" class="control-label"></label>
-                <input asp-for="avatar" class="form-control" />
+                <div class="mb-3">
+                    <label for="formFileSm" asp-for="avatar" class="control-label">image</label>
+                    <input asp-for="avatar" class="form-control form-control-sm" id="formFileSm" type="file" />
+                </div>
                 <span asp-validation-for="avatar" class="text-danger"></span>
             </div>
             <div class="form-group">
