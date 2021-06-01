@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace vapor.Controllers
 {
-    [AllowAnonymous]
+    //[AllowAnonymous]
     public class UsersController : Controller
     {
         private readonly vaporContext _context;
@@ -62,10 +62,9 @@ namespace vapor.Controllers
 
                 if (q.Count() > 0)
                 {
-                    // HttpContext.Session.SetString("username", q.First().Username);
+                    HttpContext.Session.SetString("username", q.First().Username);
 
                     Signin(q.First());
-
                     return RedirectToAction(nameof(Index), "Home");
                 }
                 else

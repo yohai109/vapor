@@ -12,13 +12,12 @@ using vapor.Models;
 using vapor.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;    
+using Microsoft.AspNetCore.Http;
 
 namespace vapor.Controllers
 {   [AllowAnonymous]
     public class HomeController : Controller
     {
-
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)

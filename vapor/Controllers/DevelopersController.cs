@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace vapor.Controllers
 { 
-    [Authorize]
+    
     public class DevelopersController : Controller
     {
         private readonly vaporContext _context;
@@ -20,8 +20,8 @@ namespace vapor.Controllers
         {
             _context = context;
         }
-
-        // GET: Developers
+ 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Developer.ToListAsync());
