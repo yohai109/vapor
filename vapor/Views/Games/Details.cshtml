@@ -4,39 +4,73 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Game</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.releaseDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.releaseDate)
-        </dd>
-    </dl>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="row">
+                <h1>@Html.DisplayFor(model => model.name)</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>@Html.DisplayNameFor(model => model.description)</h5>
+                </div>
+                <div class="col-md-9">
+                    <span>@Html.DisplayFor(model => model.description)</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>@Html.DisplayNameFor(model => model.price)</h5>
+                </div>
+                <div class="col-md-9">
+                    <span>@Html.DisplayFor(model => model.price)</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>@Html.DisplayNameFor(model => model.releaseDate)</h5>
+                </div>
+                <div class="col-md-9">
+                    <span>@Html.DisplayFor(model => model.releaseDate)</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div id="image-carousel" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    @for (int i = 0; i < Model.images.Count(); i++)
+                    {
+                        <li data-target="#image-carousel" data-slide-to="@i" class=" @(@i == 0 ? "active" : "")"></li>
+                    }
+                </ol>
+                <div class="carousel-inner">
+                    @for (int i = 0; i < Model.images.Count(); i++)
+                    {
+                        <div class="carousel-item @(@i == 0 ? "active" : "") ">
+                            <img class="d-block w-100" src="@Model.images.ElementAt(i).imageUrl">
+                        </div>
+                    }
+                </div>
+                <a class="carousel-control-prev" href="#image-carousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#image-carousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts {
+    <style>
+    </style>
+}
