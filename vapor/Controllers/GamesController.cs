@@ -133,8 +133,7 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game
-                .FirstOrDefaultAsync(m => m.id == id);
+            var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
             if (game == null)
             {
                 return NotFound();
@@ -148,7 +147,7 @@ namespace vapor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var game = await _context.Game.FindAsync(id);
+            var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
             _context.Game.Remove(game);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

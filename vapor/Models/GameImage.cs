@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ namespace vapor.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string id { get; set; }
         public string imageUrl { get; set; }
+
+        [Required]
         public string gameID { get; set; }
         public Game game { get; set; }
     }
