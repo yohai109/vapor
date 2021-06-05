@@ -33,8 +33,7 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game
-                .FirstOrDefaultAsync(m => m.id == id);
+            var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
             if (game == null)
             {
                 return NotFound();
@@ -54,10 +53,20 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game)
-        {
+        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game, 
+                                                String[] gameImageUrls)
+            {
             if (ModelState.IsValid)
             {
+                GameImage gameImage;
+                game.images = new List<GameImage>();
+
+                foreach (string imageUrl in gameImageUrls)
+                {
+                    gameImage = new GameImage();
+                    gameImage.imageUrl = imageUrl;
+                    game.images.Add(gameImage);
+                }
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -148,6 +157,10 @@ namespace vapor.Controllers
         private bool GameExists(string id)
         {
             return _context.Game.Any(e => e.id == id);
+        }
+        public IActionResult Test()
+        {
+            return View();
         }
     }
 }
