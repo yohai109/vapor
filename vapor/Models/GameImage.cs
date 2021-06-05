@@ -11,6 +11,8 @@ namespace vapor.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string id { get; set; }
         public string imageUrl { get; set; }
+
+        public string gameId { get; set; }
         public Game game { get; set; }
     }
 }

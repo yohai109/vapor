@@ -22,7 +22,8 @@ namespace vapor.Controllers
         // GET: Games
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Game.ToListAsync());
+            var gameList = _context.Game.Include(curr => curr.developer).Include(curr =>curr.images);
+            return View(await gameList.ToListAsync());
         }
 
         // GET: Games/Details/5

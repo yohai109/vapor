@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<vapor.Models.Game>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Home";
 }
 
-<h1>Index</h1>
+<h1>Home</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-success">Create New</a>
@@ -17,10 +17,10 @@
             <div class="col-3 mb-3">
 
                 <div class="card bg-dark text-black">
-                    <img class="card-img-top" src="https://d3m9l0v76dty0.cloudfront.net/system/photos/5804706/original/0e453e252c1e3c5cfda22500b3c3c49b.jpg">
+                    <img class="card-img-top" src=@item.images.FirstOrDefault().imageUrl>
                     <div class="card-body">
                         <h5 class="card-title">@item.name</h5>
-                        <h6 class="card-title">@item.developer</h6>
+                        <h6 class="card-title">@item.developer.name</h6>
                         <p class="card-text">@item.description</p>
                         <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary">Details</a>
                         <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning">Edit</a>
@@ -32,47 +32,3 @@
         }
     </div>
 </div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.releaseDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.releaseDate)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
