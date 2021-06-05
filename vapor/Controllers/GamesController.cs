@@ -22,7 +22,7 @@ namespace vapor.Controllers
         // GET: Games
         public async Task<IActionResult> Index()
         {
-            var vaporContext = _context.Game.Include(g => g.developer).Include(g => g.images);
+            var vaporContext = _context.Game.Include(g => g.developer).Include(g => g.images).Include(g => g.generes);
             return View(await vaporContext.ToListAsync());
         }
 
