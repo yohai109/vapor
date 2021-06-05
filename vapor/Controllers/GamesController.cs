@@ -22,8 +22,8 @@ namespace vapor.Controllers
         // GET: Games
         public async Task<IActionResult> Index()
         {
-            var gameList = _context.Game.Include(curr => curr.developer).Include(curr =>curr.images);
-            return View(await gameList.ToListAsync());
+            var vaporContext = _context.Game.Include(g => g.developer).Include(g => g.images);
+            return View(await vaporContext.ToListAsync());
         }
 
         // GET: Games/Details/5
@@ -35,6 +35,7 @@ namespace vapor.Controllers
             }
 
             var game = await _context.Game
+                .Include(g => g.developer)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (game == null)
             {
@@ -47,6 +48,7 @@ namespace vapor.Controllers
         // GET: Games/Create
         public IActionResult Create()
         {
+            ViewData["developerId"] = new SelectList(_context.Developer, "id", "name");
             return View();
         }
 
@@ -55,7 +57,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game)
+        public async Task<IActionResult> Create([Bind("id,developerId,price,name,description,releaseDate")] Game game)
         {
             if (ModelState.IsValid)
             {
@@ -63,6 +65,7 @@ namespace vapor.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["developerId"] = new SelectList(_context.Developer, "id", "id", game.developerId);
             return View(game);
         }
 
@@ -79,6 +82,7 @@ namespace vapor.Controllers
             {
                 return NotFound();
             }
+            ViewData["developerId"] = new SelectList(_context.Developer, "id", "id", game.developerId);
             return View(game);
         }
 
@@ -87,7 +91,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,price,name,description,releaseDate")] Game game)
+        public async Task<IActionResult> Edit(string id, [Bind("id,developerId,price,name,description,releaseDate")] Game game)
         {
             if (id != game.id)
             {
@@ -114,6 +118,7 @@ namespace vapor.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["developerId"] = new SelectList(_context.Developer, "id", "id", game.developerId);
             return View(game);
         }
 
@@ -126,6 +131,7 @@ namespace vapor.Controllers
             }
 
             var game = await _context.Game
+                .Include(g => g.developer)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (game == null)
             {
