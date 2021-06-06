@@ -9,41 +9,29 @@
 
 <h4>Game</h4>
 <hr />
-<form id="game-form" asp-action="Create" onsubmit="AlterFormOutput()">
-    <div class="row">
-        <div class="col-md-8">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="description" class="control-label"></label>
-                <input asp-for="description" class="form-control" />
-                <span asp-validation-for="description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="price" class="control-label"></label>
-                <input asp-for="price" class="form-control" />
-                <span asp-validation-for="price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group" id="image-url-input">
-                <label class="control-label">Game Image URL</label>
-                <input class="form-control" />
-                <span id="image-url-error" class="text-danger"></span>
-                <button type="button" class="btn btn-primary"> Add </button>
-            </div>
-            <h3>Game Urls</h3>
-            <div id="game-urls">
-
-            </div>
-        </div>
+<form id="game-form" asp-action="Create" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="name" class="control-label"></label>
+        <input asp-for="name" class="form-control" />
+        <span asp-validation-for="name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="description" class="control-label"></label>
+        <input asp-for="description" class="form-control" />
+        <span asp-validation-for="description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="price" class="control-label"></label>
+        <input asp-for="price" class="form-control" />
+        <span asp-validation-for="price" class="text-danger"></span>
+    </div>
+    <div class="form-group" id="image-url-input">
+        <label class="control-label">Game Image</label>
+        <input name="gameImages" class="form-control-file" type="file" multiple/>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
     </div>
 </form>
 
@@ -53,10 +41,4 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/Games/Create.js"></script>
-    <style>
-        #image-url-error {
-            display: block;
-        }
-    </style>
 }

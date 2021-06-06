@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -53,25 +55,43 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game, 
-                                                String[] gameImageUrls)
-            {
+        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game,
+                                                List<IFormFile> gameImages)
+        {
             if (ModelState.IsValid)
             {
                 GameImage gameImage;
                 game.images = new List<GameImage>();
 
-                foreach (string imageUrl in gameImageUrls)
+                // Saves all the new images
+                foreach (IFormFile image in gameImages)
                 {
-                    gameImage = new GameImage();
-                    gameImage.imageUrl = imageUrl;
-                    game.images.Add(gameImage);
+                    using (var ms = new MemoryStream())
+                    {
+                        image.CopyTo(ms);
+                        byte[] fileBytes = ms.ToArray();
+
+                        gameImage = new GameImage();
+                        gameImage.fileBase64 = Convert.ToBase64String(fileBytes);
+                        gameImage.fileContentType = image.ContentType;
+                        game.images.Add(gameImage);
+                    }
                 }
+
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(game);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetGameImage(string imageId)
+        {
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == imageId);
+            byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
+            return this.File(fileBytes, gameImage.fileContentType);
         }
 
         // GET: Games/Edit/5
