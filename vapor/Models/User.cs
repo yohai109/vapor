@@ -9,7 +9,7 @@ namespace vapor.Models
 {
     public enum UserType
     {
-        Gamer,
+        Customer,
         Developer,
         Admin
     }
@@ -26,6 +26,6 @@ namespace vapor.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public UserType Type { get; set; } = UserType.Gamer;
+        public UserType Type { get; set; } = UserType.Customer;
     }
 }

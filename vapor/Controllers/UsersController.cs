@@ -62,7 +62,7 @@ namespace vapor.Controllers
 
                 if (q.Count() > 0)
                 {
-                    HttpContext.Session.SetString("username", q.First().Username);
+                    //HttpContext.Session.SetString("username", q.First().Username);
 
                     Signin(q.First());
                     return RedirectToAction(nameof(Index), "Home");
@@ -90,7 +90,7 @@ namespace vapor.Controllers
             {
                 //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
             };
-
+            HttpContext.Session.SetString("username", account.Username);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
@@ -132,7 +132,7 @@ namespace vapor.Controllers
             return View(user);
         }
 
-        /*
+        [Authorize(Roles = "Admin")]
         // GET: Users
         public async Task<IActionResult> Index()
         {
@@ -156,7 +156,7 @@ namespace vapor.Controllers
 
             return View(user);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Users/Create
         public IActionResult Create()
         {
@@ -166,6 +166,7 @@ namespace vapor.Controllers
         // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Username,Password,Type")] User user)
@@ -178,7 +179,7 @@ namespace vapor.Controllers
             }
             return View(user);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -198,6 +199,7 @@ namespace vapor.Controllers
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Password,Type")] User user)
@@ -229,7 +231,7 @@ namespace vapor.Controllers
             }
             return View(user);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -247,7 +249,7 @@ namespace vapor.Controllers
 
             return View(user);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -258,10 +260,10 @@ namespace vapor.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        [Authorize(Roles = "Admin")]
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.Id == id);
-        }*/
+        }
     }
 }
