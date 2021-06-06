@@ -10,7 +10,6 @@
     <a asp-action="Create" class="btn btn-success">Create New</a>
 </p>
 
-
 <div class="row">
     @foreach (var item in Model)
     {
@@ -37,12 +36,11 @@
                     </div>
 
                     @*<p class="card-text">@item.description.Substring(0, Math.Min(item.description.Length, 50))</p>*@
-                    <div style="margin-top: auto;">
-                        <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary">Details</a>
-                        <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger">Delete</a>
+                    <div style="margin-top: auto;" class="row">
+                        <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary col-12">Details</a>
+                        <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning col-12 my-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger col-12">Delete</a>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -21,10 +21,10 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">@item.name</h5>
                  
-                    <div calss="align-self-end" style="margin-top: auto;">
-                        <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary">Details</a>
-                        <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger">Delete</a>
+                    <div style="margin-top: auto;" class="row">
+                        <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary col-12">Details</a>
+                        <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning col-12 my-1">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger col-12">Delete</a>
                     </div>
 
                 </div>
@@ -32,55 +32,3 @@
         </div>
     }
 </div>
-@*
-<div class="container">
-    <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-3 mb-3">
-                <div class="card bg-dark text-black">
-                    <img class="card-img-top" src="@item.avatar" >
-                    <div class="card-body">
-                        <h5 class="card-title">@item.name</h5>
-                        <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary">Details</a>
-                        <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger">Delete</a>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.avatar)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.avatar)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-*@
