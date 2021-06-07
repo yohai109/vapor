@@ -35,13 +35,21 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
-            if (game == null)
+            var loadedGame = await _context.Game
+                .Select(game => new {
+                    game,
+                    images = game.images.Select(i => new GameImage { id = i.id }).ToList()
+                })
+                .FirstOrDefaultAsync(g => g.game.id == id);
+
+            if (loadedGame == null)
             {
                 return NotFound();
             }
 
-            return View(game);
+            loadedGame.game.images = loadedGame.images;
+
+            return View(loadedGame.game);
         }
 
         // GET: Games/Create
@@ -87,9 +95,20 @@ namespace vapor.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetGameImage(string imageId)
+        public async Task<ActionResult> GetGameImage(string id)
         {
-            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == imageId);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == id);
+
+            if (gameImage == null)
+            {
+                return NotFound();
+            }
+
             byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
             return this.File(fileBytes, gameImage.fileContentType);
         }
