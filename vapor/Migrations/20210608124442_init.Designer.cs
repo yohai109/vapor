@@ -10,8 +10,8 @@ using vapor.Data;
 namespace vapor.Migrations
 {
     [DbContext(typeof(vaporContext))]
-    [Migration("20210522072540_test_login")]
-    partial class test_login
+    [Migration("20210608124442_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -113,15 +113,19 @@ namespace vapor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("gameid")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("imageUrl")
+                    b.Property<string>("fileBase64")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("fileContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("gameID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id");
 
-                    b.HasIndex("gameid");
+                    b.HasIndex("gameID");
 
                     b.ToTable("GameImage");
                 });
@@ -243,7 +247,9 @@ namespace vapor.Migrations
                 {
                     b.HasOne("vapor.Models.Game", "game")
                         .WithMany("images")
-                        .HasForeignKey("gameid");
+                        .HasForeignKey("gameID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("game");
                 });

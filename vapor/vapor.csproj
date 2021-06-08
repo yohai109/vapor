@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="DAL\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
