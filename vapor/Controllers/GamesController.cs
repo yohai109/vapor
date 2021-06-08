@@ -13,7 +13,6 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    [Authorize]
     public class GamesController : Controller
     {
         private readonly vaporContext _context;
@@ -24,12 +23,27 @@ namespace vapor.Controllers
         }
 
         // GET: Games
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Game.ToListAsync());
+            /*var vaporContext = _context.Game
+                .Include(g => g.generes)
+                .Select(game => new
+                {
+                    game,
+                    images = game.images.Select(i => new GameImage { id = i.id }).First()
+                });
+*/
+            var vaporContext = _context.Game
+                .Include(g => g.generes)
+                .Include(g => g.developer)
+                .Include(g => g.images);
+
+            return View(await vaporContext.ToListAsync());
         }
 
         // GET: Games/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -37,8 +51,10 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
+
             var loadedGame = await _context.Game
-                .Select(game => new {
+                .Select(game => new
+                {
                     game,
                     images = game.images.Select(i => new GameImage { id = i.id }).ToList()
                 })
@@ -57,6 +73,7 @@ namespace vapor.Controllers
         // GET: Games/Create
         public IActionResult Create()
         {
+            ViewData["developerId"] = new SelectList(_context.Developer, "id", "name");
             return View();
         }
 
@@ -67,6 +84,7 @@ namespace vapor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game,
                                                 List<IFormFile> gameImages)
+
         {
             if (ModelState.IsValid)
             {
@@ -92,6 +110,7 @@ namespace vapor.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["developerId"] = new SelectList(_context.Developer, "id", "id", game.developerId);
             return View(game);
         }
 
@@ -128,6 +147,7 @@ namespace vapor.Controllers
             {
                 return NotFound();
             }
+            ViewData["developerId"] = new SelectList(_context.Developer, "id", "id", game.developerId);
             return View(game);
         }
 
@@ -136,7 +156,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,price,name,description,releaseDate")] Game game)
+        public async Task<IActionResult> Edit(string id, [Bind("id,developerId,price,name,description,releaseDate")] Game game)
         {
             if (id != game.id)
             {
@@ -163,6 +183,7 @@ namespace vapor.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["developerId"] = new SelectList(_context.Developer, "id", "id", game.developerId);
             return View(game);
         }
 
