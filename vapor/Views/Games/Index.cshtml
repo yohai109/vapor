@@ -5,10 +5,12 @@
 }
 
 <h1 hidden>Home</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
+@if (User.IsInRole("Admin")|| User.IsInRole("Developer"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Create New</a>
+    </p>
+}
 
 <div class="row">
     @foreach (var item in Model)
@@ -36,16 +38,22 @@
                     </div>
 
                     @*<p class="card-text">@item.description.Substring(0, Math.Min(item.description.Length, 50))</p>*@
-                    <div style="margin-top: auto;" class="row">
-                        <span class="col-12">
-                            <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary w-100">Details</a>
-                        </span>
+                <div style="margin-top: auto;" class="row">
+                    <span class="col-12">
+                        <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary w-100">Details</a>
+                    </span>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                    {
                         <span class="col-12 my-1">
                             <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning w-100">Edit</a>
                         </span>
-                        <span class="col-12">
-                            <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger w-100">Delete</a>
-                        </span>
+                    }
+                       @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                       {
+                            <span class="col-12">
+                                <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger w-100">Delete</a>
+                            </span>
+                        }
                     </div>
                 </div>
             </div>

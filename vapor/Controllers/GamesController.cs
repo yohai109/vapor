@@ -69,7 +69,7 @@ namespace vapor.Controllers
 
             return View(loadedGame.game);
         }
-
+        [Authorize(Roles ="Admin,Developer")]
         // GET: Games/Create
         public IActionResult Create()
         {
@@ -133,7 +133,7 @@ namespace vapor.Controllers
             byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
             return this.File(fileBytes, gameImage.fileContentType);
         }
-
+        [Authorize(Roles = "Admin,Developer")]
         // GET: Games/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
