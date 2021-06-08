@@ -10,7 +10,7 @@ using vapor.Data;
 namespace vapor.Migrations
 {
     [DbContext(typeof(vaporContext))]
-    [Migration("20210518172312_init")]
+    [Migration("20210608124442_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace vapor.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GameGenre", b =>
@@ -39,6 +39,7 @@ namespace vapor.Migrations
             modelBuilder.Entity("vapor.Models.Customer", b =>
                 {
                     b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("email")
@@ -64,6 +65,7 @@ namespace vapor.Migrations
             modelBuilder.Entity("vapor.Models.Developer", b =>
                 {
                     b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("avatar")
@@ -80,6 +82,7 @@ namespace vapor.Migrations
             modelBuilder.Entity("vapor.Models.Game", b =>
                 {
                     b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("description")
@@ -107,17 +110,22 @@ namespace vapor.Migrations
             modelBuilder.Entity("vapor.Models.GameImage", b =>
                 {
                     b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("gameid")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("imageUrl")
+                    b.Property<string>("fileBase64")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("fileContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("gameID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id");
 
-                    b.HasIndex("gameid");
+                    b.HasIndex("gameID");
 
                     b.ToTable("GameImage");
                 });
@@ -125,6 +133,7 @@ namespace vapor.Migrations
             modelBuilder.Entity("vapor.Models.Genre", b =>
                 {
                     b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("name")
@@ -141,6 +150,7 @@ namespace vapor.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("gameId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("date")
@@ -156,6 +166,7 @@ namespace vapor.Migrations
             modelBuilder.Entity("vapor.Models.Review", b =>
                 {
                     b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("comment")
@@ -183,6 +194,29 @@ namespace vapor.Migrations
                     b.HasIndex("gameid");
 
                     b.ToTable("Review");
+                });
+
+            modelBuilder.Entity("vapor.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("GameGenre", b =>
@@ -213,7 +247,9 @@ namespace vapor.Migrations
                 {
                     b.HasOne("vapor.Models.Game", "game")
                         .WithMany("images")
-                        .HasForeignKey("gameid");
+                        .HasForeignKey("gameID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("game");
                 });

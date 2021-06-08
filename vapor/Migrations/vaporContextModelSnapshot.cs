@@ -16,7 +16,7 @@ namespace vapor.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GameGenre", b =>
@@ -111,15 +111,21 @@ namespace vapor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("gameId")
-                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("imageUrl")
+                    b.Property<string>("fileBase64")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("fileContentType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("gameID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id");
 
-                    b.HasIndex("gameId");
+
+                    b.HasIndex("gameID");
 
                     b.ToTable("GameImage");
                 });
@@ -190,6 +196,29 @@ namespace vapor.Migrations
                     b.ToTable("Review");
                 });
 
+            modelBuilder.Entity("vapor.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("GameGenre", b =>
                 {
                     b.HasOne("vapor.Models.Game", null)
@@ -218,7 +247,9 @@ namespace vapor.Migrations
                 {
                     b.HasOne("vapor.Models.Game", "game")
                         .WithMany("images")
-                        .HasForeignKey("gameId");
+                        .HasForeignKey("gameID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("game");
                 });
