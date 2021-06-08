@@ -86,7 +86,7 @@ namespace vapor.Migrations
                     b.Property<string>("description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("developerid")
+                    b.Property<string>("developerId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("name")
@@ -100,7 +100,7 @@ namespace vapor.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("developerid");
+                    b.HasIndex("developerId");
 
                     b.ToTable("Game");
                 });
@@ -236,7 +236,7 @@ namespace vapor.Migrations
                 {
                     b.HasOne("vapor.Models.Developer", "developer")
                         .WithMany("games")
-                        .HasForeignKey("developerid");
+                        .HasForeignKey("developerId");
 
                     b.Navigation("developer");
                 });

@@ -11,6 +11,7 @@ namespace vapor.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string id { get; set; }
+
         public string fileContentType { get; set; }
         public string fileBase64 { get; set; }
         [Required]
