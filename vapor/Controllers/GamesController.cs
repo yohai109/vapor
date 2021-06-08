@@ -13,7 +13,6 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    [Authorize]
     public class GamesController : Controller
     {
         private readonly vaporContext _context;
@@ -24,13 +23,27 @@ namespace vapor.Controllers
         }
 
         // GET: Games
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var vaporContext = _context.Game.Include(g => g.developer).Include(g => g.images).Include(g => g.generes);
+            /*var vaporContext = _context.Game
+                .Include(g => g.generes)
+                .Select(game => new
+                {
+                    game,
+                    images = game.images.Select(i => new GameImage { id = i.id }).First()
+                });
+*/
+            var vaporContext = _context.Game
+                .Include(g => g.generes)
+                .Include(g => g.developer)
+                .Include(g => g.images);
+
             return View(await vaporContext.ToListAsync());
         }
 
         // GET: Games/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -40,7 +53,8 @@ namespace vapor.Controllers
 
 
             var loadedGame = await _context.Game
-                .Select(game => new {
+                .Select(game => new
+                {
                     game,
                     images = game.images.Select(i => new GameImage { id = i.id }).ToList()
                 })

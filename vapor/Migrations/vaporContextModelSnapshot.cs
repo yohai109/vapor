@@ -111,7 +111,6 @@ namespace vapor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-
                     b.Property<string>("fileBase64")
                         .HasColumnType("nvarchar(max)");
 
@@ -123,7 +122,6 @@ namespace vapor.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id");
-
 
                     b.HasIndex("gameID");
 
