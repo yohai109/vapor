@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+   var username = HttpContextAccessor.HttpContext.Session.GetString("username");
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -34,7 +39,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Games" asp-action="">Games</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Customers" asp-action="">Customers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="GameImages" asp-action="">GameImages</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Genres" asp-action="">Genres</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Orders" asp-action="">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="">Users</a>
+                        </li>
                     </ul>
+                    <span class="navbar-text text-white">
+                        <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Logout">Hello @username !</a>
+                    </span>
                 </div>
             </div>
         </nav>

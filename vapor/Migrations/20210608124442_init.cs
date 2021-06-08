@@ -49,6 +49,21 @@ namespace vapor.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Game",
                 columns: table => new
                 {
@@ -99,18 +114,19 @@ namespace vapor.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    imageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    gameid = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    fileContentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fileBase64 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    gameID = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GameImage", x => x.id);
                     table.ForeignKey(
-                        name: "FK_GameImage_Game_gameid",
-                        column: x => x.gameid,
+                        name: "FK_GameImage_Game_gameID",
+                        column: x => x.gameID,
                         principalTable: "Game",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -178,9 +194,9 @@ namespace vapor.Migrations
                 column: "generesid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameImage_gameid",
+                name: "IX_GameImage_gameID",
                 table: "GameImage",
-                column: "gameid");
+                column: "gameID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_gameId",
@@ -211,6 +227,9 @@ namespace vapor.Migrations
 
             migrationBuilder.DropTable(
                 name: "Review");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Genre");
