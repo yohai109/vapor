@@ -1,4 +1,4 @@
-﻿@model IEnumerable<vapor.Models.Developer>
+﻿@*@model IEnumerable<vapor.Models.Developer>*@
 
 @{
     ViewData["Title"] = "Index";
@@ -13,29 +13,34 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.avatar)
+                Avtar
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.avatar)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
-}
     </tbody>
 </table>
+
+@section Scripts{ 
+    <script src="~/js/Developer/Index.js"></script>
+    
+    <script type="text/html" id="developer_template">
+        <tr>
+            <td>
+                {name}
+            </td>
+            <td>
+                {image}
+            </td>
+            <td>
+                <a href="/Articles/Edit/{id}">Edit</a> |
+                <a href="/Articles/Details/{id}">Details</a> |
+                <a href="/Articles/Delete/{id}">Delete</a>
+            </td>
+        </tr>
+    </script>
+}

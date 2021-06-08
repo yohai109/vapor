@@ -10,19 +10,16 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="name" class="control-label"></label>
                 <input asp-for="name" class="form-control" />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <div class="mb-3">
-                    <label for="formFileSm" asp-for="avatar" class="control-label">image</label>
-                    <input asp-for="avatar" class="form-control form-control-sm" id="formFileSm" type="file" />
-                </div>
-                <span asp-validation-for="avatar" class="text-danger"></span>
+            <div class="form-group" id="image-url-input">
+                <label class="control-label">Developer Avatar</label>
+                <input name="developerAvater" class="form-control-file" type="file"/>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

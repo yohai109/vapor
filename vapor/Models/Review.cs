@@ -16,7 +16,7 @@ namespace vapor.Models
         public Customer cusotmer { get; set; }
         public Game game { get; set; }
         [Required(ErrorMessage = "A score is required")]
-        public float rating { get; set; }
+        public float rating { get; set; } = 1;
         [Required(ErrorMessage = "A review is required")]
         public string comment { get; set; }
         public DateTime writtenAt { get; set; }

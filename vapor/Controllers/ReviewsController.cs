@@ -100,6 +100,7 @@ namespace vapor.Controllers
                 try
                 {
                     review.lastUpdate = DateTime.Now;
+                    //review.writtenAt = _context.Entry(review). fix written time 0 bug
                     _context.Update(review);
                     await _context.SaveChangesAsync();
                 }

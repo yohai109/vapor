@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
+
 
 namespace vapor.Controllers
 {
@@ -22,7 +25,16 @@ namespace vapor.Controllers
         // GET: Developers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Developer.ToListAsync());
+            return View(/*await _context.Developer.ToListAsync()*/);
+        }
+
+        public async Task<IActionResult> All()
+        {
+            /*byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
+            return this.File(fileBytes, gameImage.fileContentType);
+*/
+            
+            return Json(await _context.Developer.ToListAsync());
         }
 
         // GET: Developers/Details/5
@@ -54,10 +66,17 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,name,avatar")] Developer developer)
+        public async Task<IActionResult> Create([Bind("id,name,avatar")] Developer developer, IFormFile developerAvater)
         {
             if (ModelState.IsValid)
             {
+                using (var ms = new MemoryStream())
+                {
+                    developerAvater.CopyTo(ms);
+                    byte[] fileBytes = ms.ToArray();
+                    developer.avatar = Convert.ToBase64String(fileBytes);
+                    developer.fileContentType = developerAvater.ContentType;
+                }
                 _context.Add(developer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -80,6 +99,19 @@ namespace vapor.Controllers
             }
             return View(developer);
         }
+
+
+       // [HttpGet]
+        //public Task<ActionResult> GetDeveloperImage(string avatar, string fileContentType)
+        //{
+         //   if (avatar == null || fileContentType == null)
+          //  {
+         //       return NotFound();
+        /*    }
+
+            byte[] fileBytes = Convert.FromBase64String(avatar);
+            return this.File(fileBytes, fileContentType);
+        }*/
 
         // POST: Developers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
