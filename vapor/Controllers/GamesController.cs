@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -35,14 +36,21 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (game == null)
+            var loadedGame = await _context.Game
+                .Select(game => new {
+                    game,
+                    images = game.images.Select(i => new GameImage { id = i.id }).ToList()
+                })
+                .FirstOrDefaultAsync(g => g.game.id == id);
+
+            if (loadedGame == null)
             {
                 return NotFound();
             }
 
-            return View(game);
+            loadedGame.game.images = loadedGame.images;
+
+            return View(loadedGame.game);
         }
 
         // GET: Games/Create
@@ -56,15 +64,54 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game)
+        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game,
+                                                List<IFormFile> gameImages)
         {
             if (ModelState.IsValid)
             {
+                GameImage gameImage;
+                game.images = new List<GameImage>();
+
+                // Saves all the new images
+                foreach (IFormFile image in gameImages)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        image.CopyTo(ms);
+                        byte[] fileBytes = ms.ToArray();
+
+                        gameImage = new GameImage();
+                        gameImage.fileBase64 = Convert.ToBase64String(fileBytes);
+                        gameImage.fileContentType = image.ContentType;
+                        game.images.Add(gameImage);
+                    }
+                }
+
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(game);
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetGameImage(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == id);
+
+            if (gameImage == null)
+            {
+                return NotFound();
+            }
+
+            byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
+            return this.File(fileBytes, gameImage.fileContentType);
         }
 
         // GET: Games/Edit/5
@@ -126,8 +173,7 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game
-                .FirstOrDefaultAsync(m => m.id == id);
+            var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
             if (game == null)
             {
                 return NotFound();
@@ -141,7 +187,7 @@ namespace vapor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var game = await _context.Game.FindAsync(id);
+            var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
             _context.Game.Remove(game);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -150,6 +196,10 @@ namespace vapor.Controllers
         private bool GameExists(string id)
         {
             return _context.Game.Any(e => e.id == id);
+        }
+        public IActionResult Test()
+        {
+            return View();
         }
     }
 }
