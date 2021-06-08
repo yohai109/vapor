@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using vapor.Data;
 
 namespace vapor.Migrations
 {
     [DbContext(typeof(vaporContext))]
-    partial class vaporContextModelSnapshot : ModelSnapshot
+    [Migration("20210606184848_SaveImagesInDb")]
+    partial class SaveImagesInDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,15 +113,15 @@ namespace vapor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("fileBase64")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("fileContentType")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("gameID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("imageBase64")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imageType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
