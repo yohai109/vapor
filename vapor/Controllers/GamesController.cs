@@ -215,6 +215,26 @@ namespace vapor.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Search(string query)
+        {
+            var searchResult = _context.Game
+                .Include(g => g.generes)
+                .Include(g => g.developer)
+                .Where(g => ( query != "" && query != null ) ? g.name.Contains(query) : true)
+                .Select(g => new
+                {
+                    id = g.id,
+                    name = g.name,
+                    developer = g.developer.name,
+                    generes = g.generes,
+                    imageid = g.images.FirstOrDefault().id
+                });
+
+            return Json(await searchResult.ToListAsync());
+        }
+
         private bool GameExists(string id)
         {
             return _context.Game.Any(e => e.id == id);
