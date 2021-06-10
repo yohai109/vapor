@@ -1,14 +1,28 @@
 ﻿$(function () {
 
     // TODO get genres and developer names
+    $("#search-container", function (e) {
+        $.ajax({
+            method: "GET",
+            url: "/Genres/All"
+        }).done(function (data) {
+            var options = "";
+            $.each(data, function (i, curr) {
+                options += "<option>" + curr.name + "</option>";
+            });
 
-    $("#search-btn").click(function(e) {
-        console.log("clicked search-btn")
-        e.preventDefault()
+            $("#genres-select").html(options);
+        });
+    });
+
+    $("#search-btn").submit(function(e) {
+        console.log("searching");
+        e.preventDefault();
+        var textQuery = $("#search-box").val();
         $.ajax({
             method: "GET",
             url: '/Games/Search',
-            data: { query: $("#search-box").val() }
+            data: { query: textQuery }
         }).done(function (data) {
             $('#game-list').html('');
             var gameTemplate = $('#game_template').html();

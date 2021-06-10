@@ -26,19 +26,6 @@ namespace vapor.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            /*var vaporContext = _context.Game
-                .Include(g => g.generes)
-                .Select(game => new
-                {
-                    game,
-                    images = game.images.Select(i => new GameImage { id = i.id }).First()
-                });
-*/
-            /*var vaporContext = _context.Game
-                .Include(g => g.generes)
-                .Include(g => g.developer)
-                .Include(g => g.images);*/
-
             var searchResult = _context.Game
                 .Include(g => g.generes)
                 .Include(g => g.developer)
@@ -48,7 +35,6 @@ namespace vapor.Controllers
                     name = g.name,
                     developer = g.developer,
                     generes = g.generes,
-                    /*images = new List<GameImage>() { g.images.FirstOrDefault() }*/
                     images = new List<GameImage>()
                     {
                         g.images.Select(i => new GameImage { id = i.id }).FirstOrDefault()
