@@ -34,12 +34,28 @@ namespace vapor.Controllers
                     images = game.images.Select(i => new GameImage { id = i.id }).First()
                 });
 */
-            var vaporContext = _context.Game
+            /*var vaporContext = _context.Game
                 .Include(g => g.generes)
                 .Include(g => g.developer)
-                .Include(g => g.images);
+                .Include(g => g.images);*/
 
-            return View(await vaporContext.ToListAsync());
+            var searchResult = _context.Game
+                .Include(g => g.generes)
+                .Include(g => g.developer)
+                .Select(g => new Game
+                {
+                    id = g.id,
+                    name = g.name,
+                    developer = g.developer,
+                    generes = g.generes,
+                    /*images = new List<GameImage>() { g.images.FirstOrDefault() }*/
+                    images = new List<GameImage>()
+                    {
+                        g.images.Select(i => new GameImage { id = i.id }).FirstOrDefault()
+                    }
+                });
+
+            return View(await searchResult.ToListAsync());
         }
 
         // GET: Games/Details/5
