@@ -1,4 +1,6 @@
-﻿function convertImageFrom64( avatar, type) {
+﻿/**
+
+function convertImageFrom64(avatar, type) {
     var image = new Image();
     image.src = 'data:' + type + ';base64,' + avatar;
     return image.src;
@@ -26,3 +28,4 @@ $("body", function insertIntoPage() {
         })
     })
 })
+*/

@@ -25,7 +25,6 @@ namespace vapor.Controllers
         }
 
         [Authorize(Roles = "Admin,Developer")]
-        //[AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Developer.ToListAsync());
@@ -58,6 +57,26 @@ namespace vapor.Controllers
 
             return Json(await _context.Developer.ToListAsync());
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetDeveloperImage(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Developer developer = await _context.Developer.FirstOrDefaultAsync(d => d.id == id);
+
+            if (developer == null)
+            {
+                return NotFound();
+            }
+
+            byte[] fileBytes = Convert.FromBase64String(developer.avatar);
+            return this.File(fileBytes, developer.fileContentType);
+        }
+
         [Authorize(Roles = "Admin,Developer")]
         // GET: Developers/Details/5
         public async Task<IActionResult> Details(string id)
