@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
+using System.ServiceModel.Syndication;
+using System.Xml;
 
 namespace vapor.Controllers
 {
@@ -34,12 +36,26 @@ namespace vapor.Controllers
                     images = game.images.Select(i => new GameImage { id = i.id }).First()
                 });
 */
+
             var vaporContext = _context.Game
                 .Include(g => g.generes)
                 .Include(g => g.developer)
                 .Include(g => g.images);
-
+                
             return View(await vaporContext.ToListAsync());
+        }
+        [HttpGet]
+        public List<String> getNews()
+        {
+            var url = "http://feeds.feedburner.com/ign/news";
+            using var reader = XmlReader.Create(url);
+            var feed = SyndicationFeed.Load(reader);
+            List<String> newsTitles = new List<String>();
+            foreach (SyndicationItem item in feed.Items)
+            {
+                newsTitles.Add(item.Title.Text);
+            }
+            return newsTitles;
         }
 
         // GET: Games/Details/5
