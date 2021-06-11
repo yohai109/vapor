@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace vapor.Controllers
-{
+{ 
+    
     public class DevelopersController : Controller
     {
         private readonly vaporContext _context;
@@ -22,10 +24,11 @@ namespace vapor.Controllers
             _context = context;
         }
 
-        // GET: Developers
+        [Authorize(Roles = "Admin,Developer")]
+        //[AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(/*await _context.Developer.ToListAsync()*/);
+            return View(await _context.Developer.ToListAsync());
         }
 
         public async Task<IActionResult> All()
@@ -55,7 +58,7 @@ namespace vapor.Controllers
 
             return Json(await _context.Developer.ToListAsync());
         }
-
+        [Authorize(Roles = "Admin,Developer")]
         // GET: Developers/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -73,16 +76,17 @@ namespace vapor.Controllers
 
             return View(developer);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Developers/Create
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: Developers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,name,avatar")] Developer developer, IFormFile developerAvater)
@@ -102,7 +106,7 @@ namespace vapor.Controllers
             }
             return View(developer);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Developers/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -119,19 +123,7 @@ namespace vapor.Controllers
             return View(developer);
         }
 
-
-       // [HttpGet]
-        //public Task<ActionResult> GetDeveloperImage(string avatar, string fileContentType)
-        //{
-         //   if (avatar == null || fileContentType == null)
-          //  {
-         //       return NotFound();
-        /*    }
-
-            byte[] fileBytes = Convert.FromBase64String(avatar);
-            return this.File(fileBytes, fileContentType);
-        }*/
-
+        [Authorize(Roles = "Admin")]
         // POST: Developers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -173,7 +165,7 @@ namespace vapor.Controllers
             }
             return View(developer);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Developers/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -191,7 +183,7 @@ namespace vapor.Controllers
 
             return View(developer);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: Developers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

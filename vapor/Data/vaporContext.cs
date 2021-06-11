@@ -20,6 +20,8 @@ namespace vapor.Data
                 table.customerId,
                 table.gameId
             });
+            builder.Entity<User>().ToTable("Users");
+
         }
 
 
@@ -32,5 +34,6 @@ namespace vapor.Data
         public DbSet<vapor.Models.Review> Review { get; set; }
         public DbSet<vapor.Models.GameImage> GameImage { get; set; }
         public DbSet<vapor.Models.Genre> Genre { get; set; }
+        public DbSet<vapor.Models.User> User { get; set; }
     }
 }
