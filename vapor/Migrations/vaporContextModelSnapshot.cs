@@ -69,6 +69,9 @@ namespace vapor.Migrations
                     b.Property<string>("avatar")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("fileContentType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
 
@@ -168,6 +171,7 @@ namespace vapor.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("comment")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("cusotmerid")
