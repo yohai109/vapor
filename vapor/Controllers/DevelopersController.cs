@@ -36,6 +36,25 @@ namespace vapor.Controllers
             
             return Json(await _context.Developer.ToListAsync());
         }
+        public async Task<IActionResult> Id(String id)
+        {
+            /*byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
+            return this.File(fileBytes, gameImage.fileContentType);
+*/
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var developer = await _context.Developer
+                .FirstOrDefaultAsync(m => m.id == id);
+            if (developer == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await _context.Developer.ToListAsync());
+        }
 
         // GET: Developers/Details/5
         public async Task<IActionResult> Details(string id)
@@ -118,7 +137,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,name,avatar")] Developer developer)
+        public async Task<IActionResult> Edit(string id, [Bind("id,name,avatar")] Developer developer, IFormFile developerAvater)
         {
             if (id != developer.id)
             {
@@ -129,6 +148,13 @@ namespace vapor.Controllers
             {
                 try
                 {
+                    using (var ms = new MemoryStream())
+                    {
+                        developerAvater.CopyTo(ms);
+                        byte[] fileBytes = ms.ToArray();
+                        developer.avatar = Convert.ToBase64String(fileBytes);
+                        developer.fileContentType = developerAvater.ContentType;
+                    }
                     _context.Update(developer);
                     await _context.SaveChangesAsync();
                 }

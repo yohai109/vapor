@@ -1,13 +1,10 @@
 ﻿function convertImageFrom64( avatar, type) {
     var image = new Image();
-   
-    console.log(avatar);
-    console.log(type);
     image.src = 'data:' + type + ';base64,' + avatar;
     return image.src;
 }
 
-$("body", function doNothing() {
+$("body", function insertIntoPage() {
     $.ajax({
         url: '/Developers/All'
     }).done(function (data) {
