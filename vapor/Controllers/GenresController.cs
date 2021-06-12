@@ -27,6 +27,13 @@ namespace vapor.Controllers
             return View(await _context.Genre.ToListAsync());
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> All()
+        {
+            return Json(await _context.Genre.ToListAsync());
+        }
+
         // GET: Genres/Details/5
         public async Task<IActionResult> Details(string id)
         {

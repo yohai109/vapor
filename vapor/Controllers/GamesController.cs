@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,20 +27,34 @@ namespace vapor.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            /*var vaporContext = _context.Game
-                .Include(g => g.generes)
-                .Select(game => new
-                {
-                    game,
-                    images = game.images.Select(i => new GameImage { id = i.id }).First()
-                });
-*/
-            var vaporContext = _context.Game
+            var games = _context.Game
                 .Include(g => g.generes)
                 .Include(g => g.developer)
-                .Include(g => g.images);
+                .Include(g => g.images)
+                .Select(g => new Game
+                {
+                    id = g.id,
+                    name = g.name,
+                    developer = g.developer,
+                    generes = (ICollection<Genre>)g.generes.Take(4),
+                    images = new List<GameImage>()
+                    {
+                        g.images.Select(i => new GameImage { id = i.id }).First()
+                    }
+                }).ToListAsync();
 
-            return View(await vaporContext.ToListAsync());
+
+
+            dynamic model = new ExpandoObject();
+            model.games = await games;
+
+            var genres = _context.Genre.ToArrayAsync();
+            model.genres = await genres;
+
+            var developers = _context.Developer.ToArrayAsync();
+            model.developers = await developers;
+
+            return View(model);
         }
 
         // GET: Games/Details/5
@@ -254,6 +269,28 @@ namespace vapor.Controllers
             _context.Game.Remove(game);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Search(string query, List<String> genres, List<String> developers)
+        {
+            var searchResult = _context.Game
+                .Include(g => g.generes)
+                .Include(g => g.developer)
+                .Where(g => ( query != null && query != "" ) ? g.name.Contains(query) : true)
+                .Where(g => ( genres != null && genres.Count != 0 ) ? g.generes.Any(gg => genres.Contains(gg.id)) : true)
+                .Where(g => ( developers != null && developers.Count != 0 ) ? developers.Contains(g.developer.id) : true)
+                .Select(g => new
+                {
+                    id = g.id,
+                    name = g.name,
+                    developer = g.developer.name,
+                    generes = g.generes,
+                    imageid = g.images.FirstOrDefault().id
+                });
+
+            return Json(await searchResult.ToListAsync());
         }
 
         private bool GameExists(string id)
