@@ -12,6 +12,7 @@ namespace vapor.Models
         public string id { get; set; }
         public string name { get; set; }
         public string avatar { get; set; }
+        public string fileContentType { get; set; }
 
         public ICollection<Game> games { get; set; }
     }
