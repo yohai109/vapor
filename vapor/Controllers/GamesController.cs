@@ -98,8 +98,7 @@ namespace vapor.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game,
-                                                List<IFormFile> gameImages)
-
+                                                List<IFormFile> newImages)
         {
             if (ModelState.IsValid)
             {
@@ -107,7 +106,7 @@ namespace vapor.Controllers
                 game.images = new List<GameImage>();
 
                 // Saves all the new images
-                foreach (IFormFile image in gameImages)
+                foreach (IFormFile image in newImages)
                 {
                     using (var ms = new MemoryStream())
                     {
@@ -157,13 +156,21 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game.FindAsync(id);
-            if (game == null)
+            var loadedGame = await _context.Game
+                .Select(game => new
+                {
+                    game,
+                    images = game.images.Select(i => new GameImage { id = i.id }).ToList()
+                })
+                .FirstOrDefaultAsync(g => g.game.id == id);
+
+            if (loadedGame == null)
             {
                 return NotFound();
             }
-            ViewData["developerId"] = new SelectList(_context.Developer, "id", "id", game.developerId);
-            return View(game);
+
+            loadedGame.game.images = loadedGame.images;
+            return View(loadedGame.game);
         }
 
         // POST: Games/Edit/5
@@ -171,7 +178,10 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,developerId,price,name,description,releaseDate")] Game game)
+        public async Task<IActionResult> Edit(string id,
+                                              [Bind("id,name,description,price")] Game game,
+                                              List<IFormFile> newImages,
+                                              List<string> imagesToDelete)
         {
             if (id != game.id)
             {
@@ -182,7 +192,30 @@ namespace vapor.Controllers
             {
                 try
                 {
+                    // Updates game data
                     _context.Update(game);
+
+                    // Deletes the chosen images
+                    _context.GameImage.Where((gi) => imagesToDelete.Contains(gi.id)).ToList()
+                        .ForEach(gi => _context.GameImage.Remove(gi));
+
+                    // Adds the new images
+                    GameImage gameImage;
+                    foreach (IFormFile image in newImages)
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            image.CopyTo(ms);
+                            byte[] fileBytes = ms.ToArray();
+
+                            gameImage = new GameImage();
+                            gameImage.fileBase64 = Convert.ToBase64String(fileBytes);
+                            gameImage.fileContentType = image.ContentType;
+                            gameImage.game = game;
+                            _context.Add(gameImage);
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -210,13 +243,21 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
-            if (game == null)
+            var loadedGame = await _context.Game
+              .Select(game => new
+              {
+                  game,
+                  images = game.images.Select(i => new GameImage { id = i.id }).ToList()
+              })
+              .FirstOrDefaultAsync(g => g.game.id == id);
+
+            if (loadedGame == null)
             {
                 return NotFound();
             }
 
-            return View(game);
+            loadedGame.game.images = loadedGame.images;
+            return View(loadedGame.game);
         }
 
         // POST: Games/Delete/5
