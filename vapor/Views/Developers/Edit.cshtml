@@ -10,18 +10,20 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />
+            <input id ="developer_id_holder" type="hidden" asp-for="id" />
             <div class="form-group">
                 <label asp-for="name" class="control-label"></label>
                 <input asp-for="name" class="form-control" />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="avatar" class="control-label"></label>
-                <input asp-for="avatar" class="form-control" />
-                <span asp-validation-for="avatar" class="text-danger"></span>
+            <div>
+                <span id="image_placeholder"></span>
+            </div>
+            <div class="form-group" id="image-url-input">
+                <label class="control-label">Developer Avatar</label>
+                <input name="developerAvater" class="form-control-file" type="file" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -36,4 +38,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Developer/Edit.js"></script>
 }

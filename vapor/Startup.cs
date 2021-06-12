@@ -103,9 +103,8 @@ namespace vapor
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                //endpoints.MapRazorPages();
-
+                    pattern: "{controller=games}/{action=Index}/{id?}");
+                
             });
             
         }
