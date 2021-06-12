@@ -1,0 +1,18 @@
+﻿.game-image .action {
+    position: absolute;
+    display: none;
+    top: 50%;
+    left: 44%;
+}
+
+.game-image:hover img {
+    opacity: .7;
+}
+
+.game-image:hover .action {
+    display: block;
+}
+
+.game-image img.deleted-image {
+    opacity: .2;
+}

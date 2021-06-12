@@ -9,35 +9,59 @@
 <h4>Game</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />
-            <div class="form-group">
-                <label asp-for="price" class="control-label"></label>
-                <input asp-for="price" class="form-control" />
-                <span asp-validation-for="price" class="text-danger"></span>
+    <form id="edit-form" asp-action="Edit" enctype="multipart/form-data" style="width:100%;">
+        <div class="row">
+            <div class="col-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="id" />
+                <div class="form-group">
+                    <label asp-for="name" class="control-label"></label>
+                    <input asp-for="name" class="form-control" />
+                    <span asp-validation-for="name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="description" class="control-label"></label>
+                    <input asp-for="description" class="form-control" />
+                    <span asp-validation-for="description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="price" class="control-label"></label>
+                    <input asp-for="price" class="form-control" />
+                    <span asp-validation-for="price" class="text-danger"></span>
+                </div>
+                <div class="form-group" id="image-url-input">
+                    <label class="control-label">Game Image</label>
+                    <input name="newImages" class="form-control-file" type="file" multiple />
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="description" class="control-label"></label>
-                <input asp-for="description" class="form-control" />
-                <span asp-validation-for="description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="releaseDate" class="control-label"></label>
-                <input asp-for="releaseDate" class="form-control" />
-                <span asp-validation-for="releaseDate" class="text-danger"></span>
-            </div>
+
+
+            @if (Model.images.Count() > 0)
+            {
+                <div class="col-md-8">
+                    <h3>Choose images to delete</h3>
+                    <div id="game-images">
+                        @foreach (GameImage gi in Model.images)
+                        {
+                            <div class="game-image">
+                                <img src="@Url.Action("GetGameImage", new { id = gi.id })" data-image-id="@gi.id" />
+                                <button type="button" class="btn btn-danger action" onclick="taggleDelete('@gi.id')">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="row">
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
+
 </div>
 
 <div>
@@ -46,4 +70,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link rel="stylesheet" href="~/css/Games/GameImages.css" />
+    <link rel="stylesheet" href="~/css/Games/Edit.css" />
+    <script src="~/js/Games/Edit.js"></script>
 }

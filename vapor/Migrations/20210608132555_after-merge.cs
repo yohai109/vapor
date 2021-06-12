@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace vapor.Migrations
 {
-    public partial class init : Migration
+    public partial class aftermerge : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

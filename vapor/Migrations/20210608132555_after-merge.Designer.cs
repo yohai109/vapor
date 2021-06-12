@@ -10,8 +10,8 @@ using vapor.Data;
 namespace vapor.Migrations
 {
     [DbContext(typeof(vaporContext))]
-    [Migration("20210608124442_init")]
-    partial class init
+    [Migration("20210608132555_after-merge")]
+    partial class aftermerge
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
