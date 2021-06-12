@@ -65,7 +65,7 @@ namespace vapor.Controllers
                     //HttpContext.Session.SetString("username", q.First().Username);
 
                     Signin(q.First());
-                    return RedirectToAction(nameof(Index), "Home");
+                    return RedirectToAction(nameof(Index), "Games");
                 }
                 else
                 {
