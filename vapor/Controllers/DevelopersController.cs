@@ -13,8 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 
 
 namespace vapor.Controllers
-{ 
-    
+{
+
     public class DevelopersController : Controller
     {
         private readonly vaporContext _context;
@@ -35,7 +35,7 @@ namespace vapor.Controllers
             /*byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
             return this.File(fileBytes, gameImage.fileContentType);
 */
-            
+
             return Json(await _context.Developer.ToListAsync());
         }
         public async Task<IActionResult> Id(String id)
@@ -212,6 +212,30 @@ namespace vapor.Controllers
             _context.Developer.Remove(developer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Search(string devName, string gameName, int numOfGames = 1)
+        {
+            List<Developer> result = new List<Developer>();
+
+            var developerSeach = _context.Developer
+                .Where(d => ( devName != null && devName != "" ) ? d.name.Contains(devName) : true);
+
+            result.AddRange(await developerSeach.ToListAsync());
+
+            var gameSearch = _context.Game
+                    .Include(g => g.developer)
+                    .Where(g => ( gameName != null && gameName != "" ) ? g.name.Contains(gameName) : true)
+                    .GroupBy(g => g.developer)
+                    .Select(gb => new { developer = gb.Key, count = gb.Count() })
+                    /*.Where(s => s.count >= numOfGames)
+                    .Select(s => s.developer)*/;
+
+            result.AddRange(await gameSearch.Select(d=>d.developer).ToListAsync());
+
+            return Json(result);
         }
 
         private bool DeveloperExists(string id)

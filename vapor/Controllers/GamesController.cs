@@ -120,6 +120,8 @@ namespace vapor.Controllers
                     }
                 }
 
+                game.developerId = "25c3e8b9-8d71-4f2d-9359-ec339fe85ee8";
+
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
