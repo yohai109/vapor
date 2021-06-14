@@ -310,6 +310,26 @@ namespace vapor.Controllers
             return Json(await searchResult.ToListAsync());
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Reviews(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var reviews = _context.Review
+                .Where(r => r.game.id.Equals(id))
+                .OrderByDescending(r => r.lastUpdate);
+            if (reviews == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await reviews.ToListAsync());
+        }
+
         private bool GameExists(string id)
         {
             return _context.Game.Any(e => e.id == id);
