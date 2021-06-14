@@ -1,7 +1,16 @@
 ﻿@using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-   var username = HttpContextAccessor.HttpContext.Session.GetString("username");
+    var username = HttpContextAccessor.HttpContext.Session.GetString("username");
+    var loginText = "";
+    if (username == null || username == "")
+    {
+        loginText = "login!";
+    }
+    else
+    {
+        loginText = "Hello " + @username + " !";
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -57,9 +66,12 @@
                             </li>
                         }
 
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="AboutPage" asp-action="">About us</a>
+                        </li>
                     </ul>
                     <span class="navbar-text text-white">
-                        <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Logout">Hello @username !</a>
+                        <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Logout">@loginText</a>
                     </span>
                 </div>
             </div>
@@ -81,5 +93,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("News", required: false)
 </body>
 </html>

@@ -17,35 +17,55 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.developer.id)
         </dd class>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.price)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.price)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.releaseDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.releaseDate)
         </dd>
     </dl>
-    
+
+    @if (Model.images.Count() > 0)
+    {
+        <div class="row">
+            <h3>Game Images</h3>
+            <br />
+            <div id="game-images">
+                @foreach (GameImage gi in Model.images)
+                {
+                    <div class="game-image">
+                        <img src="@Url.Action("GetGameImage", new { id = gi.id })" />
+                    </div>
+                }
+            </div>
+        </div>
+
+    }
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/css/Games/GameImages.css" />
+}

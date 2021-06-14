@@ -1,4 +1,6 @@
-﻿@model IEnumerable<vapor.Models.Game>
+﻿@*@model IEnumerable<vapor.Models.Game>*@
+@model dynamic
+@using System.Linq
 
 @{
     ViewData["Title"] = "Home";
@@ -6,7 +8,7 @@
 <div class="tcontainer">
     <div class="ticker-wrap">
         <div class="ticker-move" id="treadmill">
-            @section Scripts{
+            @section News{
                 <script src="~/js/News/index.js"></script>
 
                 <script type="text/html" id="news">
@@ -24,32 +26,65 @@
     </p>
 }
 
-<div class="row">
-    @foreach (var item in Model)
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-container" aria-expanded="false" aria-controls="search-container">
+    show search
+</button>
+<div class="mb-3">
+    <form id="search-container" class="collapse">
+        <div class="row">
+            <fieldset class="form-group col-3">
+                <legend>Genres</legend>
+                @foreach (var item in Model.genres)
+                {
+                    <input type="checkbox" name="genres-select" value="@item.id" id="@item.id">
+                    <label for="@item.id">@item.name</label>
+                    <br />
+                }
+
+            </fieldset>
+
+            <fieldset class="form-group col-3">
+                <legend>Developers</legend>
+                @foreach (var item in Model.developers)
+                {
+                    <input type="checkbox" name="developer-select" value="@item.id" id="@item.id">
+                    <label for="@item.id">@item.name</label>
+                    <br />
+                }
+            </fieldset>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-6">
+                <input type="text" class="form-control" placeholder="search" id="search-box">
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" id="search-btn">search</button>
+        </div>
+    </form>
+</div>
+<div class="row" id="game-list">
+    @foreach (var item in Model.games)
     {
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
             <div class="card bg-dark text-black h-100">
                 <div class="embed-responsive embed-responsive-16by9">
-                    <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", new {id = item.images.FirstOrDefault().id})>
+                    <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", new {id = item.images[0].id})>
                 </div>
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">@item.name</h5>
                     <h6 class="card-subtitle text-muted mb-2">@item.developer.name</h6>
 
-                    <div class="mb-2">
-                        @*<span class="badge badge-secondary">temp1</span>
-                            <span class="badge badge-secondary">temp2</span>
-                            <span class="badge badge-secondary">temp3</span>
-                            <span class="badge badge-secondary">temp4</span>*@
-
-                        @foreach (var genre in item.generes.Take(4))
+                    <div class="mb-2" id="genre-holder">
+                        @foreach (var genre in item.generes)
                         {
                             <span class="badge badge-secondary">@genre.name</span>
-
                         }
                     </div>
 
-                    @*<p class="card-text">@item.description.Substring(0, Math.Min(item.description.Length, 50))</p>*@
                     <div style="margin-top: auto;" class="row">
                         <span class="col-12">
                             <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary w-100">Details</a>
@@ -72,3 +107,42 @@
         </div>
     }
 </div>
+
+
+@section Scripts {
+    <script src="~/js/Game/Index.js"></script>
+
+    <script type="text/html" id="game_template">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+            <div class="card bg-dark text-black h-100">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <img class="card-img card-img-top embed-responsive-item" src="/Games/GetGameImage?id={imageid}">
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{name}</h5>
+                    <h6 class="card-subtitle text-muted mb-2">{developer}</h6>
+
+                    <div class="mb-2">
+                        {genre}
+                    </div>
+
+                    <div style="margin-top: auto;" class="row">
+                        <span class="col-12">
+                            <a href="/Games/Details/{id}" class="btn btn-primary w-100">Details</a>
+                        </span>
+                        <span class="col-12 my-1">
+                            <a href="/Games/Edit/{id}" class="btn btn-warning w-100">Edit</a>
+                        </span>
+                        <span class="col-12">
+                            <a a href="/Games/Delete/{id}" class="btn btn-danger w-100">Delete</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="genre-template">
+        <span class="badge badge-secondary">{name}</span>
+    </script>
+}
