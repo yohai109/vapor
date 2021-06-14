@@ -220,20 +220,53 @@ namespace vapor.Controllers
         {
             List<Developer> result = new List<Developer>();
 
-            var developerSeach = _context.Developer
-                .Where(d => ( devName != null && devName != "" ) ? d.name.Contains(devName) : true);
+            if (numOfGames == 1)
+            {
+                if (gameName == null || gameName == "")
+                {
+                    var developerSeach = _context.Developer
+                    .Where(d => ( devName != null && devName != "" ) ? d.name.Contains(devName) : true);
 
-            result.AddRange(await developerSeach.ToListAsync());
+                    result.AddRange(await developerSeach.ToListAsync());
+                }
+                else
+                {
+                    var gameSearch = _context.Game
+                            .Include(g => g.developer)
+                            .Where(g => g.name.Contains(gameName))
+                            .Where(g => ( devName != null && devName != "" ) ? g.developer.name.Contains(devName) : true)
+                            .Select(d => d.developer);
 
-            var gameSearch = _context.Game
+                    result.AddRange(await gameSearch.ToListAsync());
+                }
+            }
+            else if (numOfGames > 1)
+            {
+                var numofGameSearchIds = await _context.Game
                     .Include(g => g.developer)
-                    .Where(g => ( gameName != null && gameName != "" ) ? g.name.Contains(gameName) : true)
-                    .GroupBy(g => g.developer)
-                    .Select(gb => new { developer = gb.Key, count = gb.Count() })
-                    /*.Where(s => s.count >= numOfGames)
-                    .Select(s => s.developer)*/;
+                    /*.Where(g => ( gameName != null && gameName != "" ) ? g.name.Contains(gameName) : true)
+                    .Where(g => ( devName != null && devName != "" ) ? g.developer.name.Contains(devName) : true)*/
+                    .GroupBy(g => g.developerId)
+                    .Select(gb => new
+                    {
+                        developerid = gb.Key,
+                        count = gb.Count()
+                    })
+                    .Where(devId => devId.count >= numOfGames)
+                    .Select(gb => gb.developerid)
+                    .ToListAsync();
 
-            result.AddRange(await gameSearch.Select(d=>d.developer).ToListAsync());
+                var devs = _context.Game
+                            .Include(g => g.developer)
+                            .Where(g => g.name.Contains(gameName))
+                            .Where(g => ( devName != null && devName != "" ) ? g.developer.name.Contains(devName) : true)
+                            .Select(d => d.developer)
+                            .Where(d => numofGameSearchIds.Contains(d.id));
+                /*.Where(d => numofGameSearchIds.Any(devId => devId.developerid == d.id));*/
+
+
+                result.AddRange(await devs.ToListAsync());
+            }
 
             return Json(result);
         }

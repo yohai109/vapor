@@ -49,8 +49,11 @@ $(function () {
             url: '/Developers/Search',
             data: data
         }).done(function (data) {
-            $('#game-list').html('');
+            $('#developer-list').html('');
             var developerTemplate = $('#developer-template').html();
+
+            console.log("received:")
+            console.log(data)
             /*var genreTemplate = $('#genre-template').html();*/
 
             $.each(data, function (i, val) {
@@ -68,7 +71,7 @@ $(function () {
                     devTemp = devTemp.replaceAll('{' + key + '}', value)
                 })
 
-                $('#game-list').append(devTemp);
+                $('#developer-list').append(devTemp);
             });
         });
     });
