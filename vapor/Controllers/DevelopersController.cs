@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
 using Microsoft.AspNetCore.Authorization;
-
+using vapor.services;
 
 namespace vapor.Controllers
 {
@@ -18,10 +18,12 @@ namespace vapor.Controllers
     public class DevelopersController : Controller
     {
         private readonly vaporContext _context;
+        private twitter _twitterService;
 
-        public DevelopersController(vaporContext context)
+        public DevelopersController(vaporContext context, twitter twitterService)
         {
             _context = context;
+            _twitterService = twitterService;
         }
 
         [Authorize(Roles = "Admin,Developer")]
@@ -121,8 +123,11 @@ namespace vapor.Controllers
                 }
                 _context.Add(developer);
                 await _context.SaveChangesAsync();
+                _twitterService.postTweet(developer);
                 return RedirectToAction(nameof(Index));
             }
+
+
             return View(developer);
         }
         [Authorize(Roles = "Admin")]
