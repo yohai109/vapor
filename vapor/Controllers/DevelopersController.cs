@@ -244,8 +244,6 @@ namespace vapor.Controllers
             {
                 var numofGameSearchIds = await _context.Game
                     .Include(g => g.developer)
-                    /*.Where(g => ( gameName != null && gameName != "" ) ? g.name.Contains(gameName) : true)
-                    .Where(g => ( devName != null && devName != "" ) ? g.developer.name.Contains(devName) : true)*/
                     .GroupBy(g => g.developerId)
                     .Select(gb => new
                     {
@@ -262,8 +260,6 @@ namespace vapor.Controllers
                             .Where(g => ( devName != null && devName != "" ) ? g.developer.name.Contains(devName) : true)
                             .Select(d => d.developer)
                             .Where(d => numofGameSearchIds.Contains(d.id));
-                /*.Where(d => numofGameSearchIds.Any(devId => devId.developerid == d.id));*/
-
 
                 result.AddRange(await devs.ToListAsync());
             }
