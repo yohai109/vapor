@@ -77,11 +77,18 @@
             </div>
         </nav>
     </header>
-
-    <div class="container bg-dark text-white">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div class="container-fluid bg-dark text-white">
+        <div class="row flex-xl-nowrap">
+            <div class="col-md-3 col-xl-2 bd-sidebar">
+                @RenderSection("sidebar", required:false)
+            </div>
+            <main role="main" class="pb-3 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+                @RenderBody()
+            </main>
+            <nav class="d-none d-xl-block col-xl-2 bd-toc">
+                @*placeholder for right side nav*@
+            </nav>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted bg-dark text-white">

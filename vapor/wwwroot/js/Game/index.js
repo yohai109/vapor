@@ -1,6 +1,5 @@
 ﻿$(function () {
 
-    /*$("#search-btn").submit(function (e) {*/
     $("#search-container").submit(function (e) {
         console.log("searching");
         e.preventDefault();

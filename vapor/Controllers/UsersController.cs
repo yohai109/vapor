@@ -123,7 +123,7 @@ namespace vapor.Controllers
 
                     Signin(u);
 
-                    return RedirectToAction(nameof(Index), "Home");
+                    return RedirectToAction(nameof(Index), "Gmaes");
                 }
                 else {
                     ViewData["Error"] = "Unable to comply; cannot register this user.";
