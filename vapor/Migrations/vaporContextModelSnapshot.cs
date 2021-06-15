@@ -145,6 +145,26 @@ namespace vapor.Migrations
                     b.ToTable("Genre");
                 });
 
+            modelBuilder.Entity("vapor.Models.MapCoordinates", b =>
+                {
+                    b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("longitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("MapCoordinates");
+                });
+
             modelBuilder.Entity("vapor.Models.Order", b =>
                 {
                     b.Property<string>("customerId")
