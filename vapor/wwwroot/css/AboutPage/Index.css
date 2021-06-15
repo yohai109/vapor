@@ -3,6 +3,11 @@
     text-align:center;
 }
 
+    .face-image img {
+        width:200px;
+        height:200px;
+    }
+
     .face-image .name {
         position: absolute;
         display: none;
