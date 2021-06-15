@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
+using System.ServiceModel.Syndication;
+using System.Xml;
 
 namespace vapor.Controllers
 {
@@ -27,6 +29,7 @@ namespace vapor.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+
             var games = _context.Game
                 .Include(g => g.generes)
                 .Include(g => g.developer)
@@ -57,6 +60,20 @@ namespace vapor.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public List<String> getNews()
+        {
+            var url = "http://feeds.feedburner.com/ign/news";
+            using var reader = XmlReader.Create(url);
+            var feed = SyndicationFeed.Load(reader);
+            List<String> newsTitles = new List<String>();
+            foreach (SyndicationItem item in feed.Items)
+            {
+                newsTitles.Add(item.Title.Text);
+            }
+            return newsTitles;
+        }
+
         // GET: Games/Details/5
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
@@ -84,7 +101,7 @@ namespace vapor.Controllers
 
             return View(loadedGame.game);
         }
-
+        [Authorize(Roles ="Admin,Developer")]
         // GET: Games/Create
         public IActionResult Create()
         {
@@ -120,6 +137,7 @@ namespace vapor.Controllers
                     }
                 }
 
+
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -147,7 +165,7 @@ namespace vapor.Controllers
             byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
             return this.File(fileBytes, gameImage.fileContentType);
         }
-
+        [Authorize(Roles = "Admin,Developer")]
         // GET: Games/Edit/5
         public async Task<IActionResult> Edit(string id)
         {

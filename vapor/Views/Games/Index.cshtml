@@ -5,53 +5,29 @@
 @{
     ViewData["Title"] = "Home";
 }
+<div class="tcontainer">
+    <div class="ticker-wrap">
+        <div class="ticker-move" id="treadmill">
+            @section News{
+                <script src="~/js/News/index.js"></script>
 
-<h1 hidden>Home</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
-
-<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-container" aria-expanded="false" aria-controls="search-container">
-    show search
-</button>
-<div class="mb-3">
-    <form id="search-container" class="collapse">
-        <div class="row">
-            <fieldset class="form-group col-3">
-                <legend>Genres</legend>
-                @foreach (var item in Model.genres)
-                {
-                    <input type="checkbox" name="genres-select" value="@item.id" id="@item.id">
-                    <label for="@item.id">@item.name</label>
-                    <br />
-                }
-
-            </fieldset>
-
-            <fieldset class="form-group col-3">
-                <legend>Developers</legend>
-                @foreach (var item in Model.developers)
-                {
-                    <input type="checkbox" name="developer-select" value="@item.id" id="@item.id">
-                    <label for="@item.id">@item.name</label>
-                    <br />
-                }
-            </fieldset>
+                <script type="text/html" id="news">
+                    {title}
+                </script>
+            }
         </div>
-
-        <div class="row">
-            <div class="form-group col-6">
-                <input type="text" class="form-control" placeholder="search" id="search-box">
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            <button class="btn btn-primary" id="search-btn">search</button>
-        </div>
-    </form>
+    </div>
 </div>
+<h1 hidden>Home</h1>
+@if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Create New</a>
+    </p>
+}
+
+
+
 <div class="row" id="game-list">
     @foreach (var item in Model.games)
     {
@@ -75,12 +51,18 @@
                         <span class="col-12">
                             <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary w-100">Details</a>
                         </span>
-                        <span class="col-12 my-1">
-                            <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning w-100">Edit</a>
-                        </span>
-                        <span class="col-12">
-                            <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger w-100">Delete</a>
-                        </span>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                        {
+                            <span class="col-12 my-1">
+                                <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning w-100">Edit</a>
+                            </span>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                        {
+                            <span class="col-12">
+                                <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger w-100">Delete</a>
+                            </span>
+                        }
                     </div>
                 </div>
             </div>
@@ -126,3 +108,53 @@
         <span class="badge badge-secondary">{name}</span>
     </script>
 }
+
+@section sidebar{
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-container" aria-expanded="false" aria-controls="search-container">
+        search
+    </button>
+
+    <div class="mb-3">
+        <form id="search-container" class="collapse">
+            <div class="row">
+                <fieldset class="form-group col-3">
+                    <legend>Genres</legend>
+                    @foreach (var item in Model.genres)
+                    {
+                        <input type="checkbox" name="genres-select" value="@item.id" id="@item.id">
+                        <label for="@item.id">@item.name</label>
+                        <br />
+                    }
+
+                </fieldset>
+
+                <fieldset class="form-group col-3">
+                    <legend>Developers</legend>
+                    @foreach (var item in Model.developers)
+                    {
+                        <input type="checkbox" name="developer-select" value="@item.id" id="@item.id">
+                        <label for="@item.id">@item.name</label>
+                        <br />
+                    }
+                </fieldset>
+            </div>
+
+            @*<div class="row">
+                <div class="form-group col-6">
+                    <label for="max-price">price</label>
+                    <input type="range" id="max-price" class="form-control-range">
+                </div>
+            </div>*@
+
+            <div class="row">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="search" id="search-box">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" id="search-btn">search</button>
+            </div>
+        </form>
+    </div>
+} 

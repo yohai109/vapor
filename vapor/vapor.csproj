@@ -23,11 +23,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="wwwroot\Image\with_name\" />
     <Folder Include="wwwroot\js\AboutPage\" />
+    <Folder Include="wwwroot\Image\Images with name\" />
   </ItemGroup>
 
 </Project>
