@@ -1,0 +1,25 @@
+﻿.face-image {
+    position: relative;
+    text-align:center;
+}
+
+    .face-image img {
+        width:200px;
+        height:200px;
+    }
+
+    .face-image .name {
+        position: absolute;
+        display: none;
+        top: 50%;
+        left:40%;
+        /*left: 44%;*/
+    }
+
+.face-image:hover img {
+    opacity: .5;
+}
+
+.face-image:hover .name {
+    display: block;
+}
