@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System;
+using vapor.services;
 
 namespace vapor
 {
@@ -35,6 +36,8 @@ namespace vapor
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<vaporContext>();
             services.AddRazorPages();
+
+            services.AddSingleton<twitter>();
 
             services.Configure<IdentityOptions>(options =>
             {

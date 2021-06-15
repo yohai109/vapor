@@ -13,16 +13,19 @@ using vapor.Data;
 using vapor.Models;
 using System.ServiceModel.Syndication;
 using System.Xml;
+using vapor.services;
 
 namespace vapor.Controllers
 {
     public class GamesController : Controller
     {
         private readonly vaporContext _context;
+        private twitter _twitterService;
 
-        public GamesController(vaporContext context)
+        public GamesController(vaporContext context,twitter twitterService)
         {
             _context = context;
+            _twitterService = twitterService;
         }
 
         // GET: Games
@@ -140,6 +143,7 @@ namespace vapor.Controllers
 
                 _context.Add(game);
                 await _context.SaveChangesAsync();
+                _twitterService.postTweet(game);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["developerId"] = new SelectList(_context.Developer, "id", "id", game.developerId);
