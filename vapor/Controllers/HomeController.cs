@@ -31,7 +31,7 @@ namespace vapor.Controllers
             }
             else
             {
-                return View();
+                return RedirectToAction("Index", "Games");
             }
         }
         public IActionResult Privacy()
