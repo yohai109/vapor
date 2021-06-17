@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using System.IO;
+using vapor.services;
 
 namespace vapor.Controllers
 {
@@ -20,10 +21,11 @@ namespace vapor.Controllers
     public class UsersController : Controller
     {
         private readonly vaporContext _context;
-
-        public UsersController(vaporContext context)
+        private twitter _twitterService;
+        public UsersController(vaporContext context, twitter twitterService)
         {
             _context = context;
+            _twitterService = twitterService;
         }
 
         public async Task<IActionResult> Logout()
@@ -128,10 +130,11 @@ namespace vapor.Controllers
                     byte[] fileBytes = ms.ToArray();
                     new_developer.avatar = Convert.ToBase64String(fileBytes);
                     new_developer.fileContentType = developerAvater.ContentType;
+                    
                 }
                 _context.Add(new_developer);
                 await _context.SaveChangesAsync();
-
+                _twitterService.postTweet(new_developer);
                 var complete_user = await _context.Developer.Where(u => u.name == new_developer.name).FirstAsync();
                 var new_user = new User
                 {
