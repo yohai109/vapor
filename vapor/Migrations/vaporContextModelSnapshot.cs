@@ -158,6 +158,7 @@ namespace vapor.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
@@ -236,7 +237,17 @@ namespace vapor.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("customerID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("developerID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("customerID");
+
+                    b.HasIndex("developerID");
 
                     b.ToTable("Users");
                 });
@@ -308,6 +319,21 @@ namespace vapor.Migrations
                     b.Navigation("cusotmer");
 
                     b.Navigation("game");
+                });
+
+            modelBuilder.Entity("vapor.Models.User", b =>
+                {
+                    b.HasOne("vapor.Models.Customer", "customer")
+                        .WithMany()
+                        .HasForeignKey("customerID");
+
+                    b.HasOne("vapor.Models.Developer", "developer")
+                        .WithMany()
+                        .HasForeignKey("developerID");
+
+                    b.Navigation("customer");
+
+                    b.Navigation("developer");
                 });
 
             modelBuilder.Entity("vapor.Models.Customer", b =>
