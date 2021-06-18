@@ -4,6 +4,8 @@
     ViewData["Title"] = "Details";
 }
 
+<input type="hidden" value="@Model.id" id="gameId" />
+
 
 <div class="container">
     <div class="row">
@@ -65,6 +67,7 @@
     </div>
 
     <a class="btn btn-success" href="/Orders/create?gameid=@Model.id">buy now</a>
+    <a class="btn btn-success" id="addToCart">add to cart</a>
 
 </div>
 

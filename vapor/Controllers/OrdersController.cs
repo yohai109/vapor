@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
+using vapor.services;
 
 namespace vapor.Controllers
 {
@@ -49,12 +50,12 @@ namespace vapor.Controllers
             return View(order);
         }
 
-        // GET: Orders/Create
+        /*// GET: Orders/Create
         [HttpGet]
-        public async Task<IActionResult> Create(string gameid)
+        public async Task<IActionResult> CreateOne(string id)
         {
             var game = _context.Game
-                .Where(g => g.id == gameid)
+                .Where(g => g.id == id)
                 .Select(g => new Game
                 {
                     id = g.id,
@@ -65,7 +66,38 @@ namespace vapor.Controllers
                         .Take(1),
                     price = g.price
                 })
-                .FirstOrDefaultAsync();
+                .ToListAsync();
+
+            return View("Create", await game);
+        }*/
+
+        [HttpGet]
+        public async Task<IActionResult> Create(string gameid)
+        {
+            var cart = new List<String>();
+            if (HttpContext.Session.Keys.Contains("cart"))
+            {
+                cart.AddRange(HttpContext.Session.GetListOfString("cart"));
+            }
+
+            if (gameid != null && gameid != "")
+            {
+                cart.Add(gameid);
+            }
+
+            var game = _context.Game
+                .Where(g => cart.Contains(g.id))
+                .Select(g => new Game
+                {
+                    id = g.id,
+                    name = g.name,
+                    developer = g.developer,
+                    images = (ICollection<GameImage>)g.images
+                        .Select(i => new GameImage { id = i.id })
+                        .Take(1),
+                    price = g.price
+                })
+                .ToListAsync();
 
             return View(await game);
         }
