@@ -22,7 +22,7 @@ namespace vapor.Controllers
         private readonly vaporContext _context;
         private twitter _twitterService;
 
-        public GamesController(vaporContext context,twitter twitterService)
+        public GamesController(vaporContext context, twitter twitterService)
         {
             _context = context;
             _twitterService = twitterService;
@@ -104,7 +104,7 @@ namespace vapor.Controllers
 
             return View(loadedGame.game);
         }
-        [Authorize(Roles ="Admin,Developer")]
+        [Authorize(Roles = "Admin,Developer")]
         // GET: Games/Create
         public IActionResult Create()
         {
@@ -140,6 +140,14 @@ namespace vapor.Controllers
                     }
                 }
 
+                var username = HttpContext.Session.GetString("username");
+                var currDev = await _context.User
+                    .Where(u => u.Username == username)
+                    .Select(u => u.developer)
+                    .FirstOrDefaultAsync();
+
+                game.developerId = currDev.id;
+                game.developer = currDev;
 
                 _context.Add(game);
                 await _context.SaveChangesAsync();
