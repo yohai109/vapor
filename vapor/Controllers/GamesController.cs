@@ -214,10 +214,15 @@ namespace vapor.Controllers
 
             if (ModelState.IsValid)
             {
+
                 try
                 {
                     // Updates game data
-                    _context.Update(game);
+                    Game updatedGame = await _context.Game.FirstAsync(g => g.id == id);
+                    updatedGame.name = game.name;
+                    updatedGame.description = game.description;
+                    updatedGame.price = game.price;
+                    _context.Update(updatedGame);
 
                     // Deletes the chosen images
                     _context.GameImage.Where((gi) => imagesToDelete.Contains(gi.id)).ToList()
@@ -235,7 +240,7 @@ namespace vapor.Controllers
                             gameImage = new GameImage();
                             gameImage.fileBase64 = Convert.ToBase64String(fileBytes);
                             gameImage.fileContentType = image.ContentType;
-                            gameImage.game = game;
+                            gameImage.game = updatedGame;
                             _context.Add(gameImage);
                         }
                     }
