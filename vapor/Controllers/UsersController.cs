@@ -12,6 +12,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using vapor.services;
 
 namespace vapor.Controllers
 {
@@ -19,10 +21,11 @@ namespace vapor.Controllers
     public class UsersController : Controller
     {
         private readonly vaporContext _context;
-
-        public UsersController(vaporContext context)
+        private twitter _twitterService;
+        public UsersController(vaporContext context, twitter twitterService)
         {
             _context = context;
+            _twitterService = twitterService;
         }
 
         public async Task<IActionResult> Logout()
@@ -102,34 +105,84 @@ namespace vapor.Controllers
         {
             return View();
         }
+        public IActionResult RegisterDeveloper()
+        {
+            return View();
+        }
 
         // POST: Users/Register
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register([Bind("Id,Username,Password")] User user)
+        /*        [ValidateAntiForgeryToken]*/
+        public async Task<IActionResult> Register(String Id, String Username, String Password, String name, String email, String firstName, String lastName, String phoneNumber, int type, IFormFile developerAvater)
         {
-            if (ModelState.IsValid)
+            if(type == 1)
             {
-                var q = _context.User.FirstOrDefault(u => u.Username == user.Username);
 
-                if (q == null)
+                var new_developer = new Developer
                 {
-                    _context.Add(user);
-                    await _context.SaveChangesAsync();
-
-                    var u = _context.User.FirstOrDefault(u => u.Username == user.Username && u.Password == user.Password);
-
-                    Signin(u);
-
-                    return RedirectToAction(nameof(Index), "Home");
+                    name = Username
+                };
+                using (var ms = new MemoryStream())
+                {
+                    developerAvater.CopyTo(ms);
+                    byte[] fileBytes = ms.ToArray();
+                    new_developer.avatar = Convert.ToBase64String(fileBytes);
+                    new_developer.fileContentType = developerAvater.ContentType;
+                    
                 }
-                else {
-                    ViewData["Error"] = "Unable to comply; cannot register this user.";
-                }
+                _context.Add(new_developer);
+                await _context.SaveChangesAsync();
+                _twitterService.postTweet(new_developer);
+                var complete_user = await _context.Developer.Where(u => u.name == new_developer.name).FirstAsync();
+                var new_user = new User
+                {
+                    Username = Username,
+                    Password = Password,
+                    developerID = complete_user.id,
+                    Type = UserType.Developer
+
+                };
+                _context.Add(new_user);
+                await _context.SaveChangesAsync();
+
+                Signin(new_user);
+
+                return View(new_user);
             }
-            return View(user);
+            if (type == 0)
+            {
+                var new_customer = new Customer
+                {
+                    email = email,
+                    firstName = firstName,
+                    lastName = lastName,
+                    phoneNumber = phoneNumber,
+                    name = Username
+                };
+                _context.Add(new_customer);
+                await _context.SaveChangesAsync();
+
+                var complete_user = await _context.Customer.Where(u => u.name == new_customer.name).FirstAsync();
+                var new_user = new User
+                {
+                    Username = Username,
+                    Password = Password,
+                    customerID = complete_user.id,
+                    Type = UserType.Customer
+
+                };
+                _context.Add(new_user);
+                await _context.SaveChangesAsync();
+
+                Signin(new_user);
+
+                return View(new_user);
+            }
+            return View();
+
+
         }
 
         [Authorize(Roles = "Admin")]
@@ -169,7 +222,7 @@ namespace vapor.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Username,Password,Type")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Username,Password,name,email,firstName,lastName,phoneNumber")] User user)
         {
             if (ModelState.IsValid)
             {

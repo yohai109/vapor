@@ -26,46 +26,8 @@
     </p>
 }
 
-<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-container" aria-expanded="false" aria-controls="search-container">
-    show search
-</button>
-<div class="mb-3">
-    <form id="search-container" class="collapse">
-        <div class="row">
-            <fieldset class="form-group col-3">
-                <legend>Genres</legend>
-                @foreach (var item in Model.genres)
-                {
-                    <input type="checkbox" name="genres-select" value="@item.id" id="@item.id">
-                    <label for="@item.id">@item.name</label>
-                    <br />
-                }
 
-            </fieldset>
 
-            <fieldset class="form-group col-3">
-                <legend>Developers</legend>
-                @foreach (var item in Model.developers)
-                {
-                    <input type="checkbox" name="developer-select" value="@item.id" id="@item.id">
-                    <label for="@item.id">@item.name</label>
-                    <br />
-                }
-            </fieldset>
-        </div>
-
-        <div class="row">
-            <div class="form-group col-6">
-                <input type="text" class="form-control" placeholder="search" id="search-box">
-            </div>
-
-        </div>
-
-        <div class="form-group">
-            <button class="btn btn-primary" id="search-btn">search</button>
-        </div>
-    </form>
-</div>
 <div class="row" id="game-list">
     @foreach (var item in Model.games)
     {
@@ -146,3 +108,53 @@
         <span class="badge badge-secondary">{name}</span>
     </script>
 }
+
+@section sidebar{
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-container" aria-expanded="false" aria-controls="search-container">
+        search
+    </button>
+
+    <div class="mb-3">
+        <form id="search-container" class="collapse">
+            <div class="row">
+                <fieldset class="form-group col-3">
+                    <legend>Genres</legend>
+                    @foreach (var item in Model.genres)
+                    {
+                        <input type="checkbox" name="genres-select" value="@item.id" id="@item.id">
+                        <label for="@item.id">@item.name</label>
+                        <br />
+                    }
+
+                </fieldset>
+
+                <fieldset class="form-group col-3">
+                    <legend>Developers</legend>
+                    @foreach (var item in Model.developers)
+                    {
+                        <input type="checkbox" name="developer-select" value="@item.id" id="@item.id">
+                        <label for="@item.id">@item.name</label>
+                        <br />
+                    }
+                </fieldset>
+            </div>
+
+            @*<div class="row">
+                <div class="form-group col-6">
+                    <label for="max-price">price</label>
+                    <input type="range" id="max-price" class="form-control-range">
+                </div>
+            </div>*@
+
+            <div class="row">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="search" id="search-box">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" id="search-btn">search</button>
+            </div>
+        </form>
+    </div>
+} 

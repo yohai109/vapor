@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using vapor.Data;
 
 namespace vapor.Migrations
 {
     [DbContext(typeof(vaporContext))]
-    [Migration("20210608132555_after-merge")]
-    partial class aftermerge
+    partial class vaporContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,6 +69,9 @@ namespace vapor.Migrations
                     b.Property<string>("avatar")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("fileContentType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
 
@@ -88,7 +89,7 @@ namespace vapor.Migrations
                     b.Property<string>("description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("developerid")
+                    b.Property<string>("developerId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("name")
@@ -102,7 +103,7 @@ namespace vapor.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("developerid");
+                    b.HasIndex("developerId");
 
                     b.ToTable("Game");
                 });
@@ -144,6 +145,27 @@ namespace vapor.Migrations
                     b.ToTable("Genre");
                 });
 
+            modelBuilder.Entity("vapor.Models.MapCoordinates", b =>
+                {
+                    b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("longitude")
+                        .HasColumnType("float");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("MapCoordinates");
+                });
+
             modelBuilder.Entity("vapor.Models.Order", b =>
                 {
                     b.Property<string>("customerId")
@@ -170,6 +192,7 @@ namespace vapor.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("comment")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("cusotmerid")
@@ -214,7 +237,17 @@ namespace vapor.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("customerID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("developerID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("customerID");
+
+                    b.HasIndex("developerID");
 
                     b.ToTable("Users");
                 });
@@ -238,7 +271,7 @@ namespace vapor.Migrations
                 {
                     b.HasOne("vapor.Models.Developer", "developer")
                         .WithMany("games")
-                        .HasForeignKey("developerid");
+                        .HasForeignKey("developerId");
 
                     b.Navigation("developer");
                 });
@@ -286,6 +319,21 @@ namespace vapor.Migrations
                     b.Navigation("cusotmer");
 
                     b.Navigation("game");
+                });
+
+            modelBuilder.Entity("vapor.Models.User", b =>
+                {
+                    b.HasOne("vapor.Models.Customer", "customer")
+                        .WithMany()
+                        .HasForeignKey("customerID");
+
+                    b.HasOne("vapor.Models.Developer", "developer")
+                        .WithMany()
+                        .HasForeignKey("developerID");
+
+                    b.Navigation("customer");
+
+                    b.Navigation("developer");
                 });
 
             modelBuilder.Entity("vapor.Models.Customer", b =>

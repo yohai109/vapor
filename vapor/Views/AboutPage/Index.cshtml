@@ -12,44 +12,59 @@
 <br />
 <div class="container">
     <div class="row">
-        <div class="col-md">
-            <div class="container">
-                <p>Who are we?</p>
-                <div class="row">
-                    <div class="col-sm">
-                        <img src="~/Image/Yoav.jpg" class="rounded-circle" style="width: 200px; height: 200px;" />
-                        <img src="~/Image/Israel.jpg" class="rounded-circle" style="width: 200px; height: 200px;" />
-                    </div>
+        <div class="col-6">
+            <p>Who are we?</p>
+            <div class="row mb-3">
+                <div class="col-6 face-image">
+                    <img src="~/Image/Yoav.jpg" class="rounded-circle "/>
+                    <h3 class="name">Yoav</h3>
                 </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <img src="~/Image/Arad.jpg" class="rounded-circle" style="width: 200px; height: 200px;" />
-                        <img src="~/Image/Yohai.jpg" class="rounded-circle" style="width: 200px; height: 200px;" />
-                    </div>
+                <div class="col-6 face-image">
+                    <img src="~/Image/Israel.jpg" class="rounded-circle"/>
+                    <h3 class="name">Israel</h3>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-6 face-image">
+                    <img src="~/Image/Arad.jpg" class="rounded-circle"/>
+                    <h3 class="name">Arad</h3>
                 </div>
-                <div class="col-md">
-                    <p>From where do we operate?</p>
-                    <div id='map' style='width: 30vw; height: 50vh;'></div>
+                <div class="col-6 face-image">
+                    <img src="~/Image/Yohai.jpg" class="rounded-circle"/>
+                    <h3 class="name">Yohai</h3>
                 </div>
             </div>
+        </div>
+        <div class="col-6 face-image">
+            <p>From where do we operate?</p>
+            <div id='map' class="w-100 h-75"></div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-    <script type='text/javascript'>
-        function loadMapScenario() {
-                var map = new Microsoft.Maps.Map(document.getElementById('map'), {
-                    center: new Microsoft.Maps.Location(31.970280, 34.771439),
-                    zoom: 15
-                });
-            var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), {
-                icon: 'https://www.bingmapsportal.com/Content/images/poi_custom.png',
-                    anchor: new Microsoft.Maps.Point(12, 39)
-                });
-                map.entities.push(pushpin);
-
+        <script type='text/javascript'>
+            function loadMapScenario() {
+                $.ajax({
+                    url: '/mapcoordinates/all/'
+                }).done(function (data) {
+                    console.log(data);
+                    var map = new Microsoft.Maps.Map(document.getElementById('map'), {
+                        center: new Microsoft.Maps.Location(data[0].latitude, data[0].longitude),
+                        zoom: 10
+                    });
+                    $.each(data, function (i, val) {
+                        var pushpin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(val.latitude, val.longitude), {
+                        /*icon: 'https://bingmapsisdk.blob.core.windows.net/isdksamples/defaultPushpin.png',*/
+                            icon: "/Image/pushpin-png-27702.png",
+                            //icon: image,
+                            title: val.name
+                        });
+                        map.entities.push(pushpin);
+                    })
+                })
             }
-    </script>
+        </script>
     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Aq5vZXxazT2FrDYu50TjQ5o_nICB_Ezp9PAtTuUdbxPJfJeGgoRHPoMP9cwCqiT5&callback=loadMapScenario' async defer></script>
+<link rel="stylesheet" href="~/css/AboutPage/Index.css" />
 }
