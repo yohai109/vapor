@@ -325,7 +325,8 @@ namespace vapor.Controllers
             }
 
             var reviews = _context.Review
-                .Where(r => r.game.id.Equals(id))
+                .Include(r => r.cusotmer)
+                .Where(r => r.gameID.Equals(id))
                 .OrderByDescending(r => r.lastUpdate);
             if (reviews == null)
             {
