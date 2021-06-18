@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -49,29 +50,35 @@ namespace vapor.Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> Create(string gameid)
         {
-            ViewData["customerId"] = new SelectList(_context.Customer, "id", "id");
-            ViewData["gameId"] = new SelectList(_context.Game, "id", "id");
-            return View();
+            return View(await _context.Game.Where(g => g.id == gameid).FirstOrDefaultAsync());
         }
 
         // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("gameId,customerId,date")] Order order)
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Order(string gameid)
         {
-            if (ModelState.IsValid)
+            string currUserID = HttpContext.Session.GetString("userid"); ;
+            var currCustumer = await _context.User
+                .Where(u => u.Id == currUserID)
+                .Select(u => u.customer)
+                .FirstOrDefaultAsync();
+
+            var order = new Order
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["customerId"] = new SelectList(_context.Customer, "id", "id", order.customerId);
-            ViewData["gameId"] = new SelectList(_context.Game, "id", "id", order.gameId);
-            return View(order);
+                gameId = gameid,
+                customerId = currCustumer.id,
+                date = DateTime.Now
+            };
+
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+            return Json(new { });
         }
 
         // GET: Orders/Edit/5
