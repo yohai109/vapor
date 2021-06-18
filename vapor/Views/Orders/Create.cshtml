@@ -4,20 +4,35 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Order</h4>
+<h1>order detailes</h1>
 <hr />
-<div class="row">
-    <p>@Model.name</p>
-    <br />
-    <p>@Model.price</p>
+<div>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Developer</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td scope="row" class="embed-responsive embed-responsive-16by9">
+                    <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", "Games", new {id = Model.images.First().id})>
+                </td>
+                <td>@Model.name</td>
+                <td>@Model.developer.name</td>
+                <td>@Model.price</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <div class="row">
     <div class="col-4">
         <input type="hidden" value="@Model.id" id="gameid" />
-        <button id="confirm" class="btn btn-primary">Are you sure?</button>
+        <button id="confirm" class="btn btn-primary">Buy</button>
     </div>
 </div>
 
