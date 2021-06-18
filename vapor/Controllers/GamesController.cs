@@ -117,13 +117,15 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game,
+        public async Task<IActionResult> Create([Bind("id,price,name,description")] Game game,
                                                 List<IFormFile> newImages)
         {
             if (ModelState.IsValid)
             {
                 GameImage gameImage;
                 game.images = new List<GameImage>();
+                game.releaseDate = DateTime.Now;
+
 
                 // Saves all the new images
                 foreach (IFormFile image in newImages)

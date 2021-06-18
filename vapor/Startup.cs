@@ -106,7 +106,7 @@ namespace vapor
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=games}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 
             });
             
