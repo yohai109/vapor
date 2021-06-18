@@ -13,9 +13,9 @@ namespace vapor.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         public string id { get; set; }
-        public String customerID { get; set; }
+        public String customerId { get; set; }
         public Customer cusotmer { get; set; }
-        public String gameID { get; set; }
+        public String gameId { get; set; }
         public Game game { get; set; }
         [Required(ErrorMessage = "A score is required")]
         public float rating { get; set; } = 1;

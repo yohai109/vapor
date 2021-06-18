@@ -325,17 +325,56 @@ namespace vapor.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Reviews(string id)
+        public async Task<IActionResult> Reviews(string gameId)
         {
-            if (id == null)
+            if (gameId == null)
             {
                 return NotFound();
             }
 
             var reviews = _context.Review
-                .Include(r => r.cusotmer)
-                .Where(r => r.gameID.Equals(id))
-                .OrderByDescending(r => r.lastUpdate);
+                .Where(r => r.gameId.Equals(gameId))
+                .OrderByDescending(r => r.lastUpdate)
+                .Select(r => new Review
+                {
+                    gameId = r.gameId,
+                    comment = r.comment,
+                    rating = r.rating,
+                    cusotmer = new Customer
+                    {
+                        name = r.cusotmer.name
+                    }
+                });
+
+            if (reviews == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await reviews.ToListAsync());
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> RatingAvarage(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            int numberOfReviews = 0;
+            int sumRating = 0;
+
+            var reviews = _context.Review
+                .Where(r => r.gameId.Equals(gameId))
+                .GroupBy(r => r.gameId)
+                .Select(gb => new
+                {
+                    avg = gb.Average(r => r.rating)
+                });
+
+
             if (reviews == null)
             {
                 return NotFound();

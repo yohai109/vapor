@@ -1,8 +1,14 @@
 ﻿$("body", function insertIntoPage() {
+
+
     var id = $('#reviews').attr("gameId");
-    console.log(id);
     $.ajax({
-        url: '/games/reviews/' + id
+        url: '/games/reviews?gameId=' + id
+    }).done(function (data) { }
+
+
+    $.ajax({
+        url: '/games/reviews?gameId=' + id
     }).done(function (data) {
         console.log(data);
         $('#reviews').html('');
@@ -16,8 +22,9 @@
                 genreFinal += genreTemplate.replaceAll("{name}", currGener.name);
             })*/
 
-            reviewTemp = reviewTemp.replaceAll('{userName}', '"' + review.comment + '"')
+            reviewTemp = reviewTemp.replaceAll('{userName}',review.cusotmer.name)
             reviewTemp = reviewTemp.replaceAll('{comment}', '"' + review.comment + '"')
+            reviewTemp = reviewTemp.replaceAll('{rating}', review.rating)
 
             /*$.each(data, function (key, value) {
                 reviewTemp = reviewTemp.replaceAll('{' + key + '}', value)
