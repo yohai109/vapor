@@ -185,7 +185,19 @@ namespace vapor.Controllers
 
 
         }
-
+        [HttpPost]
+        public String checkIfUsernameExist(String username)
+        {
+            var user_check = _context.User.Where(u => u.Username == username).FirstOrDefault();
+            if (user_check != null)
+            {
+                return "Taken";
+            }
+            else
+            {
+                return "OK";
+            }
+        }
         [Authorize(Roles = "Admin")]
         // GET: Users
         public async Task<IActionResult> Index()
