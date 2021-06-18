@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Register Customer";
-    Layout = "_LoginLayout";
 }
 
 <h1>Register a new user</h1>
@@ -17,46 +16,58 @@
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Last Name" id="register-lastname" name="lastName">
+                    <input type="text" class="form-control" placeholder="Last Name" id="register-lastname" name="lastName" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="User Name" id="register-username" name="Username">
+                    <input type="text" class="form-control" placeholder="User Name" id="register-username" name="Username" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Password" id="register-password" name="Password">
+                    <input type="password" class="form-control" placeholder="Password" id="register-password" name="Password">
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Password Again" id="register-password-again" name="PasswordAgain">
+                    <input type="password" class="form-control" placeholder="Password Again" id="register-password-again" name="PasswordAgain" required>
                 </div>
             </div>
             <div class="row">
-                <div class="form-group">
-                    <select class="form-control" name="type" hidden>
+                    <select class="form-control" name="type" hidden required>
                         <option value="0">Customer</option>
                     </select>
                     <span class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Email" id="register-email" name="email" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Email" id="register-email" name="email">
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Phone Number" id="register-phonenumber" name="phoneNumber">
+                    <input type="text" class="form-control" placeholder="Phone Number" id="register-phonenumber" name="phoneNumber" required>
                 </div>
             </div>
             <div class="form-group">
                 <button class="btn btn-primary" id="register-btn">Register</button>
             </div>
         </form>
+        <script type="text/javascript">
+            window.onload = function () {
+                var txtPassword = document.getElementById("register-password");
+                var txtConfirmPassword = document.getElementById("register-password-again");
+                txtPassword.onchange = ConfirmPassword;
+                txtConfirmPassword.onkeyup = ConfirmPassword;
+                function ConfirmPassword() {
+                    txtConfirmPassword.setCustomValidity("");
+                    if (txtPassword.value != txtConfirmPassword.value) {
+                        txtConfirmPassword.setCustomValidity("Passwords do not match.");
+                    }
+                }
+            }
+        </script>
         @if (ViewBag.Error != null)
         {
             <div class="text-danger">@ViewBag.Error</div>
@@ -69,5 +80,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/Users/Index.js"></script>
+    <script src="~/js/Users/CustomerRegister.js"></script>
 }
