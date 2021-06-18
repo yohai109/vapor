@@ -27,5 +27,16 @@ namespace vapor.Models
         public string Password { get; set; }
 
         public UserType Type { get; set; } = UserType.Customer;
+         
+        public Customer customer { get; set; }
+
+        public String customerID { get; set; }
+
+        public Developer developer { get; set; }
+
+        public String developerID { get; set; }
+
+
+
     }
 }
