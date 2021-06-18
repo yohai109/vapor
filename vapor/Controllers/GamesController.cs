@@ -363,10 +363,7 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            int numberOfReviews = 0;
-            int sumRating = 0;
-
-            var reviews = _context.Review
+            var avarageRate = _context.Review
                 .Where(r => r.gameId.Equals(gameId))
                 .GroupBy(r => r.gameId)
                 .Select(gb => new
@@ -375,12 +372,12 @@ namespace vapor.Controllers
                 });
 
 
-            if (reviews == null)
+            if (avarageRate == null)
             {
                 return NotFound();
             }
 
-            return Json(await reviews.ToListAsync());
+            return Json(await avarageRate.ToListAsync());
         }
 
         private bool GameExists(string id)

@@ -3,14 +3,15 @@
 
     var id = $('#reviews').attr("gameId");
     $.ajax({
-        url: '/games/reviews?gameId=' + id
-    }).done(function (data) { }
+        url: '/games/RatingAvarage?gameId=' + id
+    }).done(function (data) {
+        $('#avaregeRate').html('').append(data[0].avg);
+    })
 
 
     $.ajax({
         url: '/games/reviews?gameId=' + id
     }).done(function (data) {
-        console.log(data);
         $('#reviews').html('');
         var reviewTemplate = $('#all_users_review_template').html();
         $.each(data, function (i, review) {
