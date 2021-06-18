@@ -140,9 +140,9 @@ namespace vapor.Controllers
                     }
                 }
 
-                var username = HttpContext.Session.GetString("username");
+                int? currUserID = HttpContext.Session.GetInt32("userid"); ;
                 var currDev = await _context.User
-                    .Where(u => u.Username == username)
+                    .Where(u => u.Id == currUserID)
                     .Select(u => u.developer)
                     .FirstOrDefaultAsync();
 

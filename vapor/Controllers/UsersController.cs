@@ -94,6 +94,7 @@ namespace vapor.Controllers
                 //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
             };
             HttpContext.Session.SetString("username", account.Username);
+            HttpContext.Session.SetInt32("userid", account.Id);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
