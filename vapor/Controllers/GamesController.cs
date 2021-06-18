@@ -214,7 +214,6 @@ namespace vapor.Controllers
 
             if (ModelState.IsValid)
             {
-
                 try
                 {
                     // Updates game data

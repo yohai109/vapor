@@ -29,10 +29,18 @@ namespace vapor.Controllers
             //var searchResult = _context.Game
             //    .GroupBy(g => g.releaseDate.Date).Count();
 
-            var searchResult = _context.Game.GroupBy(g => g.releaseDate.Date).Select(g => new { 
-                amount = g.Count(),
-                relaseDate = g.OrderBy(p => p.releaseDate.Date)
-            });
+            //var searchResult = _context.Game.GroupBy(g => g.releaseDate.Date).Select(g => new { 
+            //    amount = g.Count(),
+            //    relaseDate = g.OrderBy(p => p.releaseDate.Date)
+            //}).ToList();
+
+            var searchResult = from g in _context.Game
+                               group g by (g.releaseDate.Month.ToString() + "/" + g.releaseDate.Year.ToString()) into gameGroup
+                               select new
+                               {
+                                   month = gameGroup.Key,
+                                   count = gameGroup.Count()
+                               };
 
             return Json(searchResult);
 

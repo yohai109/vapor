@@ -65,7 +65,9 @@
                                 <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="">Users</a>
                             </li>
                         }
-
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Analysis" asp-action="">Analysis</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="AboutPage" asp-action="">About us</a>
                         </li>
@@ -75,7 +77,7 @@
                                 <a class="nav-link text-white" asp-area="" asp-controller="MapCoordinates" asp-action="">Map</a>
                             </li>
                         }
-                        </ul>
+                    </ul>
                     <span class="navbar-text text-white">
                         <a class="nav-link text-white" asp-area="" asp-controller="Users" asp-action="Logout">@loginText</a>
                     </span>
@@ -86,7 +88,7 @@
     <div class="container-fluid bg-dark text-white">
         <div class="row flex-xl-nowrap">
             <div class="col-md-3 col-xl-2 bd-sidebar">
-                @RenderSection("sidebar", required:false)
+                @RenderSection("sidebar", required: false)
             </div>
             <main role="main" class="pb-3 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
                 @RenderBody()
