@@ -4,13 +4,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>About Us</h1>
+<h2>About Us</h2>
 
-<h1 class="display-1">Vapor</h1>
 
-<h2 class="display-4">The best Place to stay in game</h2>
+<h3 class="display-4">Vapor - The best Place to stay in game</h3>
 <br />
-<div class="container">
     <div class="row">
         <div class="col-6">
             <p>Who are we?</p>
@@ -38,16 +36,16 @@
 
         <div class="col-6 face-image">
             <p>From where do we operate?</p>
-            <div id='map' class="w-100 h-75"></div>
+            <div id='map' class="w-100 h-50"></div>
+            <div class="face-image">
+                <video width="320" height="180" autoplay loop>
+                    <source src="~/Video/video.mp4" type="video/mp4"/>
+                    Your browser does not support the video tag.
+                </video>
+            </div>
         </div>
-        <div class="col-6 face-image embed-responsive embed-responsive-1by1">
-            <video width="320" height="240" autoplay loop class="embed-responsive-item">
-                <source src="~/Video/video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
+
     </div>
-</div>
 
 @section Scripts {
         <script type='text/javascript'>
