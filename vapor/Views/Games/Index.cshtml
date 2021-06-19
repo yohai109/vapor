@@ -92,12 +92,18 @@
                         <span class="col-12">
                             <a href="/Games/Details/{id}" class="btn btn-primary w-100">Details</a>
                         </span>
-                        <span class="col-12 my-1">
-                            <a href="/Games/Edit/{id}" class="btn btn-warning w-100">Edit</a>
-                        </span>
-                        <span class="col-12">
-                            <a a href="/Games/Delete/{id}" class="btn btn-danger w-100">Delete</a>
-                        </span>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                        {
+                            <span class="col-12 my-1">
+                                <a href="/Games/Edit/{id}" class="btn btn-warning w-100">Edit</a>
+                            </span>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                        {
+                            <span class="col-12">
+                                <a a href="/Games/Delete/{id}" class="btn btn-danger w-100">Delete</a>
+                            </span>
+                        }
                     </div>
                 </div>
             </div>
