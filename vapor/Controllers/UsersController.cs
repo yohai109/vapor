@@ -247,7 +247,7 @@ namespace vapor.Controllers
         }
         [Authorize(Roles = "Admin")]
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(String? id)
         {
             if (id == null)
             {
