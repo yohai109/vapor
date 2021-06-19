@@ -91,27 +91,71 @@
     {
         <a asp-action="Edit" asp-route-id="@Model.game.id">Edit</a>
     } |
-    <a asp-action="Index">Back to List</a>
+
 </div>
+@if (User.IsInRole("Customer"))
+{
+    @if (Model.currCustomerOrder == null)
+    {
+        <a class="btn btn-success" id="buyNow">buy now</a>
+        <a class="btn btn-success" id="addToCart">add to cart</a>
+    }
+
+    else
+    {
+        @if (@Model.currUserReview != null)
+        {
+
+            <div class="form-group mt-3 border border-secondary">
+                <h5>@Model.currUserReview.cusotmer.name</h5>
+                <i class="bi bi-clock"> Written at @Model.currUserReview.writtenAt</i> <i class="bi bi-clock-fill"> Last update @Model.currUserReview.lastUpdate</i>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>"@Model.currUserReview.comment"</textarea>
+                <i class="bi bi-star-fill">@Model.currUserReview.rating</i>
+                <a href="/Reviews/Edit/@(Model.currUserReview.id)">Edit Review</a> @*Will be able to edit and delete the review from here!*@
+            </div>
+        }
+        @if (@Model.currUserReview == null)
+        {
+            //Will create a new review form
+           @* <div class="form-group mt-3 border border-secondary">
+                <h5></h5>
+                <i class="bi bi-clock"> Written at @Model.currUserReview.writtenAt</i> <i class="bi bi-clock-fill"> Last update @Model.currUserReview.lastUpdate</i>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>"@Model.currUserReview.comment"</textarea>
+                <i class="bi bi-star-fill">@Model.currUserReview.rating</i>
+                <a href="/Reviews/Edit/@(Model.currUserReview.id)">Edit Review</a>
+            </div>*@
+        }
+
+    }
+}
+
+
+@*@if (User.IsInRole("Customer") && Model.currCustomerOrder != null)
+        {
+    <!--@if (Model.currCustomerOrder != null)
+    {
+        <script>alert(@Model.currCustomerOrder)</script>-->
+        @*<div class="form-group mt-3 border border-secondary">
+                <h5>@Model.currUserReview.cusotmer.name</h5>
+                <i class="bi bi-clock"> Written at @Model.currUserReview.writtenAt</i> <i class="bi bi-clock-fill"> Last update @@Model.currUserReview.lastUpdate</i>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>@Model.currUserReview.comment</textarea>
+                <i class="bi bi-star-fill">@Model.currUserReview.rating</i>
+            </div>*@
+<!--}-->
+
 @foreach (var review in Model.reviews)
 {
-        <div class="form-group mt-3 border border-secondary">
-            @*<p>@review.currCustomerOrder</p>*@
-            <h5>@review.cusotmer.name</h5>
-            <i class="bi bi-clock"> Written at @review.writtenAt</i> <i class="bi bi-clock-fill"> Last update @review.lastUpdate</i>
-            @*@if (DateTime.Compare(@review.writtenAt, @review.lastUpdate) > 0)
-            {
-                <i class="bi bi-clock-fill"> Last update @review.lastUpdate</i>
-            }*@
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>@review.comment</textarea>
-            <i class="bi bi-star-fill">@review.rating</i>
-        </div>
+    <div class="form-group mt-3 border border-secondary">
+        <h5>@review.cusotmer.name</h5>
+        <i class="bi bi-clock"> Written at @review.writtenAt</i> <i class="bi bi-clock-fill"> Last update @review.lastUpdate</i>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>"@review.comment"</textarea>
+        <i class="bi bi-star-fill">@review.rating</i>
+    </div>
 }
 
 <div id="reviews" gameId="@Model.game.id"></div>
 
-<a class="btn btn-success" href="/Orders/create?gameid=@Model.game.id">buy now</a>
-<a class="btn btn-success" id="addToCart">add to cart</a>
+
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
     {

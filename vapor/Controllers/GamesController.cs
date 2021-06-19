@@ -142,9 +142,10 @@ namespace vapor.Controllers
             model.reviews = otherReviews;
 
             var currUserReview = _context.Review
-                .Where(r => r.gameId.Equals(id) && r.cusotmer == currCustomer)
+                .Where(r => r.gameId.Equals(id) && r.cusotmer.Equals(currCustomer))
                 .Select(r => new Review
                 {
+                    id = r.id,
                     gameId = r.gameId,
                     comment = r.comment,
                     rating = r.rating,
@@ -154,11 +155,12 @@ namespace vapor.Controllers
                     {
                         name = r.cusotmer.name
                     }
-                });
+                })
+                .FirstOrDefaultAsync();
 
-            model.currUserReview = currUserReview;
+            model.currUserReview = await currUserReview;
 
-            var currCustomerOrder = await _context.Order
+                var currCustomerOrder = await _context.Order
                 .Include(o => o.customer)
                 .Where(o => o.customer == currCustomer)
                 .FirstOrDefaultAsync();
