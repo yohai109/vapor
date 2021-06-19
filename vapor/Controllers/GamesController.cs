@@ -354,6 +354,9 @@ namespace vapor.Controllers
         {
             var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
             _context.Game.Remove(game);
+            //delete all reviews of this game
+            var reviews = await _context.Review.Where(r => r.gameId == id).ToListAsync();
+            _context.Review.RemoveRange(reviews);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
