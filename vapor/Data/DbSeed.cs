@@ -106,7 +106,7 @@ namespace vapor.Data
                             name = "Game",
                             description = "Game",
                             releaseDate = new DateTime(2021, 5, 28, 5, 10, 20),
-                            generes = new List<Genre> { genre, genre1, genre2 }
+                            genres = new List<Genre> { genre, genre1, genre2 }
                         };
                         _context.Game.Add(game);
                         _context.SaveChanges();
@@ -117,7 +117,7 @@ namespace vapor.Data
                             name = "Minecraft",
                             description = "Build your world",
                             releaseDate = new DateTime(2021, 4, 30, 5, 10, 20),
-                            generes = new List<Genre> { genre, genre1, genre2 }
+                            genres = new List<Genre> { genre, genre1, genre2 }
                         };
                         _context.Game.Add(game2);
                         Game game3 = new Game()
@@ -127,7 +127,7 @@ namespace vapor.Data
                             name = "Zoo",
                             description = "Best zoo game",
                             releaseDate = new DateTime(2021, 4, 28, 5, 10, 20),
-                            generes = new List<Genre> { genre, genre1, genre2 }
+                            genres = new List<Genre> { genre, genre1, genre2 }
                         };
                         _context.Game.Add(game3);
                         _context.SaveChanges();

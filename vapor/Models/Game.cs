@@ -25,6 +25,7 @@ namespace vapor.Models
 
         public virtual ICollection<GameImage> images { get; set; }
         public virtual ICollection<Review> reviews { get; set; }
-        public virtual ICollection<Genre> generes { get; set; }
+        public virtual ICollection<Genre> genres { get; set; }
+
     }
 }
