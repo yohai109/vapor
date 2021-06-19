@@ -1,53 +1,64 @@
-﻿@model vapor.Models.Game
-
+﻿@*@model vapor.Models.Game*@
+@model dynamic
 @{
     ViewData["Title"] = "Details";
 }
 
-<input type="hidden" value="@Model.id" id="gameId" />
+<input type="hidden" value="@Model.game.id" id="gameId" />
 
 
 <div class="container">
     <div class="row">
         <div class="col-md-5">
             <div class="row">
-                <h1>@Html.DisplayFor(model => model.name)</h1>
+                <h1>@Model.game.name</h1>
             </div>
             <div class="row">
                 <div class="col-md-3">
-                    <h5>@Html.DisplayNameFor(model => model.description)</h5>
+                    <h5>Description</h5>
                 </div>
                 <div class="col-md-9">
-                    <span>@Html.DisplayFor(model => model.description)</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>@Html.DisplayNameFor(model => model.price)</h5>
-                </div>
-                <div class="col-md-9">
-                    <span>@Html.DisplayFor(model => model.price)</span>
+                    <span>@Model.game.description</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-3">
-                    <h5>@Html.DisplayNameFor(model => model.releaseDate)</h5>
+                    <h5>Price</h5>
                 </div>
                 <div class="col-md-9">
-                    <span>@Html.DisplayFor(model => model.releaseDate)</span>
+                    <span>@(Model.game.price)</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>Release Date</h5>
+                </div>
+                <div class="col-md-9">
+                    <span>@Model.game.releaseDate</span>
+                </div>
+                <div class="col-md-9">
+                    @if (Model.avarageRate != null)
+                    {
+                        <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill"> @Model.avarageRate</i></span>
+                    }
+                    else
+                    {
+                        <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">0</i></span>
+                    }
                 </div>
             </div>
         </div>
+
         <div class="col-md-7">
             <div id="image-carousel" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
-                    @for (int i = 0; i < Model.images.Count(); i++)
+                    @for (int i = 0; i < Model.game.images.Count; i++)
                     {
                         <li data-target="#image-carousel" data-slide-to="@i" class=" @(@i == 0 ? "active" : "")"></li>
                     }
                 </ol>
                 <div class="carousel-inner">
-                    @for (int i = 0; i < Model.images.Count(); i++)
+                    @for (int i = 0; i < Model.game.images.Count; i++)
                     {
                         <div class="carousel-item @(@i == 0 ? "active" : "") ">
                             <img class="d-block w-100" src="@Url.Action("GetGameImage", new {gameImageid = Model.images.ElementAt(i).id})" />
@@ -65,21 +76,39 @@
             </div>
         </div>
     </div>
-
-    <a class="btn btn-success" href="/Orders/create?gameid=@Model.id">buy now</a>
-    <a class="btn btn-success" id="addToCart">add to cart</a>
 </div>
 
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.id">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model.game.id">Edit</a>
     } |
     <a asp-action="Index">Back to List</a>
 </div>
 
+<div id="reviews" gameId="@Model.game.id"></div>
+
+<a class="btn btn-success" href="/Orders/create?gameid=@Model.game.id">buy now</a>
+<a class="btn btn-success" id="addToCart">add to cart</a>
+<div>
+    @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.game.id">Edit</a>
+    }
+    <a asp-action="Index">Back to List</a>
+</div>
+
 @section Scripts {
+
     <script type="text/javascript" src="~/js/Games/Details.js"></script>
+
+    <script type="text/html" id="all_users_review_template">
+        <div class="form-group mt-3">
+            <label for="exampleFormControlTextarea1">{userName}</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>{comment}</textarea>
+            <i class="bi bi-star-fill">{rating}</i>
+        </div>
+    </script>
 }
 
 @section Alerts{
