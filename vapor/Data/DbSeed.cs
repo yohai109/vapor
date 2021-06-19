@@ -145,7 +145,7 @@ namespace vapor.Data
                             price = 100,
                             name = "half Life 2",
                             description = "1998. HALF-LIFE sends a shock through the game industry with its combination of pounding action and continuous, immersive storytelling. Valve's debut title wins more than 50 game-of-the-year awards on its way to being named 'Best PC Game Ever' by PC Gamer!",
-                            releaseDate = DateTime.Parse("11/16/2004"),
+                            releaseDate = DateTime.Parse("16/11/2004"),
                             generes = new List<Genre> { Horror, Action, Adventure }
                         };
                         _context.Game.Add(halfLife2);
