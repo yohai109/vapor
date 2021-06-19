@@ -68,12 +68,35 @@
                 var txtConfirmPassword = document.getElementById("register-password-again");
                 txtPassword.onchange = ConfirmPassword;
                 txtConfirmPassword.onkeyup = ConfirmPassword;
+
+                var txtUsername = document.getElementById("register-username");
+                console.log(txtUsername);
+                txtUsername.onkeyup = checkIfUsernameAvailable;
+
                 function ConfirmPassword() {
                     txtConfirmPassword.setCustomValidity("");
                     if (txtPassword.value != txtConfirmPassword.value) {
                         txtConfirmPassword.setCustomValidity("Passwords do not match.");
                     }
                 }
+
+                function checkIfUsernameAvailable() {
+                    txtUsername.setCustomValidity("");
+                    $.ajax({
+                        method: 'POST',
+                        url: '/Users/checkIfUsernameExist',
+                        data: { Username: txtUsername.value }
+                    }).done(function (data) {
+                        if (data != "OK") {
+                            console.log("*" + data + "*");
+                            txtUsername.setCustomValidity("Username Taken");
+                        }
+                    })
+
+
+
+                }
+
             }
         </script>
         @if (ViewBag.Error != null)
