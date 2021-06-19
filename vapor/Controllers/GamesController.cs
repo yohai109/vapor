@@ -158,6 +158,12 @@ namespace vapor.Controllers
 
             model.currUserReview = currUserReview;
 
+            var currCustomerOrder = await _context.Order
+                .Include(o => o.customer)
+                .Where(o => o.customer == currCustomer)
+                .FirstOrDefaultAsync();
+
+            model.currCustomerOrder = currCustomerOrder;
 
             var avarageRate = await _context.Review
                 .Where(r => r.gameId.Equals(id))

@@ -18,7 +18,7 @@
                     <h5>Developer</h5>
                 </div>
                 <div class="col-md-9">
-                    <span>@(Model.game.developer.name)</span>
+                    <a href="/Developers/Details/@(Model.game.developer.id)">@Model.game.developer.name</a>
                 </div>
             </div>
             <div class="row">
@@ -95,7 +95,8 @@
 </div>
 @foreach (var review in Model.reviews)
 {
-        <div class="form-group mt-3 border border-dark">
+        <div class="form-group mt-3 border border-secondary">
+            @*<p>@review.currCustomerOrder</p>*@
             <h5>@review.cusotmer.name</h5>
             <i class="bi bi-clock"> Written at @review.writtenAt</i> <i class="bi bi-clock-fill"> Last update @review.lastUpdate</i>
             @*@if (DateTime.Compare(@review.writtenAt, @review.lastUpdate) > 0)
