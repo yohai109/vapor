@@ -50,27 +50,6 @@ namespace vapor.Controllers
             return View(order);
         }
 
-        /*// GET: Orders/Create
-        [HttpGet]
-        public async Task<IActionResult> CreateOne(string id)
-        {
-            var game = _context.Game
-                .Where(g => g.id == id)
-                .Select(g => new Game
-                {
-                    id = g.id,
-                    name = g.name,
-                    developer = g.developer,
-                    images = (ICollection<GameImage>)g.images
-                        .Select(i => new GameImage { id = i.id })
-                        .Take(1),
-                    price = g.price
-                })
-                .ToListAsync();
-
-            return View("Create", await game);
-        }*/
-
         [HttpGet]
         public async Task<IActionResult> Create(string gameid)
         {
