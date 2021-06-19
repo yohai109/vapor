@@ -22,7 +22,7 @@
                 <tr>
                     <th scope="row" hidden><input class="gamesid" type="hidden"value="@item.id" /></th>
                     <td class="embed-responsive embed-responsive-16by9">
-                        <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", "Games", new {id = item.images.First().id})>
+                        <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", "Games", new {gameImageid = item.images.First().id})>
                     </td>
                     <td>@item.name</td>
                     <td>@item.developer.name</td>

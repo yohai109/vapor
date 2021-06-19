@@ -4,44 +4,38 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="row profile-container">
+    @foreach (var item in Model)
+    {
+
+
+    <div class="profile-card">
+        @if (item.Type == UserType.Developer)
+        {
+            <img class="profile-img" src=@Url.Action("GetDeveloperImage","Developers", new {id = item.developerID}) alt="Avatar" width="100" height="100">
+
+        }
+        else
+        {
+            <img class="profile-img" src="~/Image/profile.png" alt="Avatar" width="100" height="100">
+
+        }
+    <div class="profile-card">
+        <h4><b>@Html.DisplayFor(modelItem => item.Username)</b></h4>
+        <p>@Html.DisplayFor(modelItem => item.Type)</p>
+        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+        @if (item.Type == UserType.Customer)
+        {
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        }
+
+    </div>
+    </div>
+    }
+</div>

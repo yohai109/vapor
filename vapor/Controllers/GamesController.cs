@@ -195,14 +195,32 @@ namespace vapor.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> GetGameImage(string id)
+        public async Task<ActionResult> GetGameImage(string gameImageid)
         {
-            if (id == null)
+            if (gameImageid == null)
             {
                 return NotFound();
             }
 
-            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == id);
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == gameImageid);
+
+            if (gameImage == null)
+            {
+                return NotFound();
+            }
+
+            byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
+            return this.File(fileBytes, gameImage.fileContentType);
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetGameImageByGameId(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.gameID == gameId);
 
             if (gameImage == null)
             {

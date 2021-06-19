@@ -11,7 +11,7 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    [Authorize]
+
     public class ReviewsController : Controller
     {
         private readonly vaporContext _context;
@@ -22,9 +22,16 @@ namespace vapor.Controllers
         }
 
         // GET: Reviews
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Review.ToListAsync());
+
+            var vaporContext = _context.Review
+                .Include(g => g.game)
+                .Include(c => c.cusotmer);
+            return View(await vaporContext.ToListAsync());
+
+           /* return View(await _context.Review.ToListAsync());*/
         }
 
         // GET: Reviews/Details/5
