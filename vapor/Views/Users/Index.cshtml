@@ -4,11 +4,6 @@
     ViewData["Title"] = "Index";
 }
 
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
 <div class="row profile-container">
     @foreach (var item in Model)
     {
@@ -28,11 +23,11 @@
     <div class="profile-card">
         <h4><b>@Html.DisplayFor(modelItem => item.Username)</b></h4>
         <p>@Html.DisplayFor(modelItem => item.Type)</p>
-        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+        <a class="btn btn-warning w-100" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+        <a class="btn btn-primary w-100" asp-action="Details" asp-route-id="@item.Id">Details</a>
         @if (item.Type == UserType.Customer)
         {
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            <a class="btn btn-danger w-100" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
         }
 
     </div>
