@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
+using vapor.services;
 
 namespace vapor.Controllers
 {
@@ -48,30 +50,79 @@ namespace vapor.Controllers
             return View(order);
         }
 
-        // GET: Orders/Create
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> Create(string gameid)
         {
-            ViewData["customerId"] = new SelectList(_context.Customer, "id", "id");
-            ViewData["gameId"] = new SelectList(_context.Game, "id", "id");
-            return View();
+            var cart = new List<String>();
+            if (HttpContext.Session.Keys.Contains("cart"))
+            {
+                cart.AddRange(HttpContext.Session.GetListOfString("cart"));
+            }
+
+            if (gameid != null && gameid != "")
+            {
+                cart.Add(gameid);
+            }
+
+            var game = _context.Game
+                .Where(g => cart.Contains(g.id))
+                .Select(g => new Game
+                {
+                    id = g.id,
+                    name = g.name,
+                    developer = g.developer,
+                    images = (ICollection<GameImage>)g.images
+                        .Select(i => new GameImage { id = i.id })
+                        .Take(1),
+                    price = g.price
+                })
+                .ToListAsync();
+
+            return View(await game);
         }
 
         // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("gameId,customerId,date")] Order order)
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Order(List<string> gamesId)
         {
-            if (ModelState.IsValid)
+            string currUserID = HttpContext.Session.GetString("userid"); ;
+            var currCustumer = await _context.User
+                .Where(u => u.Id == currUserID)
+                .Select(u => u.customer)
+                .FirstOrDefaultAsync();
+
+            foreach (var gameid in gamesId)
             {
+                var order = new Order
+                {
+                    gameId = gameid,
+                    customerId = currCustumer.id,
+                    date = DateTime.Now
+                };
                 _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["customerId"] = new SelectList(_context.Customer, "id", "id", order.customerId);
-            ViewData["gameId"] = new SelectList(_context.Game, "id", "id", order.gameId);
-            return View(order);
+            
+            await _context.SaveChangesAsync();
+            return Json(new { });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Customer")]
+        public IActionResult AddToCart(string gameid)
+        {
+            var cart = new List<String>();
+            if (HttpContext.Session.Keys.Contains("cart"))
+            {
+                cart.AddRange(HttpContext.Session.GetListOfString("cart"));
+            }
+
+            cart.Add(gameid);
+            HttpContext.Session.SetListOfString("cart", cart);
+
+            return Json(new { });
         }
 
         // GET: Orders/Edit/5

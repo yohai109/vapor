@@ -36,10 +36,10 @@ $(document).ready(function () {
         url: '/Analysis/GetGameReviewAnalysis',
         success: function (data) {
             let graphData = data.map((record) => ({
-                name: record.gameName,
+                name: record.name,
                 value: record.averageRating
             }))
-            drawCategoryGraph("review-graph", graphData, "Average Rating", "Games")
+            drawCategoryGraph("game-reviews-graph", graphData, "Average Rating", "Games", 10)
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alert(jqXHR.status);
@@ -61,7 +61,7 @@ function drawTimeSeariesGraph(graphID, times, xAsixName, yAsixName) {
 
     var xAsixDomain = d3.extent(times, date => (date));
 
-    let GraphWidth = 550
+    let GraphWidth = 800
     let GraphHeight = 460
     let margin = { top: 10, right: 30, bottom: 50, left: 60 }
     let width = GraphWidth - margin.left - margin.right
@@ -75,6 +75,8 @@ function drawTimeSeariesGraph(graphID, times, xAsixName, yAsixName) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    svg.attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
 
     // X axis: scale and draw and label
     let xAxis = d3.scaleTime()
@@ -172,8 +174,8 @@ function drawTimeSeariesGraph(graphID, times, xAsixName, yAsixName) {
  * Input: List of objects containing records of name and value
  * 
  */
-function drawCategoryGraph(graphID, graphData, xAsixName, yAsixName) {
-    let GraphWidth = 550
+function drawCategoryGraph(graphID, graphData, xAsixName, yAsixName, maxYValue = 0) {
+    let GraphWidth = 800
     let GraphHeight = 460
     let margin = { top: 10, right: 30, bottom: 50, left: 60 }
     let width = GraphWidth - margin.left - margin.right
@@ -187,6 +189,9 @@ function drawCategoryGraph(graphID, graphData, xAsixName, yAsixName) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
+    svg.attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
 
     // X axis scale 
     var xAxis = d3.scaleBand()
@@ -209,7 +214,7 @@ function drawCategoryGraph(graphID, graphData, xAsixName, yAsixName) {
 
     // Y axis: scale and draw:
     var yAxis = d3.scaleLinear()
-        .domain([0, d3.max(graphData, function (d) { return d.value; })])
+        .domain([0, Math.max(maxYValue, d3.max(graphData, function (d) { return d.value; }))])
         .range([height, 0]);
 
     svg.append("g")

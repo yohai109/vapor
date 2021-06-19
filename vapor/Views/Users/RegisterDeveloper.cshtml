@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Register Developer";
-    Layout = "_LoginLayout";
 }
 
 <h1>Register a new Developer</h1>
@@ -13,51 +12,49 @@
         <form id="register-user">
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="First Name" id="register-firstname" name="firstName">
+                    <input type="text" class="form-control" placeholder="First Name" id="register-firstname" name="firstName" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Last Name" id="register-lastname" name="lastName">
+                    <input type="text" class="form-control" placeholder="Last Name" id="register-lastname" name="lastName" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="User Name" id="register-username" name="Username">
+                    <input type="text" class="form-control" placeholder="User Name" id="register-username" name="Username" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Password" id="register-password" name="Password">
+                    <input type="password" class="form-control" placeholder="Password" id="register-password" name="Password" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Password Again" id="register-password-again" name="PasswordAgain">
+                    <input type="password" class="form-control" placeholder="Password Again" id="register-password-again" name="PasswordAgain" required>
+                </div>
+            </div>
+            <div class="row">
+                <select class="form-control" name="type" hidden required>
+                    <option value="1">Developer</option>
+                </select>
+                <span class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Email" id="register-email" name="email" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <select class="form-control" name="type" hidden>
-                        <option value="1">Developer</option>
-                    </select>
-                    <span class="text-danger"></span>
+                    <input type="text" class="form-control" placeholder="Phone Number" id="register-phonenumber" name="phoneNumber" required>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Email" id="register-email" name="email">
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Phone Number" id="register-phonenumber" name="phoneNumber">
-                </div>
-            </div>
-            <div class="row">
-                <div class="form-group" >
                     <label class="control-label">Developer Avatar</label>
-                    <input name="developerAvater" class="form-control-file" type="file" id="register-avatar"/>
+                    <input name="developerAvater" class="form-control-file" type="file" id="register-avatar" required />
                 </div>
             </div>
 
@@ -65,6 +62,43 @@
                 <button class="btn btn-primary" id="register-btn">Register</button>
             </div>
         </form>
+        <script type="text/javascript">
+            window.onload = function () {
+                var txtPassword = document.getElementById("register-password");
+                var txtConfirmPassword = document.getElementById("register-password-again");
+                txtPassword.onchange = ConfirmPassword;
+                txtConfirmPassword.onkeyup = ConfirmPassword;
+
+                var txtUsername = document.getElementById("register-username");
+                console.log(txtUsername);
+                txtUsername.onkeyup = checkIfUsernameAvailable;
+
+                function ConfirmPassword() {
+                    txtConfirmPassword.setCustomValidity("");
+                    if (txtPassword.value != txtConfirmPassword.value) {
+                        txtConfirmPassword.setCustomValidity("Passwords do not match.");
+                    }
+                }
+
+                function checkIfUsernameAvailable() {
+                    txtUsername.setCustomValidity("");
+                    $.ajax({
+                        method: 'POST',
+                        url: '/Users/checkIfUsernameExist',
+                        data: { Username: txtUsername.value }
+                    }).done(function (data) {
+                        if (data != "OK") {
+                            console.log("*" + data + "*");
+                            txtUsername.setCustomValidity("Username Taken");
+                        }
+                    })
+
+
+
+                }
+
+            }
+        </script>
         @if (ViewBag.Error != null)
         {
             <div class="text-danger">@ViewBag.Error</div>
@@ -77,5 +111,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/Users/Index.js"></script>
+    <script src="~/js/Users/DeveloperRegister.js"></script>
 }

@@ -47,13 +47,15 @@ namespace vapor.Controllers
                where c.ClientID == yourDescriptionObject.ClientID
                select a.Balance)
              */
-            var searchResult = from review in _context.Review
-                               join game in _context.Game on review.gameId equals game.id into groupReviews
+
+            var searchResult = from game in _context.Game
+                               join review in _context.Review on game.id equals review.gameId into groupReviews
                                from groupReview in groupReviews.DefaultIfEmpty()
+                               group groupReview by game.name into groupReviewes
                                select new
                                {
-                                   name = groupReview.name,
-                                   averageRating = groupReview.reviews.Average(r => r.rating),
+                                   name = groupReviewes.Key,
+                                   averageRating = groupReviewes.Average(r => r == null ? 0 : r.rating),
                                };
 
             return Json(searchResult);

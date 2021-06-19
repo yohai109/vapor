@@ -94,6 +94,7 @@ namespace vapor.Controllers
                 //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
             };
             HttpContext.Session.SetString("username", account.Username);
+            HttpContext.Session.SetString("userid", account.Id);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
@@ -184,7 +185,19 @@ namespace vapor.Controllers
 
 
         }
-
+        [HttpPost]
+        public String checkIfUsernameExist(String username)
+        {
+            var user_check = _context.User.Where(u => u.Username == username).FirstOrDefault();
+            if (user_check != null)
+            {
+                return "Taken";
+            }
+            else
+            {
+                return "OK";
+            }
+        }
         [Authorize(Roles = "Admin")]
         // GET: Users
         public async Task<IActionResult> Index()
@@ -193,7 +206,7 @@ namespace vapor.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(String? id)
         {
             if (id == null)
             {
@@ -234,7 +247,7 @@ namespace vapor.Controllers
         }
         [Authorize(Roles = "Admin")]
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(String? id)
         {
             if (id == null)
             {
@@ -255,7 +268,7 @@ namespace vapor.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Username,Password,Type")] User user)
+        public async Task<IActionResult> Edit(String id, [Bind("Id,Username,Password,Type")] User user)
         {
             if (id != user.Id)
             {
@@ -286,7 +299,7 @@ namespace vapor.Controllers
         }
         [Authorize(Roles = "Admin")]
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(String? id)
         {
             if (id == null)
             {
@@ -306,7 +319,7 @@ namespace vapor.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(String id)
         {
             var user = await _context.User.FindAsync(id);
             _context.User.Remove(user);
@@ -314,7 +327,7 @@ namespace vapor.Controllers
             return RedirectToAction(nameof(Index));
         }
         [Authorize(Roles = "Admin")]
-        private bool UserExists(int id)
+        private bool UserExists(String id)
         {
             return _context.User.Any(e => e.Id == id);
         }
