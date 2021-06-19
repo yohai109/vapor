@@ -35,7 +35,7 @@ namespace vapor.Controllers
             //}).ToList();
 
             var searchResult = from g in _context.Game
-                               group g by (g.releaseDate.Month.ToString() + "/" + g.releaseDate.Year.ToString()) into gameGroup
+                               group g by g.releaseDate.Date into gameGroup
                                select new
                                {
                                    month = gameGroup.Key,

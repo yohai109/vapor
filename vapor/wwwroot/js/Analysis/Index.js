@@ -4,11 +4,12 @@ $(document).ready(function () {
         type: "GET",
         url: '/Analysis/GetGamesAnalysis',
         success: function (data) {
-            let graphData = data.map(record => ({
-                name: record.month,
-                value: record.count
+            const parseTime = d3.timeParse("%Y-%m-%d");
+            let graphData = data.map((d) => ({
+                time: parseTime(d.month.split("T")[0]),
+                value: d.count
             }))
-            drawCategoryGraph("games-added-graph", graphData)
+            drawTimeSeariesGraph("games-added-graph", graphData)
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alert(jqXHR.status);
@@ -17,15 +18,20 @@ $(document).ready(function () {
 })
 
 /*
- * Creates a category graph
- * Graph that maps a name to value (name -> value)
+ * Creates a time searies graph
+ * Graph that maps game time to a value
  * 
- * Input: List of dictionaries taht contains name and value fields
+ * Input should be a list of objects containing time, value fields
  */
-function drawCategoryGraph(graphID, graphData) {
+function drawTimeSeariesGraph(graphID, graphData) {
+    graphData.sort((d1, d2) => (d3.ascending(d1.time, d2.time)))
+
+    var xAsixDomain = d3.extent(graphData, function (d) { return d.time; });
+    var dataYrange = [0, d3.max(graphData, function (d) { return d.value; })];
+ 
     var margin = { top: 10, right: 30, bottom: 50, left: 60 }
-    var width = 460 - margin.left - margin.right
-    var height = 400 - margin.top - margin.bottom;
+    var width = 700 - margin.left - margin.right
+    var height = 460 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     var svg = d3.select(`#${graphID}`)
@@ -36,10 +42,14 @@ function drawCategoryGraph(graphID, graphData) {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-    // X axis scale 
-    var xAxis = d3.scaleBand()
-        .domain(graphData.map(d => d.name))
+    // X axis: scale and draw and label
+    var xAxis = d3.scaleTime()
+        .domain(xAsixDomain)
         .range([0, width])
+
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xAxis));
 
     // text label for the x axis
     svg.append("text")
@@ -50,14 +60,20 @@ function drawCategoryGraph(graphID, graphData) {
         .style("text-anchor", "middle")
         .text("Month");
 
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(xAxis));
 
+    // set the parameters for the histogram
+    var histogram = d3.histogram()
+        .value(function (d) { return d.time; })
+        .domain(xAxis.domain())
+        .thresholds(xAxis.ticks(70)); 
 
-    // Y axis: scale and draw:
+    // And apply this function to data to get the bins
+    var bins = histogram(graphData);
+    console.log(bins)
+
+    // Y axis: scale and draw and label
     var yAxis = d3.scaleLinear()
-        .domain([0, d3.max(graphData, function (d) { return d.value; })])
+        .domain(dataYrange)
         .range([height, 0]);
 
     svg.append("g")
@@ -71,19 +87,29 @@ function drawCategoryGraph(graphID, graphData) {
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("Games added");  
-    
+
     // append the bar rectangles to the svg element
     svg.selectAll("rect")
-        .data(graphData)
+        .data(bins)
         .enter()
         .append("rect")
         .attr("x", 1)
-        .attr("transform", function (d) { return "translate(" + xAxis(d.name) + "," + yAxis(d.value) + ")"; })
-        .attr("width", function (d) { return width / graphData.length - 10; })
-        .attr("height", function (d) { return height - yAxis(d.value); })
+        .attr("transform", function (d) {
+            let gamesAmount = 0
+            d.forEach(d => {
+                gamesAmount += d.value
+            })
+            return "translate(" + xAxis(d.x0) + "," + yAxis(gamesAmount) + ")";
+        })
+        .attr("width", function (d) { return xAxis(d.x1) - xAxis(d.x0) + 1; })
+        .attr("height", function (d) {
+            let gamesAmount = 0
+            d.forEach(d => {
+                gamesAmount += d.value
+            })
+            return height - yAxis(gamesAmount);
+        })
         .style("fill", "#69b3a2")
-
-
  
 }
 
