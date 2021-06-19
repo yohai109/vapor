@@ -50,7 +50,7 @@
                     @for (int i = 0; i < Model.images.Count(); i++)
                     {
                         <div class="carousel-item @(@i == 0 ? "active" : "") ">
-                            <img class="d-block w-100" src="@Url.Action("GetGameImage", new {id = Model.images.ElementAt(i).id})" />
+                            <img class="d-block w-100" src="@Url.Action("GetGameImage", new {gameImageid = Model.images.ElementAt(i).id})" />
                         </div>
                     }
                 </div>

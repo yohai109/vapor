@@ -342,23 +342,5 @@ namespace vapor.Controllers
         {
             return _context.User.Any(e => e.Id == id);
         }
-        [HttpGet]
-        public async Task<ActionResult> GetDeveloperImage(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Developer developer = await _context.Developer.FirstOrDefaultAsync(d => d.id == id);
-
-            if (developer == null)
-            {
-                return NotFound();
-            }
-
-            byte[] fileBytes = Convert.FromBase64String(developer.avatar);
-            return this.File(fileBytes, developer.fileContentType);
-        }
     }
 }
