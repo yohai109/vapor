@@ -105,7 +105,7 @@ namespace vapor.Controllers
             model.game = loadedGame.game;
             loadedGame.game.images.Count();
             string currUserID = HttpContext.Session.GetString("userid");
-            
+
             var currCustomer = await _context.User
                     .Where(u => u.Id == currUserID)
                     .Select(u => u.customer)
@@ -130,7 +130,7 @@ namespace vapor.Controllers
                 .GroupBy(r => r.gameId)
                 .Select(gb => gb.Average(r => r.rating))
                 .FirstOrDefaultAsync();
-                
+
 
             model.avarageRate = avarageRate;
 
@@ -360,14 +360,16 @@ namespace vapor.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Search(string query, List<String> genres, List<String> developers)
+        public async Task<IActionResult> Search(string query, List<String> genres, List<String> developers, float avgRating = 0)
         {
             var searchResult = _context.Game
                 .Include(g => g.generes)
                 .Include(g => g.developer)
+                .Include(g => g.reviews)
                 .Where(g => ( query != null && query != "" ) ? g.name.Contains(query) : true)
                 .Where(g => ( genres != null && genres.Count != 0 ) ? g.generes.Any(gg => genres.Contains(gg.id)) : true)
                 .Where(g => ( developers != null && developers.Count != 0 ) ? developers.Contains(g.developer.id) : true)
+                .Where(g => g.reviews.Average(r => r.rating) >= avgRating)
                 .Select(g => new
                 {
                     id = g.id,
