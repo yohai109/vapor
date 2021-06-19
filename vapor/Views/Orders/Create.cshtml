@@ -20,7 +20,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <th scope="row" class="gamesid" hidden>@item.id</th>
+                    <th scope="row" hidden><input class="gamesid" type="hidden"value="@item.id" /></th>
                     <td class="embed-responsive embed-responsive-16by9">
                         <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", "Games", new {id = item.images.First().id})>
                     </td>

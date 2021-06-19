@@ -1,12 +1,14 @@
 ﻿$(function () {
     $("#confirm").click(function (e) {
         var data = {
-            gameid : []
+            gamesId : []
         };
 
         $.each($(".gamesid"), function(key, val) {
             console.log(key);
-            console.log(val);
+            console.log(val.value);
+
+            data.gamesId.push(val.value)
         })
 
         $.ajax({

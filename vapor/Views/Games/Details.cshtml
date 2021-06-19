@@ -68,18 +68,22 @@
 
     <a class="btn btn-success" href="/Orders/create?gameid=@Model.id">buy now</a>
     <a class="btn btn-success" id="addToCart">add to cart</a>
-
 </div>
 
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
     {
-    <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> 
+        <a asp-action="Edit" asp-route-id="@Model.id">Edit</a>
     } |
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    <style>
-    </style>
+    <script type="text/javascript" src="~/js/Games/Details.js"></script>
+}
+
+@section Alerts{
+    <div class="alert alert-success mt-2 hide" role="alert" id="cartAlert">
+        Game added to cart successfully!
+    </div>
 }

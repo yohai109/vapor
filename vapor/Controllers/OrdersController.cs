@@ -107,7 +107,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Order(string gameid)
+        public async Task<IActionResult> Order(List<string> gamesId)
         {
             string currUserID = HttpContext.Session.GetString("userid"); ;
             var currCustumer = await _context.User
@@ -115,15 +115,34 @@ namespace vapor.Controllers
                 .Select(u => u.customer)
                 .FirstOrDefaultAsync();
 
-            var order = new Order
+            foreach (var gameid in gamesId)
             {
-                gameId = gameid,
-                customerId = currCustumer.id,
-                date = DateTime.Now
-            };
-
-            _context.Add(order);
+                var order = new Order
+                {
+                    gameId = gameid,
+                    customerId = currCustumer.id,
+                    date = DateTime.Now
+                };
+                _context.Add(order);
+            }
+            
             await _context.SaveChangesAsync();
+            return Json(new { });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Customer")]
+        public IActionResult AddToCart(string gameid)
+        {
+            var cart = new List<String>();
+            if (HttpContext.Session.Keys.Contains("cart"))
+            {
+                cart.AddRange(HttpContext.Session.GetListOfString("cart"));
+            }
+
+            cart.Add(gameid);
+            HttpContext.Session.SetListOfString("cart", cart);
+
             return Json(new { });
         }
 
