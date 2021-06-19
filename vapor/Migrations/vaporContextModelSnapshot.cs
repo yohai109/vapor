@@ -172,7 +172,6 @@ namespace vapor.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("gameId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("date")

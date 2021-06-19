@@ -61,7 +61,7 @@
                     @for (int i = 0; i < Model.game.images.Count; i++)
                     {
                         <div class="carousel-item @(@i == 0 ? "active" : "") ">
-                            <img class="d-block w-100" src="@Url.Action("GetGameImage", new {gameImageid = Model.images.ElementAt(i).id})" />
+                            <img class="d-block w-100" src="@Url.Action("GetGameImage", new {gameImageid = Model.game.images[i].id})" />
                         </div>
                     }
                 </div>
@@ -88,7 +88,7 @@
 
 <div id="reviews" gameId="@Model.game.id"></div>
 
-<a class="btn btn-success" href="/Orders/create?gameid=@Model.game.id">buy now</a>
+<a class="btn btn-success" id="buyNow">buy now</a>
 <a class="btn btn-success" id="addToCart">add to cart</a>
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
@@ -112,7 +112,7 @@
 }
 
 @section Alerts{
-    <div class="alert alert-success mt-2 hide" role="alert" id="cartAlert">
+    <div class="alert alert-success mt-2 hide" role="alert" id="cartAlert" style="display:none;">
         Game added to cart successfully!
     </div>
 }
