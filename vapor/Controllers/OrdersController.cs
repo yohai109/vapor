@@ -29,7 +29,7 @@ namespace vapor.Controllers
             var vaporContext = _context.Order
                 .Include(o => o.customer)
                 .Include(o => o.game)
-                .ThenInclude(g=> g.developer);
+                .ThenInclude(g => g.developer);
             return View(await vaporContext.ToListAsync());
         }
 
@@ -102,7 +102,9 @@ namespace vapor.Controllers
                 .Select(u => u.customer)
                 .FirstOrDefaultAsync();
 
-            foreach (var gameid in HttpContext.Session.GetListOfString("cart"))
+            var cart = HttpContext.Session.GetListOfString("cart");
+
+            foreach (var gameid in cart)
             {
                 var order = new Order
                 {
@@ -112,10 +114,10 @@ namespace vapor.Controllers
                 };
                 _context.Add(order);
             }
-            
+
             await _context.SaveChangesAsync();
 
-            HttpContext.Session.SetListOfString("cart", new List<string>());
+            HttpContext.Session.SetListOfString("cart", new List<String>());
             return Json(new { });
         }
 
@@ -126,10 +128,19 @@ namespace vapor.Controllers
             var cart = new List<String>();
             if (HttpContext.Session.Keys.Contains("cart"))
             {
-                cart.AddRange(HttpContext.Session.GetListOfString("cart"));
+                foreach (var currid in HttpContext.Session.GetListOfString("cart"))
+                {
+                    if (!cart.Contains(currid) && currid != "")
+                    {
+                        cart.Add(currid);
+                    }
+                }
             }
 
-            cart.Add(gameid);
+            if (!cart.Contains(gameid))
+            {
+                cart.Add(gameid);
+            }
             HttpContext.Session.SetListOfString("cart", cart);
 
             return Json(new { });
