@@ -6,30 +6,29 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
 }
-    </tbody>
-</table>
+<div class="row profile-container">
+    @foreach (var item in Model)
+    {
+
+
+
+
+        <div class="profile-card">
+            <div class="profile-card">
+                <h4><b>@item.name</b></h4>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.id">Edit</a>
+                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.id">Details</a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                }
+            </div>
+        </div>
+    }
+</div>
