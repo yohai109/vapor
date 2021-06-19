@@ -30,6 +30,11 @@ namespace vapor.Controllers
             return View(await vaporContext.ToListAsync());
         }
 
+        public IActionResult Payment()
+        {
+            return View();
+        }
+
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -86,7 +91,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> Order(List<string> gamesId)
+        public async Task<IActionResult> Order()
         {
             string currUserID = HttpContext.Session.GetString("userid"); ;
             var currCustumer = await _context.User
@@ -94,7 +99,7 @@ namespace vapor.Controllers
                 .Select(u => u.customer)
                 .FirstOrDefaultAsync();
 
-            foreach (var gameid in gamesId)
+            foreach (var gameid in HttpContext.Session.GetListOfString("cart"))
             {
                 var order = new Order
                 {
@@ -106,6 +111,8 @@ namespace vapor.Controllers
             }
             
             await _context.SaveChangesAsync();
+
+            HttpContext.Session.SetListOfString("cart", new List<string>());
             return Json(new { });
         }
 
