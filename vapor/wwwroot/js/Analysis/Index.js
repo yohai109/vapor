@@ -24,11 +24,14 @@ $(document).ready(function () {
  * Input should be a list of objects containing time, value fields
  */
 function drawTimeSeariesGraph(graphID, graphData) {
+    // Date format in graph disaplay
+    var formatDate = d3.timeFormat("%d/%m/%Y");
+
     graphData.sort((d1, d2) => (d3.ascending(d1.time, d2.time)))
 
     var xAsixDomain = d3.extent(graphData, function (d) { return d.time; });
     var dataYrange = [0, d3.max(graphData, function (d) { return d.value; })];
- 
+
     var margin = { top: 10, right: 30, bottom: 50, left: 60 }
     var width = 700 - margin.left - margin.right
     var height = 460 - margin.top - margin.bottom;
@@ -65,7 +68,7 @@ function drawTimeSeariesGraph(graphID, graphData) {
     var histogram = d3.histogram()
         .value(function (d) { return d.time; })
         .domain(xAxis.domain())
-        .thresholds(xAxis.ticks(70)); 
+        .thresholds(xAxis.ticks(70));
 
     // And apply this function to data to get the bins
     var bins = histogram(graphData);
@@ -86,7 +89,12 @@ function drawTimeSeariesGraph(graphID, graphData) {
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Games added");  
+        .text("Games added");
+
+    // Define the div for the tooltip
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
     // append the bar rectangles to the svg element
     svg.selectAll("rect")
@@ -95,22 +103,52 @@ function drawTimeSeariesGraph(graphID, graphData) {
         .append("rect")
         .attr("x", 1)
         .attr("transform", function (d) {
-            let gamesAmount = 0
-            d.forEach(d => {
-                gamesAmount += d.value
-            })
-            return "translate(" + xAxis(d.x0) + "," + yAxis(gamesAmount) + ")";
+            let values = 0
+            d.forEach(d => { values += d.value })
+            return "translate(" + xAxis(d.x0) + "," + yAxis(values) + ")";
         })
         .attr("width", function (d) { return xAxis(d.x1) - xAxis(d.x0) + 1; })
         .attr("height", function (d) {
-            let gamesAmount = 0
-            d.forEach(d => {
-                gamesAmount += d.value
-            })
-            return height - yAxis(gamesAmount);
+            let values = 0
+            d.forEach(d => { values += d.value })
+            return height - yAxis(values);
+        })
+        .attr("data-time-start", function (d) {     // Data for tooltip
+            console.log(d.length)
+            console.log(formatDate(d[0]))
+            return d.length ? formatDate(d[0].time) : "";
+        })
+        .attr("data-time-end", function (d) {       // Data for tooltip
+            return d.length ? formatDate(d[d.length - 1].time) : "";
+        })
+        .attr("data-values", function (d) {         // Data for tooltip                        
+            let values = 0
+            d.forEach(d => { values += d.value })
+            return values
+        })
+        .on("mouseenter", function (event) {
+            let timeStart = event.target.getAttribute("data-time-start")
+            let timeEnd = event.target.getAttribute("data-time-end")
+            let values = event.target.getAttribute("data-values")
+
+            let tooltipContent = timeStart != timeEnd ? timeStart + "-" + timeEnd : timeStart
+            tooltipContent += "<br /> Valus: " + values
+
+            
+            div.html(tooltipContent)
+                .style("left", event.pageX + "px")
+                .style("top", event.pageY + "px");
+            div.transition()
+                .duration(20)
+                .style("opacity", .9);
+        })
+        .on("mouseleave", function (d) {
+            div.transition()
+                .duration(100)
+                .style("opacity", 0);
         })
         .style("fill", "#69b3a2")
- 
+
 }
 
 
