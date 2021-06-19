@@ -1,34 +1,43 @@
-﻿@model vapor.Models.Order
+﻿@model IEnumerable<vapor.Models.Game>
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Order details";
 }
 
-<h1>Create</h1>
+<h1>order details</h1>
+<div>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col" hidden>ID</th>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Developer</th>
+                <th scope="col">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <th scope="row" hidden><input class="gamesid" type="hidden"value="@item.id" /></th>
+                    <td class="embed-responsive embed-responsive-16by9">
+                        <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", "Games", new {id = item.images.First().id})>
+                    </td>
+                    <td>@item.name</td>
+                    <td>@item.developer.name</td>
+                    <td>@item.price</td>
+                </tr>
+            }
 
-<h4>Order</h4>
-<hr />
+        </tbody>
+    </table>
+</div>
+
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="gameId" class="control-label"></label>
-                <select asp-for="gameId" class ="form-control" asp-items="ViewBag.gameId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="customerId" class="control-label"></label>
-                <select asp-for="customerId" class ="form-control" asp-items="ViewBag.customerId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="date" class="control-label"></label>
-                <input asp-for="date" class="form-control" />
-                <span asp-validation-for="date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="col-4">
+        @*<input type="hidden" value="@Model.id" id="gameid" />*@
+        <button id="confirm" class="btn btn-primary">Buy</button>
     </div>
 </div>
 
@@ -38,4 +47,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/js/Orders/Create.js"></script>
 }
