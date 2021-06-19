@@ -11,7 +11,6 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    [Authorize]
     public class GenresController : Controller
     {
         private readonly vaporContext _context;
@@ -22,6 +21,7 @@ namespace vapor.Controllers
         }
 
         // GET: Genres
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Genre.ToListAsync());

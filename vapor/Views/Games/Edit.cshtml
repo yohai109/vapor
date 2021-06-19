@@ -44,7 +44,7 @@
                         @foreach (GameImage gi in Model.images)
                         {
                             <div class="game-image">
-                                <img src="@Url.Action("GetGameImage", new { id = gi.id })" data-image-id="@gi.id" />
+                                <img src="@Url.Action("GetGameImage", new { gameImageid = gi.id })" data-image-id="@gi.id" />
                                 <button type="button" class="btn btn-danger action" onclick="taggleDelete('@gi.id')">
                                     <i class="bi bi-trash-fill"></i>
                                 </button>

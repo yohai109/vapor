@@ -81,6 +81,7 @@ namespace vapor.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
+            dynamic model = new ExpandoObject();
             if (id == null)
             {
                 return NotFound();
@@ -101,8 +102,40 @@ namespace vapor.Controllers
             }
 
             loadedGame.game.images = loadedGame.images;
+            model.game = loadedGame.game;
+            loadedGame.game.images.Count();
+            string currUserID = HttpContext.Session.GetString("userid");
+            
+            var currCustomer = await _context.User
+                    .Where(u => u.Id == currUserID)
+                    .Select(u => u.customer)
+                    .FirstOrDefaultAsync();
 
-            return View(loadedGame.game);
+            var customerReview = await _context.Review
+                .Where(r => r.cusotmer == currCustomer)
+                .FirstOrDefaultAsync();
+
+            model.currentCustomer = currCustomer;
+            model.customerReview = customerReview;
+
+            var otherReviews = await _context.Review
+                .Where(r => r.cusotmer != currCustomer)
+                .ToListAsync();
+
+            model.reviews = otherReviews;
+
+
+            var avarageRate = await _context.Review
+                .Where(r => r.gameId.Equals(id))
+                .GroupBy(r => r.gameId)
+                .Select(gb => gb.Average(r => r.rating))
+                .FirstOrDefaultAsync();
+                
+
+            model.avarageRate = avarageRate;
+
+
+            return View(model);
         }
         [Authorize(Roles = "Admin,Developer")]
         // GET: Games/Create
@@ -117,13 +150,15 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game,
+        public async Task<IActionResult> Create([Bind("id,price,name,description")] Game game,
                                                 List<IFormFile> newImages)
         {
             if (ModelState.IsValid)
             {
                 GameImage gameImage;
                 game.images = new List<GameImage>();
+                game.releaseDate = DateTime.Now;
+
 
                 // Saves all the new images
                 foreach (IFormFile image in newImages)
@@ -160,14 +195,32 @@ namespace vapor.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> GetGameImage(string id)
+        public async Task<ActionResult> GetGameImage(string gameImageid)
         {
-            if (id == null)
+            if (gameImageid == null)
             {
                 return NotFound();
             }
 
-            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == id);
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == gameImageid);
+
+            if (gameImage == null)
+            {
+                return NotFound();
+            }
+
+            byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
+            return this.File(fileBytes, gameImage.fileContentType);
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetGameImageByGameId(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.gameID == gameId);
 
             if (gameImage == null)
             {
@@ -223,7 +276,11 @@ namespace vapor.Controllers
                 try
                 {
                     // Updates game data
-                    _context.Update(game);
+                    Game updatedGame = await _context.Game.FirstAsync(g => g.id == id);
+                    updatedGame.name = game.name;
+                    updatedGame.description = game.description;
+                    updatedGame.price = game.price;
+                    _context.Update(updatedGame);
 
                     // Deletes the chosen images
                     _context.GameImage.Where((gi) => imagesToDelete.Contains(gi.id)).ToList()
@@ -241,7 +298,7 @@ namespace vapor.Controllers
                             gameImage = new GameImage();
                             gameImage.fileBase64 = Convert.ToBase64String(fileBytes);
                             gameImage.fileContentType = image.ContentType;
-                            gameImage.game = game;
+                            gameImage.game = updatedGame;
                             _context.Add(gameImage);
                         }
                     }
@@ -321,6 +378,63 @@ namespace vapor.Controllers
                 });
 
             return Json(await searchResult.ToListAsync());
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Reviews(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            var reviews = _context.Review
+                .Where(r => r.gameId.Equals(gameId))
+                .OrderByDescending(r => r.lastUpdate)
+                .Select(r => new Review
+                {
+                    gameId = r.gameId,
+                    comment = r.comment,
+                    rating = r.rating,
+                    cusotmer = new Customer
+                    {
+                        name = r.cusotmer.name
+                    }
+                });
+
+            if (reviews == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await reviews.ToListAsync());
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> RatingAvarage(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            var avarageRate = _context.Review
+                .Where(r => r.gameId.Equals(gameId))
+                .GroupBy(r => r.gameId)
+                .Select(gb => new
+                {
+                    avg = gb.Average(r => r.rating)
+                });
+
+
+            if (avarageRate == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await avarageRate.ToListAsync());
         }
 
         private bool GameExists(string id)

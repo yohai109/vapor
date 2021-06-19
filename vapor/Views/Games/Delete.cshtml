@@ -51,7 +51,7 @@
                 @foreach (GameImage gi in Model.images)
                 {
                     <div class="game-image">
-                        <img src="@Url.Action("GetGameImage", new { id = gi.id })" />
+                        <img src="@Url.Action("GetGameImage", new { gameImageid = gi.id })" />
                     </div>
                 }
             </div>

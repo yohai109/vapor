@@ -26,7 +26,10 @@ namespace vapor.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var vaporContext = _context.Order.Include(o => o.customer).Include(o => o.game);
+            var vaporContext = _context.Order
+                .Include(o => o.customer)
+                .Include(o => o.game)
+                .ThenInclude(g=> g.developer);
             return View(await vaporContext.ToListAsync());
         }
 
@@ -222,5 +225,6 @@ namespace vapor.Controllers
         {
             return _context.Order.Any(e => e.customerId == id);
         }
+        /*public async Task<IActionResult> ConvertUserIdTo*/
     }
 }
