@@ -5,11 +5,11 @@ $(function () {
     $.ajax({
         url: '/games/RatingAvarage?gameId=' + id
     }).done(function (data) {
-        $('#avaregeRate').html('').append(data[0].avg.toFixed(2));
+       // $('#avaregeRate').html('').append(data[0].avg.toFixed(2));
     })
 
 
-    $.ajax({
+    /*$.ajax({
         url: '/games/reviews?gameId=' + id
     }).done(function (data) {
         $('#reviews').html('');
@@ -23,7 +23,7 @@ $(function () {
 
             $('#reviews').append(reviewTemp);
         });
-    })
+    })*/
    
 
     $("#addToCart").click(function (e) {

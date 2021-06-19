@@ -39,7 +39,7 @@
                 <div class="col-md-9">
                     @if (Model.avarageRate != null)
                     {
-                        <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill"> @Model.avarageRate</i></span>
+                        <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">@String.Format("{0:0.00}", Model.avarageRate)</i></span>
                     }
                     else
                     {
@@ -85,6 +85,14 @@
     } |
     <a asp-action="Index">Back to List</a>
 </div>
+    @foreach (var review in Model.reviews)
+    {
+        <div class="form-group mt-3">
+            <label>@review.cusotmer.name</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>@review.comment</textarea>
+            <i class="bi bi-star-fill">@review.rating</i>
+        </div>
+    }
 
 <div id="reviews" gameId="@Model.game.id"></div>
 

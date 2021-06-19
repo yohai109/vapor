@@ -50,7 +50,6 @@ namespace vapor.Controllers
                 }).ToListAsync();
 
 
-
             dynamic model = new ExpandoObject();
             model.games = await games;
 
@@ -87,7 +86,6 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-
             var loadedGame = await _context.Game
                 .Select(game => new
                 {
@@ -118,9 +116,23 @@ namespace vapor.Controllers
             model.currentCustomer = currCustomer;
             model.customerReview = customerReview;
 
-            var otherReviews = await _context.Review
+            /*var otherReviews = await _context.Review
                 .Where(r => r.cusotmer != currCustomer)
-                .ToListAsync();
+                .ToListAsync();*/
+
+            var otherReviews = _context.Review
+                .Where(r => r.gameId.Equals(id) && r.cusotmer != currCustomer)
+                .OrderByDescending(r => r.lastUpdate)
+                .Select(r => new Review
+                {
+                    gameId = r.gameId,
+                    comment = r.comment,
+                    rating = r.rating,
+                    cusotmer = new Customer
+                    {
+                        name = r.cusotmer.name
+                    }
+                });
 
             model.reviews = otherReviews;
 
