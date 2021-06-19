@@ -81,6 +81,7 @@ namespace vapor.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
+            dynamic model = new ExpandoObject();
             if (id == null)
             {
                 return NotFound();
@@ -101,8 +102,40 @@ namespace vapor.Controllers
             }
 
             loadedGame.game.images = loadedGame.images;
+            model.game = loadedGame.game;
+            loadedGame.game.images.Count();
+            string currUserID = HttpContext.Session.GetString("userid");
+            
+            var currCustomer = await _context.User
+                    .Where(u => u.Id == currUserID)
+                    .Select(u => u.customer)
+                    .FirstOrDefaultAsync();
 
-            return View(loadedGame.game);
+            var customerReview = await _context.Review
+                .Where(r => r.cusotmer == currCustomer)
+                .FirstOrDefaultAsync();
+
+            model.currentCustomer = currCustomer;
+            model.customerReview = customerReview;
+
+            var otherReviews = await _context.Review
+                .Where(r => r.cusotmer != currCustomer)
+                .ToListAsync();
+
+            model.reviews = otherReviews;
+
+
+            var avarageRate = await _context.Review
+                .Where(r => r.gameId.Equals(id))
+                .GroupBy(r => r.gameId)
+                .Select(gb => gb.Average(r => r.rating))
+                .FirstOrDefaultAsync();
+                
+
+            model.avarageRate = avarageRate;
+
+
+            return View(model);
         }
         [Authorize(Roles = "Admin,Developer")]
         // GET: Games/Create
@@ -327,6 +360,63 @@ namespace vapor.Controllers
                 });
 
             return Json(await searchResult.ToListAsync());
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Reviews(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            var reviews = _context.Review
+                .Where(r => r.gameId.Equals(gameId))
+                .OrderByDescending(r => r.lastUpdate)
+                .Select(r => new Review
+                {
+                    gameId = r.gameId,
+                    comment = r.comment,
+                    rating = r.rating,
+                    cusotmer = new Customer
+                    {
+                        name = r.cusotmer.name
+                    }
+                });
+
+            if (reviews == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await reviews.ToListAsync());
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> RatingAvarage(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            var avarageRate = _context.Review
+                .Where(r => r.gameId.Equals(gameId))
+                .GroupBy(r => r.gameId)
+                .Select(gb => new
+                {
+                    avg = gb.Average(r => r.rating)
+                });
+
+
+            if (avarageRate == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await avarageRate.ToListAsync());
         }
 
         private bool GameExists(string id)
