@@ -87,9 +87,11 @@ namespace vapor.Controllers
             }
 
             var loadedGame = await _context.Game
+                .Include(g => g.developer)
                 .Select(game => new
                 {
                     game,
+                    game.developer,
                     images = game.images.Select(i => new GameImage { id = i.id }).ToList()
                 })
                 .FirstOrDefaultAsync(g => g.game.id == id);
@@ -100,6 +102,7 @@ namespace vapor.Controllers
             }
 
             loadedGame.game.images = loadedGame.images;
+            loadedGame.game.developer = loadedGame.developer;
             model.game = loadedGame.game;
             loadedGame.game.images.Count();
             string currUserID = HttpContext.Session.GetString("userid");
@@ -128,6 +131,8 @@ namespace vapor.Controllers
                     gameId = r.gameId,
                     comment = r.comment,
                     rating = r.rating,
+                    writtenAt = r.writtenAt,
+                    lastUpdate = r.lastUpdate,
                     cusotmer = new Customer
                     {
                         name = r.cusotmer.name
@@ -135,6 +140,23 @@ namespace vapor.Controllers
                 });
 
             model.reviews = otherReviews;
+
+            var currUserReview = _context.Review
+                .Where(r => r.gameId.Equals(id) && r.cusotmer == currCustomer)
+                .Select(r => new Review
+                {
+                    gameId = r.gameId,
+                    comment = r.comment,
+                    rating = r.rating,
+                    writtenAt = r.writtenAt,
+                    lastUpdate = r.lastUpdate,
+                    cusotmer = new Customer
+                    {
+                        name = r.cusotmer.name
+                    }
+                });
+
+            model.currUserReview = currUserReview;
 
 
             var avarageRate = await _context.Review

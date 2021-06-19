@@ -15,6 +15,14 @@
             </div>
             <div class="row">
                 <div class="col-md-3">
+                    <h5>Developer</h5>
+                </div>
+                <div class="col-md-9">
+                    <span>@(Model.game.developer.name)</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
                     <h5>Description</h5>
                 </div>
                 <div class="col-md-9">
@@ -85,14 +93,19 @@
     } |
     <a asp-action="Index">Back to List</a>
 </div>
-    @foreach (var review in Model.reviews)
-    {
-        <div class="form-group mt-3">
-            <label>@review.cusotmer.name</label>
+@foreach (var review in Model.reviews)
+{
+        <div class="form-group mt-3 border border-dark">
+            <h5>@review.cusotmer.name</h5>
+            <i class="bi bi-clock"> Written at @review.writtenAt</i> <i class="bi bi-clock-fill"> Last update @review.lastUpdate</i>
+            @*@if (DateTime.Compare(@review.writtenAt, @review.lastUpdate) > 0)
+            {
+                <i class="bi bi-clock-fill"> Last update @review.lastUpdate</i>
+            }*@
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>@review.comment</textarea>
             <i class="bi bi-star-fill">@review.rating</i>
         </div>
-    }
+}
 
 <div id="reviews" gameId="@Model.game.id"></div>
 
