@@ -34,7 +34,14 @@
                 </div>
                 <span asp-validation-for="comment" class="text-danger"></span>
             </div>
-
+            <div class="form-floating mb-3">
+                <div class="form-group" hidden>
+                    <input asp-for="gameId" class="form-control" id="floatingInput" placeholder="" />
+                </div>
+                <div class="form-group" hidden>
+                    <input asp-for="customerId" class="form-control" id="floatingInput" placeholder="" />
+                </div>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

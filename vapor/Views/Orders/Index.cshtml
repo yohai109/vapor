@@ -16,9 +16,7 @@
                     <p>Customer:@item.customer.name</p>
                     <p>Game:@item.game.name</p>
                     <p>Date:@item.date</p>
-                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item">Edit</a> |
-                    <a class="btn btn-primary" asp-action="Details" asp-route-id="@item">Details</a> |
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item">Delete</a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-gameid='@item.gameId' asp-route-customerid="@item.customerId" >Refund</a>
 
                 </div>
             </div>

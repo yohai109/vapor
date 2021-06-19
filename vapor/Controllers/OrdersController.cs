@@ -184,31 +184,25 @@ namespace vapor.Controllers
         }
 
         // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(String gameid, String customerid)
         {
-            if (id == null)
+            if (gameid == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Order
-                .Include(o => o.customer)
-                .Include(o => o.game)
-                .FirstOrDefaultAsync(m => m.customerId == id);
-            if (order == null)
+            if (customerid == null)
             {
                 return NotFound();
             }
-
-            return View(order);
+            var order = await _context.Order.Where(o => o.customerId == customerid).Where(o => o.gameId == gameid).ToListAsync();
+            return View(order.FirstOrDefault());
         }
 
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(Order order)
         {
-            var order = await _context.Order.FindAsync(id);
             _context.Order.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
