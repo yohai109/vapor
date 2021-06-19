@@ -108,7 +108,7 @@ namespace vapor.Controllers
         // GET: Games/Create
         public IActionResult Create()
         {
-            ViewData["genresList"] = new SelectList(_context.Genre, nameof(Genre.id), nameof(Genre.name));
+            ViewBag.genreSelectList = new SelectList(_context.Genre, nameof(Genre.id), nameof(Genre.name)).ToList();
             return View();
         }
 
@@ -118,7 +118,7 @@ namespace vapor.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,price,name,description")] Game game,
-                                                List<String> genres,
+                                                List<String> newGenreIds,
                                                 List<IFormFile> newImages)
         {
 
@@ -154,7 +154,7 @@ namespace vapor.Controllers
                 game.developer = currDev;
 
                 // Connects between the game to the game genres
-                var genresList = await _context.Genre.Where(g => genres.Contains(g.id)).ToListAsync();
+                var genresList = await _context.Genre.Where(g => newGenreIds.Contains(g.id)).ToListAsync();
                 game.genres = genresList;
 
                 _context.Add(game);
@@ -209,7 +209,7 @@ namespace vapor.Controllers
             }
 
             loadedGame.game.images = loadedGame.images;
-            var genreSelectList = new SelectList(_context.Genre, nameof(Genre.id), nameof(Genre.name));
+            var genreSelectList = new SelectList(_context.Genre, nameof(Genre.id), nameof(Genre.name)).ToList();
 
             List<String> relatedGenreIds = loadedGame.game.genres.Select(g => g.id).ToList();
             foreach (var item in genreSelectList)
@@ -219,7 +219,7 @@ namespace vapor.Controllers
                     item.Selected = true;
                 }
             }
-            ViewData["genresList"] = genreSelectList;
+            ViewBag.genreSelectList = genreSelectList;
             return View(loadedGame.game);
         }
 
@@ -230,7 +230,7 @@ namespace vapor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id,
                                               [Bind("id,name,description,price")] Game game,
-                                              List<String> genres,
+                                              List<String> updatedGenreIds,
                                               List<IFormFile> newImages,
                                               List<string> imagesToDelete)
         {
@@ -252,32 +252,7 @@ namespace vapor.Controllers
                     updatedGame.price = game.price;
 
                     // Connects between the game to the game genres
-                    //List<Genre> newGners = await _context.Genre.Where(g => genres.Contains(g.id)).ToListAsync();
-
-                    // Removed genres
-                    //foreach (Genre genre in updatedGame.genres.ToList())
-                    //{
-                    //    if (!genres.Contains(genre.id))
-                    //        updatedGame.genres.Remove(genre);
-                    //}
-
-                    //// Adds nre genres
-                    //List<String> genresToAdd = new List<string>();
-                    //foreach (String genreId in genres.ToList())
-                    //{
-                    //    if (!game.genres.Any(g => g.id == genreId))
-                    //        genresToAdd.Add(genreId);
-                    //}
-                    //if (genresToAdd.Count() > 0)
-                    //{
-                    //    var genresList = await _context.Genre.Where(g => genresToAdd.Contains(g.id)).ToListAsync();
-
-                    //    foreach (Genre g in genresList)
-                    //    {
-                    //        updatedGame.genres.Add(g);
-                    //    }
-                    //}
-                    var genresList = await _context.Genre.Where(g => genres.Contains(g.id)).ToListAsync();
+                    var genresList = await _context.Genre.Where(g => updatedGenreIds.Contains(g.id)).ToListAsync();
                     updatedGame.genres.Clear();
                     foreach (Genre genre in genresList)
                     {
