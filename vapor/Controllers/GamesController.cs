@@ -106,12 +106,6 @@ namespace vapor.Controllers
             loadedGame.game.images.Count();
             string currUserID = HttpContext.Session.GetString("userid");
             
-            /*if(currUserID == null)
-            {
-                model.currentCustomer = null;
-                model.customerReview = null;
-            }*/
-            //else { }
             var currCustomer = await _context.User
                     .Where(u => u.Id == currUserID)
                     .Select(u => u.customer)
@@ -136,16 +130,9 @@ namespace vapor.Controllers
                 .GroupBy(r => r.gameId)
                 .Select(gb => gb.Average(r => r.rating))
                 .FirstOrDefaultAsync();
-                /*.Select(gb => new
-                {
-                    avg = gb.Average(r => r.rating)
-                });*/
+                
 
             model.avarageRate = avarageRate;
-
-
-            /*game.developerId = currDev.id;
-            game.developer = currDev;*/
 
 
             return View(model);

@@ -1,5 +1,5 @@
-﻿$("body", function insertIntoPage() {
-
+$(function () {
+    $("#cartAlert").hide();
 
     var id = $('#reviews').attr("gameId");
     $.ajax({
@@ -24,11 +24,7 @@
             $('#reviews').append(reviewTemp);
         });
     })
-})
-
-$(function () {
-
-    $("#cartAlert").hide();
+   
 
     $("#addToCart").click(function (e) {
         $.ajax({
