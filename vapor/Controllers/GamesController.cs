@@ -81,6 +81,7 @@ namespace vapor.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
+            dynamic model = new ExpandoObject();
             if (id == null)
             {
                 return NotFound();
@@ -101,8 +102,53 @@ namespace vapor.Controllers
             }
 
             loadedGame.game.images = loadedGame.images;
+            model.game = loadedGame.game;
+            loadedGame.game.images.Count();
+            string currUserID = HttpContext.Session.GetString("userid");
+            
+            /*if(currUserID == null)
+            {
+                model.currentCustomer = null;
+                model.customerReview = null;
+            }*/
+            //else { }
+            var currCustomer = await _context.User
+                    .Where(u => u.Id == currUserID)
+                    .Select(u => u.customer)
+                    .FirstOrDefaultAsync();
 
-            return View(loadedGame.game);
+            var customerReview = await _context.Review
+                .Where(r => r.cusotmer == currCustomer)
+                .FirstOrDefaultAsync();
+
+            model.currentCustomer = currCustomer;
+            model.customerReview = customerReview;
+
+            var otherReviews = await _context.Review
+                .Where(r => r.cusotmer != currCustomer)
+                .ToListAsync();
+
+            model.reviews = otherReviews;
+
+
+            var avarageRate = await _context.Review
+                .Where(r => r.gameId.Equals(id))
+                .GroupBy(r => r.gameId)
+                .Select(gb => gb.Average(r => r.rating))
+                .FirstOrDefaultAsync();
+                /*.Select(gb => new
+                {
+                    avg = gb.Average(r => r.rating)
+                });*/
+
+            model.avarageRate = avarageRate;
+
+
+            /*game.developerId = currDev.id;
+            game.developer = currDev;*/
+
+
+            return View(model);
         }
         [Authorize(Roles = "Admin,Developer")]
         // GET: Games/Create
