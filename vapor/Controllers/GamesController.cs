@@ -117,13 +117,15 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,name,description,releaseDate")] Game game,
+        public async Task<IActionResult> Create([Bind("id,price,name,description")] Game game,
                                                 List<IFormFile> newImages)
         {
             if (ModelState.IsValid)
             {
                 GameImage gameImage;
                 game.images = new List<GameImage>();
+                game.releaseDate = DateTime.Now;
+
 
                 // Saves all the new images
                 foreach (IFormFile image in newImages)
@@ -223,7 +225,11 @@ namespace vapor.Controllers
                 try
                 {
                     // Updates game data
-                    _context.Update(game);
+                    Game updatedGame = await _context.Game.FirstAsync(g => g.id == id);
+                    updatedGame.name = game.name;
+                    updatedGame.description = game.description;
+                    updatedGame.price = game.price;
+                    _context.Update(updatedGame);
 
                     // Deletes the chosen images
                     _context.GameImage.Where((gi) => imagesToDelete.Contains(gi.id)).ToList()
@@ -241,7 +247,7 @@ namespace vapor.Controllers
                             gameImage = new GameImage();
                             gameImage.fileBase64 = Convert.ToBase64String(fileBytes);
                             gameImage.fileContentType = image.ContentType;
-                            gameImage.game = game;
+                            gameImage.game = updatedGame;
                             _context.Add(gameImage);
                         }
                     }

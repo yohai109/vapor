@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <h2>Games added per month</h2>
+    <br />
+    <div id="games-added-graph"></div>
+    <h2>orders graph</h2>
+    <br />
+    <div id="orders-graph"></div>
+    <h2>Reviews graph</h2>
+    <br />
+    <div id="game-reviews-graph"></div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/d3/d3.min.js"></script>
+    <script src="~/js/Analysis/Index.js"></script>
+    <link rel="stylesheet" href="~/css/Analysis/Index.css" />
+}
+
+

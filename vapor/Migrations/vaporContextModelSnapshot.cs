@@ -198,7 +198,7 @@ namespace vapor.Migrations
                     b.Property<string>("cusotmerid")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("gameid")
+                    b.Property<string>("gameId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("lastUpdate")
@@ -214,7 +214,7 @@ namespace vapor.Migrations
 
                     b.HasIndex("cusotmerid");
 
-                    b.HasIndex("gameid");
+                    b.HasIndex("gameId");
 
                     b.ToTable("Review");
                 });
@@ -313,7 +313,7 @@ namespace vapor.Migrations
 
                     b.HasOne("vapor.Models.Game", "game")
                         .WithMany("reviews")
-                        .HasForeignKey("gameid");
+                        .HasForeignKey("gameId");
 
                     b.Navigation("cusotmer");
 
