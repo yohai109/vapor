@@ -43,6 +43,30 @@
             <span>@Html.DisplayFor(model => model.releaseDate)</span>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h5>
+                @Html.DisplayNameFor(model => model.genres)
+            </h5>
+        </div>
+        <div class="col-md-9">
+            @if (Model.genres.Count() > 0)
+            {
+                <div class="row">
+                    @foreach (var genre in Model.genres)
+                    {
+                        <h4 class="game-genre">
+                            <span class="badge badge-primary">@genre.name</span>
+                        </h4>
+                    }
+                </div>
+            }
+            else
+            {
+                <h4> No genres to present</h4>
+            }
+        </div>
+    </div>
     <div class="row" style="width:70%">
         <div id="image-carousel" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
@@ -87,6 +111,7 @@
 
 @section Scripts {
     <script type="text/javascript" src="~/js/Games/Details.js"></script>
+    <link rel="stylesheet" href="~/css/Games/Games.css" />
 }
 
 @section Alerts{
