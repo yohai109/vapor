@@ -11,12 +11,13 @@
     <h4>Game</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.developer)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.developer.id)
-        </dd class>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.developer.name)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.name)
         </dt>
         <dd class="col-sm-10">
@@ -39,6 +40,26 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.releaseDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.genres)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.genres.Count() > 0)
+            {
+                <div class="row">
+                    @foreach (var genre in Model.genres)
+                    {
+                        <h4 class="game-genre">
+                            <span class="badge badge-primary">@genre.name</span>
+                        </h4>
+                    }
+                </div>
+            }
+            else
+            {
+                <h4> No genres to present</h4>
+            }
         </dd>
     </dl>
 
@@ -68,4 +89,9 @@
 
 @section Scripts {
     <link rel="stylesheet" href="~/css/Games/GameImages.css" />
+    <style>
+        .game-genre {
+            margin-right: .7rem;
+        }
+    </style>
 }
