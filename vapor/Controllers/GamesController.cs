@@ -88,6 +88,7 @@ namespace vapor.Controllers
 
 
             var loadedGame = await _context.Game
+                 .Include(g => g.developer)
                 .Select(game => new
                 {
                     game,
@@ -310,6 +311,7 @@ namespace vapor.Controllers
 
             var loadedGame = await _context.Game
               .Include(g => g.genres)
+              .Include(g => g.developer)
               .Select(game => new
               {
                   game,
