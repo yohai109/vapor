@@ -81,6 +81,7 @@ namespace vapor.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
+            dynamic model = new ExpandoObject();
             if (id == null)
             {
                 return NotFound();
@@ -103,8 +104,40 @@ namespace vapor.Controllers
             }
 
             loadedGame.game.images = loadedGame.images;
+            model.game = loadedGame.game;
+            loadedGame.game.images.Count();
+            string currUserID = HttpContext.Session.GetString("userid");
 
-            return View(loadedGame.game);
+            var currCustomer = await _context.User
+                    .Where(u => u.Id == currUserID)
+                    .Select(u => u.customer)
+                    .FirstOrDefaultAsync();
+
+            var customerReview = await _context.Review
+                .Where(r => r.cusotmer == currCustomer)
+                .FirstOrDefaultAsync();
+
+            model.currentCustomer = currCustomer;
+            model.customerReview = customerReview;
+
+            var otherReviews = await _context.Review
+                .Where(r => r.cusotmer != currCustomer)
+                .ToListAsync();
+
+            model.reviews = otherReviews;
+
+
+            var avarageRate = await _context.Review
+                .Where(r => r.gameId.Equals(id))
+                .GroupBy(r => r.gameId)
+                .Select(gb => gb.Average(r => r.rating))
+                .FirstOrDefaultAsync();
+
+
+            model.avarageRate = avarageRate;
+
+
+            return View(model);
         }
         [Authorize(Roles = "Admin,Developer")]
         // GET: Games/Create
@@ -170,14 +203,32 @@ namespace vapor.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> GetGameImage(string id)
+        public async Task<ActionResult> GetGameImage(string gameImageId)
         {
-            if (id == null)
+            if (gameImageId == null)
             {
                 return NotFound();
             }
 
-            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == id);
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == gameImageId);
+
+            if (gameImage == null)
+            {
+                return NotFound();
+            }
+
+            byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
+            return this.File(fileBytes, gameImage.fileContentType);
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetGameImageByGameId(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.gameID == gameId);
 
             if (gameImage == null)
             {
@@ -336,20 +387,25 @@ namespace vapor.Controllers
         {
             var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
             _context.Game.Remove(game);
+            //delete all reviews of this game
+            var reviews = await _context.Review.Where(r => r.gameId == id).ToListAsync();
+            _context.Review.RemoveRange(reviews);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Search(string query, List<String> genres, List<String> developers)
+        public async Task<IActionResult> Search(string query, List<String> genres, List<String> developers, float avgRating = 0)
         {
             var searchResult = _context.Game
                 .Include(g => g.genres)
                 .Include(g => g.developer)
-                .Where(g => (query != null && query != "") ? g.name.Contains(query) : true)
-                .Where(g => (genres != null && genres.Count != 0) ? g.genres.Any(gg => genres.Contains(gg.id)) : true)
-                .Where(g => (developers != null && developers.Count != 0) ? developers.Contains(g.developer.id) : true)
+                .Include(g => g.reviews)
+                .Where(g => ( query != null && query != "" ) ? g.name.Contains(query) : true)
+                .Where(g => ( genres != null && genres.Count != 0 ) ? g.genres.Any(gg => genres.Contains(gg.id)) : true)
+                .Where(g => ( developers != null && developers.Count != 0 ) ? developers.Contains(g.developer.id) : true)
+                .Where(g => g.reviews.Average(r => r.rating) >= avgRating)
                 .Select(g => new
                 {
                     id = g.id,
@@ -360,6 +416,63 @@ namespace vapor.Controllers
                 });
 
             return Json(await searchResult.ToListAsync());
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Reviews(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            var reviews = _context.Review
+                .Where(r => r.gameId.Equals(gameId))
+                .OrderByDescending(r => r.lastUpdate)
+                .Select(r => new Review
+                {
+                    gameId = r.gameId,
+                    comment = r.comment,
+                    rating = r.rating,
+                    cusotmer = new Customer
+                    {
+                        name = r.cusotmer.name
+                    }
+                });
+
+            if (reviews == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await reviews.ToListAsync());
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> RatingAvarage(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            var avarageRate = _context.Review
+                .Where(r => r.gameId.Equals(gameId))
+                .GroupBy(r => r.gameId)
+                .Select(gb => new
+                {
+                    avg = gb.Average(r => r.rating)
+                });
+
+
+            if (avarageRate == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await avarageRate.ToListAsync());
         }
 
         private bool GameExists(string id)

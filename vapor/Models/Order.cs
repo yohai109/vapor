@@ -10,8 +10,6 @@ namespace vapor.Models
 {
     public class Order
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
         public string gameId { get; set; }
         public string customerId { get; set; }
         public DateTime date { get; set; }

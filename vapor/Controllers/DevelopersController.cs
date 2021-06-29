@@ -26,7 +26,7 @@ namespace vapor.Controllers
             _twitterService = twitterService;
         }
 
-        [Authorize(Roles = "Admin,Developer")]
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Developer.ToListAsync());

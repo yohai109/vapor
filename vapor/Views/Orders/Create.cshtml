@@ -9,7 +9,6 @@
     <table class="table table-dark">
         <thead>
             <tr>
-                <th scope="col" hidden>ID</th>
                 <th scope="col">Image</th>
                 <th scope="col">Name</th>
                 <th scope="col">Developer</th>
@@ -20,33 +19,41 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <th scope="row" hidden><input class="gamesid" type="hidden"value="@item.id" /></th>
                     <td class="embed-responsive embed-responsive-16by9">
-                        <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", "Games", new {id = item.images.First().id})>
+                        <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", "Games", new {gameImageid = item.images.First().id})>
                     </td>
                     <td>@item.name</td>
                     <td>@item.developer.name</td>
                     <td>@item.price</td>
                 </tr>
             }
-
+            <tr>
+                <td>Total</td>
+                <td></td>
+                <td></td>
+                <td>@Model.Sum(m => m.price)</td>
+            </tr>
         </tbody>
     </table>
 </div>
 
 <div class="row">
     <div class="col-4">
-        @*<input type="hidden" value="@Model.id" id="gameid" />*@
-        <button id="confirm" class="btn btn-primary">Buy</button>
+        @if (Model.Count() != 0)
+        {
+            <a href="/Orders/payment" class="btn btn-primary">To payments</a>
+        }
+        else
+        {
+            <a href="/Orders/payment" class="btn btn-primary disabled" tabindex="-1" role="button" aria-disabled="true">To payments</a>
+        }
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-controller="Games">Back home</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script src="~/js/Orders/Create.js"></script>
 }

@@ -321,7 +321,18 @@ namespace vapor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(String id)
         {
+         
             var user = await _context.User.FindAsync(id);
+/*            if(user.Type == UserType.Developer)
+            {
+                var dev = await _context.Developer.FindAsync(user.developerID);
+                _context.Developer.Remove(dev);
+            }*/
+            if(user.Type == UserType.Customer)
+            {
+                var cust = await _context.Customer.FindAsync(user.customerID);
+                _context.Customer.Remove(user.customer);
+            }
             _context.User.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
