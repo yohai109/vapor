@@ -44,7 +44,7 @@
 
                 var genreFinal = ""
 
-                $.each(val.generes, function (i, currGener) {
+                $.each(val.genres, function (i, currGener) {
                     genreFinal += genreTemplate.replaceAll("{name}", currGener.name);
                 })
 

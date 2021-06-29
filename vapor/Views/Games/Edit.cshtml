@@ -33,6 +33,11 @@
                     <label class="control-label">Game Image</label>
                     <input name="newImages" class="form-control-file" type="file" multiple />
                 </div>
+                <div class="form-group">
+                    <label asp-for="genres" class="control-label"></label>
+                    @Html.DropDownList("updatedGenreIds", (List<SelectListItem>)ViewBag.genreSelectList, new { multiple = "multiple", @class = "form-control" })
+                    <span asp-validation-for="genres" class="text-danger"></span>
+                </div>
             </div>
 
 

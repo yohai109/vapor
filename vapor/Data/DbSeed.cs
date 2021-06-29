@@ -134,7 +134,7 @@ namespace vapor.Data
                             name = "Apex Legends",
                             description = "Apex Legends is the award-winning, free-to-play Hero shooter from Respawn Entertainment. Master an ever-growing roster of legendary characters with powerful abilities and experience strategic squad play and innovative gameplay in the next evolution of Hero Shooter and Battle Royale.",
                             releaseDate = DateTime.Parse("05/11/2020"),
-                            generes = new List<Genre> { Action, Shooter }
+                            genres = new List<Genre> { Action, Shooter }
                         };
                         _context.Game.Add(apexLegends);
                         _context.SaveChanges();
@@ -146,7 +146,7 @@ namespace vapor.Data
                             name = "half Life 2",
                             description = "1998. HALF-LIFE sends a shock through the game industry with its combination of pounding action and continuous, immersive storytelling. Valve's debut title wins more than 50 game-of-the-year awards on its way to being named 'Best PC Game Ever' by PC Gamer!",
                             releaseDate = DateTime.Parse("16/11/2004"),
-                            generes = new List<Genre> { Horror, Action, Adventure }
+                            genres = new List<Genre> { Horror, Action, Adventure }
                         };
                         _context.Game.Add(halfLife2);
                         _context.SaveChanges();
