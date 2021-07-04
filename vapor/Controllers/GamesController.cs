@@ -106,7 +106,7 @@ namespace vapor.Controllers
             model.game = loadedGame.game;
             loadedGame.game.images.Count();
             string currUserID = HttpContext.Session.GetString("userid");
-            
+
             var currCustomer = await _context.User
                     .Where(u => u.Id == currUserID)
                     .Select(u => u.customer)
@@ -160,10 +160,10 @@ namespace vapor.Controllers
 
             model.currUserReview = await currUserReview;
 
-                var currCustomerOrder = await _context.Order
-                .Include(o => o.customer)
-                .Where(o => o.customer == currCustomer)
-                .FirstOrDefaultAsync();
+            var currCustomerOrder = await _context.Order
+            .Include(o => o.customer)
+            .Where(o => o.customer == currCustomer)
+            .FirstOrDefaultAsync();
 
             model.currCustomerOrder = currCustomerOrder;
 
@@ -172,7 +172,7 @@ namespace vapor.Controllers
                 .GroupBy(r => r.gameId)
                 .Select(gb => gb.Average(r => r.rating))
                 .FirstOrDefaultAsync();
-                
+
 
             model.avarageRate = avarageRate;
 
@@ -389,9 +389,9 @@ namespace vapor.Controllers
             var searchResult = _context.Game
                 .Include(g => g.generes)
                 .Include(g => g.developer)
-                .Where(g => ( query != null && query != "" ) ? g.name.Contains(query) : true)
-                .Where(g => ( genres != null && genres.Count != 0 ) ? g.generes.Any(gg => genres.Contains(gg.id)) : true)
-                .Where(g => ( developers != null && developers.Count != 0 ) ? developers.Contains(g.developer.id) : true)
+                .Where(g => (query != null && query != "") ? g.name.Contains(query) : true)
+                .Where(g => (genres != null && genres.Count != 0) ? g.generes.Any(gg => genres.Contains(gg.id)) : true)
+                .Where(g => (developers != null && developers.Count != 0) ? developers.Contains(g.developer.id) : true)
                 .Select(g => new
                 {
                     id = g.id,
@@ -435,39 +435,65 @@ namespace vapor.Controllers
             return Json(await reviews.ToListAsync());
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> RatingAvarage(string gameId)
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditReview(string id, int rating, string comment)
         {
-            if (gameId == null)
+            Review updatedReview = await _context.Review.FirstAsync(r => r.id == id);
+            if (id != updatedReview.id)
+            {
+                return NotFound();
+            }
+            updatedReview.lastUpdate = DateTime.Now;
+            updatedReview.rating = rating;
+            updatedReview.comment = comment;
+            //review.writtenAt = _context.Entry(review). fix written time 0 bug
+            try
+            {
+                _context.Update(updatedReview);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
             {
                 return NotFound();
             }
 
-            var avarageRate = _context.Review
-                .Where(r => r.gameId.Equals(gameId))
-                .GroupBy(r => r.gameId)
-                .Select(gb => new
-                {
-                    avg = gb.Average(r => r.rating)
-                });
+            return Ok(updatedReview);
+        }
 
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> RatingAvarage(string gameId)
+    {
+        if (gameId == null)
+        {
+            return NotFound();
+        }
 
-            if (avarageRate == null)
+        var avarageRate = _context.Review
+            .Where(r => r.gameId.Equals(gameId))
+            .GroupBy(r => r.gameId)
+            .Select(gb => new
             {
-                return NotFound();
-            }
+                avg = gb.Average(r => r.rating)
+            });
 
-            return Json(await avarageRate.ToListAsync());
+
+        if (avarageRate == null)
+        {
+            return NotFound();
         }
 
-        private bool GameExists(string id)
-        {
-            return _context.Game.Any(e => e.id == id);
-        }
-        public IActionResult Test()
-        {
-            return View();
-        }
+        return Json(await avarageRate.ToListAsync());
     }
+
+    private bool GameExists(string id)
+    {
+        return _context.Game.Any(e => e.id == id);
+    }
+    public IActionResult Test()
+    {
+        return View();
+    }
+}
 }

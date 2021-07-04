@@ -1,11 +1,16 @@
 $(function () {
     $("#cartAlert").hide();
 
+    var currentUserRate = $("#currentReviewRatingHidden").val();
+    if (typeof currentUserRate !== undefined) {
+        $("#currentReviewRating").val(currentUserRate);
+    }
+
     var id = $('#reviews').attr("gameId");
     $.ajax({
         url: '/games/RatingAvarage?gameId=' + id
     }).done(function (data) {
-       // $('#avaregeRate').html('').append(data[0].avg.toFixed(2));
+        // $('#avaregeRate').html('').append(data[0].avg.toFixed(2));
     })
 
 
@@ -24,7 +29,7 @@ $(function () {
             $('#reviews').append(reviewTemp);
         });
     })*/
-   
+
 
     $("#addToCart").click(function (e) {
         $.ajax({
@@ -35,6 +40,30 @@ $(function () {
             setTimeout(function () {
                 $('#cartAlert').fadeOut(500);
             }, 3000);
+        })
+    })
+
+
+
+
+    $("#editCurrentReview").click(function (e) {
+        var comment = $("#currentReviewTextArea").val()
+        var rating = $("#currentReviewRating :selected").val()
+        var reviewId = $("#currentReviewIdHidden").val()
+        console.log(comment)
+        console.log(rating)
+        console.log(reviewId)
+
+        $.ajax({
+            method: 'POST',
+            url: '/games/EditReview',
+            data: {
+                id: reviewId,
+                rating: rating,
+                comment: comment
+            }
+        }).done(function (data) {
+            console.log(data)
         })
     })
 })
