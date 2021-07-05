@@ -440,7 +440,8 @@ namespace vapor.Controllers
         public async Task<IActionResult> EditReview(string id, int rating, string comment)
         {
             Review updatedReview = await _context.Review.FirstAsync(r => r.id == id);
-            if (id != updatedReview.id)
+/*            string username = "";
+*/            if (id != updatedReview.id)
             {
                 return NotFound();
             }
@@ -448,6 +449,9 @@ namespace vapor.Controllers
             updatedReview.lastUpdate = time;
             updatedReview.rating = rating;
             updatedReview.comment = comment;
+
+          
+
             //review.writtenAt = _context.Entry(review). fix written time 0 bug
             try
             {
@@ -459,7 +463,9 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            return Ok(time.ToString("MM/dd/yyyy hh:mm:ss tt"));
+            //return Ok(time.ToString("MM/dd/yyyy hh:mm:ss tt"));
+
+            return Json(new { Review = updatedReview, time = time.ToString("MM/dd/yyyy hh:mm:ss tt") });
         }
 
         [HttpPost]
@@ -499,8 +505,40 @@ namespace vapor.Controllers
             {
                 return NotFound();
             }
-           //Response.Redirect("https://localhost:44334/Games/Details/a6129515-22e5-4c38-8f1e-0564291307c6");
-            return Ok(newReview);
+            //Response.WriteAsync("https://localhost:44334/Games/Details/a6129515-22e5-4c38-8f1e-0564291307c6");
+            //return Ok(time.ToString("MM/dd/yyyy hh:mm:ss tt"));
+            /*Task < IActionResult > task = Details(gameId);
+            return await task;*/
+            Review enteredReview = await _context.Review
+                .Where(r => r.customerId == customerId && r.gameId == gameId)
+                .FirstOrDefaultAsync();
+            string username = enteredReview.cusotmer.name;
+            enteredReview.cusotmer = null;
+
+
+            return Json(new { Review = enteredReview, username = username, time = time.ToString("MM/dd/yyyy hh:mm:ss tt") });
+        }
+
+        [HttpGet]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReviewUserName(string id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Customer customer = await _context.Customer.FirstAsync(c => c.id == id);
+
+
+            if(customer == null)
+            {
+                return NotFound();
+            }
+            string username = customer.name;
+
+            return Json(new { username = username });
         }
 
         [HttpGet]

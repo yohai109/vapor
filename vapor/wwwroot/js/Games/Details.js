@@ -1,11 +1,16 @@
 $(function () {
     $("#cartAlert").hide();
     $('#reviewUpdateAlert').hide();
-
+    $('#reviewCreateAlert').hide();
+    
 
     var currentUserRate = $("#currentReviewRatingHidden").val();
-    if (typeof currentUserRate !== undefined) {
+    if (typeof currentUserRate !== "undefined") {
         $("#currentReviewRating").val(currentUserRate);
+        $("#createANewReview").hide();
+    } else {
+        $("#editCurrentReview").hide();
+        $("#deleteCurrentReview").hide();
     }
 
     var id = $('#reviews').attr("gameId");
@@ -65,9 +70,17 @@ $(function () {
                 comment: comment
             }
         }).done(function (data) {
+
+            $.ajax({
+                url: '/games/ReviewUserName?id=' + data.review.customerId
+            }).done(function (usernameData) {
+                console.log(usernameData)
+                $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
+            })
+
             $('#reviewUpdateAlert').fadeIn(500);
             console.log(data)
-            $("#currentReviewLastUpdated").html('').html("Last Update " + data)
+            $("#currentReviewLastUpdated").html('').html("Last Update " + data.time)
             setTimeout(function () {
                 $('#reviewUpdateAlert').fadeOut(500);
             }, 3000);
@@ -75,6 +88,46 @@ $(function () {
     })
 
     $("#createANewReview").click(function (e) {
+        var comment = $("#currentReviewTextArea").val()
+        var rating = $("#currentReviewRating :selected").val()
+        var gameId = $("#hiddenGameId").val()
+        console.log(comment)
+        console.log(rating)
+        console.log(gameId)
+
+        $.ajax({
+            method: 'POST',
+            url: '/games/CreateReview',
+            data: {
+                rating: rating,
+                comment: comment,
+                gameId: gameId
+            }
+        }).done(function (data) {
+            
+            // remaking the write new review into a edit one
+            console.log(data)
+            $("#createANewReview").hide();
+            $("#editCurrentReview").show();
+            $("#deleteCurrentReview").show();
+
+            //$("#currentReviewLastUpdated").html('').html("Last Update " + data)
+            $("#WrittenTime").html('').html("<i class='bi bi-clock'> Written at " + data.time + "</i> <i class='bi bi-clock-fill' id='currentReviewLastUpdated'> Last update " + data.time + "</i >")
+            $("#reviewRatingAndId").html('').html("<input id='currentReviewRatingHidden' hidden value=" + data.review.rating + "> <input id='currentReviewIdHidden' hidden value = " + data.review.id + " >")
+            $("#currentReviewName").html('').html('<h5>' + data.username + '</h5>')
+            
+
+            $('#reviewCreateAlert').fadeIn(500);
+            console.log(data)
+            setTimeout(function () {
+                $('#reviewCreateAlert').fadeOut(500);
+            }, 3000);
+
+        })
+    })
+
+
+    /*$("#createANewReview").click(function (e) {
         var comment = $("#newReviewTextArea").val()
         var rating = $("#newReviewRating :selected").val()
         var gameId = $("#hiddenGameId").val()
@@ -91,13 +144,16 @@ $(function () {
                 gameId: gameId
             }
         }).done(function (data) {
-            console.log(data)
+            console.log("done")
+
             //window.Location.reload(true) //
             //window.location.replace("https://localhost:44334/Games/Details/a6129515-22e5-4c38-8f1e-0564291307c6");
-            setTimeout(function () {
-            }, 10000);
-        })//.then(window.location.replace("https://localhost:44334/Games/Details/a6129515-22e5-4c38-8f1e-0564291307c6"))
-    })
+            console.log(data)
+            $("#newReview").html('').html(
+
+            )
+        })
+    })*/
 
     //$("#deleteCurrentReview").click(location.reload())
 })

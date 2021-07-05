@@ -93,6 +93,7 @@
     } |
 
 </div>
+<input hidden id="hiddenGameId" value="@Model.game.id">
 @if (User.IsInRole("Customer"))
 {
     @if (Model.currCustomerOrder == null)
@@ -103,13 +104,35 @@
 
     else
     {
-        @if (@Model.currUserReview != null)
-        {
+        @*@if (@Model.currUserReview != null)
+            {*@
 
-            <div class="form-group mt-3 border border-secondary">
-                <h5>@Model.currUserReview.cusotmer.name</h5>
-                <i class="bi bi-clock"> Written at @Model.currUserReview.writtenAt</i> <i class="bi bi-clock-fill" id="currentReviewLastUpdated"> Last update @Model.currUserReview.lastUpdate</i>
-                <textarea class="form-control" id="currentReviewTextArea" rows="3">@Model.currUserReview.comment</textarea>
+        <div class="form-group mt-3 border border-secondary">
+            <div id="currentReviewName">
+                @if (@Model.currUserReview != null)
+                {
+                    <h5>@Model.currUserReview.cusotmer.name</h5>
+                }
+            </div>
+            <div id="currentReview">
+                <div id="WrittenTime">
+                    @if (@Model.currUserReview != null)
+                    {
+                        <i class="bi bi-clock"> Written at @Model.currUserReview.writtenAt</i> <i class="bi bi-clock-fill" id="currentReviewLastUpdated"> Last update @Model.currUserReview.lastUpdate</i>
+                    }
+                </div>
+
+                <div id="commentArea">
+                    @if (@Model.currUserReview != null)
+                    {
+                        <textarea class="form-control" id="currentReviewTextArea" rows="3">@Model.currUserReview.comment</textarea>
+                    }
+                    else
+                    {
+                        <textarea class="form-control" id="currentReviewTextArea" rows="3"></textarea>
+                    }
+                </div>
+
                 <i class="bi bi-star-fill">
                     <select id="currentReviewRating">
                         <option value="1">1</option>
@@ -124,11 +147,17 @@
                         <option value="10">10</option>
                     </select>
                 </i>
-                <button type="button" class="btn btn-info" id="editCurrentReview">Edit</button><button type="button" class="btn btn-danger" id="deleteCurrentReview">Delete</button>
-                <input id="currentReviewRatingHidden" hidden value="@Model.currUserReview.rating">
-                <input id="currentReviewIdHidden" hidden value="@Model.currUserReview.id">
+                <button type="button" class="btn btn-success" id="createANewReview">Crate A Review</button><button type="button" class="btn btn-info" id="editCurrentReview">Edit</button><button type="button" class="btn btn-danger" id="deleteCurrentReview">Delete</button>
+                <div id="reviewRatingAndId">
+                    @if (@Model.currUserReview != null)
+                    {
+                        <input id="currentReviewRatingHidden" hidden value="@Model.currUserReview.rating">
+                        <input id="currentReviewIdHidden" hidden value="@Model.currUserReview.id">
+                    }
+                </div>
             </div>
-        }
+        </div>
+        @*}*@
         @if (@Model.currUserReview == null)
         {
             //Will create a new review form
@@ -140,26 +169,27 @@
                     <a href="/Reviews/Edit/@(Model.currUserReview.id)">Edit Review</a>
                 </div>*@
 
-            <div class="form-group mt-3 border border-secondary">
-                <h5>@Model.currentCustomer.name</h5>
-                <textarea class="form-control" id="newReviewTextArea" rows="3"></textarea>
-                <i class="bi bi-star-fill">
-                    <select id="newReviewRating">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10" selected>10</option>
-                    </select>
-                </i>
-                <button type="button" class="btn btn-success" id="createANewReview">Crate A Review</button>
-                <input hidden id="hiddenGameId" value="@Model.game.id">
-            </div>
+            @*<div class="form-group mt-3 border border-secondary">
+                    <h5>@Model.currentCustomer.name</h5>
+                    <div id="newReview">
+                        <textarea class="form-control" id="newReviewTextArea" rows="3"></textarea>
+                        <i class="bi bi-star-fill">
+                            <select id="newReviewRating">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10" selected>10</option>
+                            </select>
+                        </i>
+                        <button type="button" class="btn btn-success" id="createANewReview">Crate A Review</button>
+                    </div>
+                </div>*@
         }
     }
 }
@@ -219,5 +249,9 @@
 
     <div class="alert alert-primary mt-2 hide" role="alert" id="reviewUpdateAlert">
         Review Updated Successfully
+    </div>
+
+    <div class="alert alert-primary mt-2 hide" role="alert" id="reviewCreateAlert">
+        Review Created Successfully
     </div>
 }
