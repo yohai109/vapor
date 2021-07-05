@@ -435,7 +435,7 @@ namespace vapor.Controllers
             return Json(await reviews.ToListAsync());
         }
 
-        [HttpPost]
+        [HttpPut]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> EditReview(string id, int rating, string comment)
         {
@@ -444,7 +444,8 @@ namespace vapor.Controllers
             {
                 return NotFound();
             }
-            updatedReview.lastUpdate = DateTime.Now;
+            DateTime time = DateTime.Now;
+            updatedReview.lastUpdate = time;
             updatedReview.rating = rating;
             updatedReview.comment = comment;
             //review.writtenAt = _context.Entry(review). fix written time 0 bug
@@ -458,42 +459,83 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-            return Ok(updatedReview);
+            return Ok(time.ToString("MM/dd/yyyy hh:mm:ss tt"));
         }
 
-    [HttpGet]
-    [AllowAnonymous]
-    public async Task<IActionResult> RatingAvarage(string gameId)
-    {
-        if (gameId == null)
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateReview(int rating, string comment, string gameId)
         {
-            return NotFound();
-        }
+            string currUserID = HttpContext.Session.GetString("userid");
 
-        var avarageRate = _context.Review
-            .Where(r => r.gameId.Equals(gameId))
-            .GroupBy(r => r.gameId)
-            .Select(gb => new
+            var currCustomer = await _context.User
+                    .Where(u => u.Id == currUserID)
+                    .Select(u => u.customer)
+                    .FirstOrDefaultAsync();
+            string customerId = currCustomer.id;
+
+            Review alreadyExistReview = await _context.Review
+                .Where(r => r.customerId == customerId && r.gameId == gameId)
+                .FirstOrDefaultAsync();
+            if (alreadyExistReview != null)
             {
-                avg = gb.Average(r => r.rating)
-            });
+                return NotFound();
+            }
+            Review newReview = new Review();
+            newReview.customerId = customerId;
+            newReview.gameId = gameId;
+            newReview.rating = rating;
+            newReview.comment = comment;
+            DateTime time = DateTime.Now;
+            newReview.writtenAt = time;
+            newReview.lastUpdate = time;
 
-
-        if (avarageRate == null)
-        {
-            return NotFound();
+            try
+            {
+                _context.Add(newReview);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return NotFound();
+            }
+           //Response.Redirect("https://localhost:44334/Games/Details/a6129515-22e5-4c38-8f1e-0564291307c6");
+            return Ok(newReview);
         }
 
-        return Json(await avarageRate.ToListAsync());
-    }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> RatingAvarage(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
 
-    private bool GameExists(string id)
-    {
-        return _context.Game.Any(e => e.id == id);
+            var avarageRate = _context.Review
+                .Where(r => r.gameId.Equals(gameId))
+                .GroupBy(r => r.gameId)
+                .Select(gb => new
+                {
+                    avg = gb.Average(r => r.rating)
+                });
+
+
+            if (avarageRate == null)
+            {
+                return NotFound();
+            }
+
+            return Json(await avarageRate.ToListAsync());
+        }
+
+        private bool GameExists(string id)
+        {
+            return _context.Game.Any(e => e.id == id);
+        }
+        public IActionResult Test()
+        {
+            return View();
+        }
     }
-    public IActionResult Test()
-    {
-        return View();
-    }
-}
 }
