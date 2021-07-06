@@ -1,0 +1,78 @@
+﻿.image-display {
+    overflow: hidden;
+    padding: 3vw;
+}
+
+.image-screen img {
+    width: 100%;
+    height: 30vw;
+    max-height: 50vw;
+    object-fit: cover;
+    object-position: 50% 50%;
+}
+
+
+/*
+    Item bar styles
+    Responsible for icon resize on hover
+
+ */
+
+.item-bar {
+    position: relative;
+    display: inline-flex;
+    transition: ease-out .3s;
+}
+
+    .item-bar:hover > div {
+        transform: translateX(-25%);
+    }
+
+    .item-bar > div:hover ~ div {
+        transform: translateX(25%);
+    }
+
+
+    .item-bar > div:hover {
+        transform: scale(1.5);
+    }
+
+.item-bar__item {
+    position: relative;
+    transition: ease-out .3s;
+    cursor: pointer;
+}
+
+    .item-bar__item img {
+        opacity: .8;
+        width: 16vw;
+        height: 10vw;
+    }
+
+@media (max-width: 768px) {
+    .item-bar__item img {
+    }
+}
+
+@media (min-width: 768px) {
+    .item-bar__item img {
+        width: 18.5vw;
+    }
+}
+
+@media (min-width: 1200px) {
+    .item-bar__item img {
+        width: 16vw;
+    }
+}
+
+
+.item-bar__item--selected {
+    border: .2rem solid #FFF;
+    opacity: 1;
+}
+
+/*
+    Imgae screen styles
+    This is the div that contains the selected image
+*/
