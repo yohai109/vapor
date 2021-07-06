@@ -220,6 +220,7 @@ namespace vapor.Controllers
             byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
             return this.File(fileBytes, gameImage.fileContentType);
         }
+
         [HttpGet]
         public async Task<ActionResult> GetGameImageByGameId(string gameId)
         {

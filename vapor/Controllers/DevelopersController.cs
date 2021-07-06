@@ -89,6 +89,9 @@ namespace vapor.Controllers
             }
 
             var developer = await _context.Developer
+                .Where(d => d.id == id)
+                .Include(d => d.games).ThenInclude(g => g.reviews)
+                .Include(d => d.games).ThenInclude(g => g.genres)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (developer == null)
             {
@@ -97,6 +100,7 @@ namespace vapor.Controllers
 
             return View(developer);
         }
+
         [Authorize(Roles = "Admin")]
         // GET: Developers/Create
         public IActionResult Create()
@@ -130,6 +134,7 @@ namespace vapor.Controllers
 
             return View(developer);
         }
+
         [Authorize(Roles = "Admin")]
         // GET: Developers/Edit/5
         public async Task<IActionResult> Edit(string id)
@@ -270,6 +275,25 @@ namespace vapor.Controllers
             }
 
             return Json(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> getDeveloperAvater(string devId)
+        {
+            if (devId == null)
+            {
+                return NotFound();
+            }
+
+            Developer developer = await _context.Developer.FirstOrDefaultAsync(d => d.id == devId);
+
+            if (developer == null)
+            {
+                return NotFound();
+            }
+
+            byte[] fileBytes = Convert.FromBase64String(developer.avatar);
+            return this.File(fileBytes, developer.fileContentType);
         }
 
         private bool DeveloperExists(string id)
