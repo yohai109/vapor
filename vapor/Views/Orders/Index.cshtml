@@ -4,44 +4,41 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="row profile-container">
+    @foreach (var item in Model)
+    {
+        if (item.customer.name == User.Identities.First().Name || User.IsInRole("Admin"))
+        {
+            <div class="profile-card">
+                <img class="profile-img" src=@Url.Action("GetGameImageByGameId", "games", new { gameId = item.gameId }) alt="Avatar" width="100" height="100">
+                <div class="profile-card">
+                    <h4><b>Order</b></h4>
+                    <p>Customer:@item.customer.name</p>
+                    <p>Game:@item.game.name</p>
+                    <p>Date:@item.date</p>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-gameid='@item.gameId' asp-route-customerid="@item.customerId" >Refund</a>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.game)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.customer)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.game.id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.customer.id)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                </div>
+            </div>
+        }
+        else
+        {
+            if (item.game.developer.name == User.Identities.First().Name || User.IsInRole("Admin"))
+            {
+                <div class="profile-card">
+                    <img class="profile-img" src=@Url.Action("GetGameImageByGameId", "games", new { gameId = item.gameId }) alt="Avatar" width="100" height="100">
+                    <div class="profile-card">
+                        <h4><b>Order</b></h4>
+                        <p>Customer:@item.customer.name</p>
+                        <p>Game:@item.game.name</p>
+                        <p>Date:@item.date</p>
+                        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item">Edit</a> |
+                        <a class="btn btn-primary" asp-action="Details" asp-route-id="@item">Details</a> |
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item">Delete</a>
+
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>

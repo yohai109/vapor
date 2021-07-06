@@ -7,6 +7,7 @@
         var textQuery = $("#search-box").val();
         var genres = [];
         var developers = [];
+        var avgRating = $("#min-rating").val()
 
         $.each($("#search-container").serializeArray(), function (i, currElement) {
             switch (currElement.name) {
@@ -21,7 +22,12 @@
             }
         });
 
-        var data = { query: textQuery, developers: developers, genres: genres };
+        var data = {
+            query: textQuery,
+            developers: developers,
+            genres: genres,
+            avgRating: avgRating
+        };
         console.log(data);
 
         $.ajax({
@@ -38,7 +44,7 @@
 
                 var genreFinal = ""
 
-                $.each(val.generes, function (i, currGener) {
+                $.each(val.genres, function (i, currGener) {
                     genreFinal += genreTemplate.replaceAll("{name}", currGener.name);
                 })
 

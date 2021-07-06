@@ -24,12 +24,12 @@ namespace vapor.Migrations
                     b.Property<string>("gamesid")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("generesid")
+                    b.Property<string>("genresid")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("gamesid", "generesid");
+                    b.HasKey("gamesid", "genresid");
 
-                    b.HasIndex("generesid");
+                    b.HasIndex("genresid");
 
                     b.ToTable("GameGenre");
                 });
@@ -172,7 +172,6 @@ namespace vapor.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("gameId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("date")
@@ -260,7 +259,7 @@ namespace vapor.Migrations
 
                     b.HasOne("vapor.Models.Genre", null)
                         .WithMany()
-                        .HasForeignKey("generesid")
+                        .HasForeignKey("genresid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

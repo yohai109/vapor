@@ -11,7 +11,7 @@ using vapor.Models;
 
 namespace vapor.Controllers
 {
-    [Authorize]
+
     public class ReviewsController : Controller
     {
         private readonly vaporContext _context;
@@ -22,9 +22,16 @@ namespace vapor.Controllers
         }
 
         // GET: Reviews
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Review.ToListAsync());
+
+            var vaporContext = _context.Review
+                .Include(g => g.game)
+                .Include(c => c.cusotmer);
+            return View(await vaporContext.ToListAsync());
+
+           /* return View(await _context.Review.ToListAsync());*/
         }
 
         // GET: Reviews/Details/5
@@ -90,7 +97,7 @@ namespace vapor.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("id,rating,comment,writtenAt,lastUpdate")] Review review)
+        public async Task<IActionResult> Edit(string id, [Bind("id,rating,comment,writtenAt,lastUpdate,gameId,customerId,game,cusotmer")] Review review)
         {
             if (id != review.id)
             {
@@ -103,6 +110,8 @@ namespace vapor.Controllers
                 {
                     review.lastUpdate = DateTime.Now;
                     //review.writtenAt = _context.Entry(review). fix written time 0 bug
+                    review.cusotmer = await _context.Customer.FindAsync(review.customerId);
+                    review.game = await _context.Game.FindAsync(review.gameId);
                     _context.Update(review);
                     await _context.SaveChangesAsync();
                 }

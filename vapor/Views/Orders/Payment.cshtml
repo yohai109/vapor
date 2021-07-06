@@ -1,0 +1,40 @@
+﻿@model IEnumerable<vapor.Models.Game>
+
+@{
+    ViewData["Title"] = "Order details";
+}
+
+<h1>Payments</h1>
+<div>
+    <p>
+        I have read and agree to the terms and conditions.
+        <br />
+        Sign here:
+    </p>
+    <div>
+        <canvas id="can" width="400" height="400" class="border border-white"></canvas>
+    </div>
+    <input type="button" value="clear" id="clear-btn" class="btn btn-danger">
+</div>
+
+<div class="row mt-3">
+    <div class="col-4">
+        <button id="confirm" class="btn btn-primary">Buy</button>
+    </div>
+</div>
+
+<div>
+    <a asp-action="create">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript" src="~/js/Orders/Create.js"></script>
+}
+
+@section Alerts{
+    <div class="alert alert-danger mt-2 hide" role="alert" style="display:none;" id="signAlert">
+        You must sign to agree to the terms & conditions
+    </div>
+}

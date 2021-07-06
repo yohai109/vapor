@@ -52,6 +52,7 @@ $(function () {
 
 
     $("#addToCart").click(function (e) {
+
         $.ajax({
             url: '/Orders/AddToCart?gameid=' + $("#gameId").val()
         }).done(function () {
@@ -63,6 +64,7 @@ $(function () {
         })
     })
 
+<<<<<<< HEAD
 
 
 
@@ -110,14 +112,10 @@ $(function () {
     $("#createANewReview").click(function (e) {
         var comment = $("#currentReviewTextArea").val()
         var rating = $("#currentReviewRating :selected").val()
-        var gameId = $("#hiddenGameId").val()
+        var gameId = $("#gameId").val()
         console.log(comment)
         console.log(rating)
         console.log(gameId)
-        /*if (comment === '') {
-            comment = "";
-        }
-        console.log(comment)*/
         $.ajax({
             method: 'POST',
             url: '/games/CreateReview',
@@ -128,13 +126,9 @@ $(function () {
             }
         }).done(function (data) {
 
-            // remaking the write new review into a edit one
-            console.log(data)
             $("#createANewReview").hide();
             $("#editCurrentReview").show();
             $("#deleteCurrentReview").show();
-
-            //$("#currentReviewLastUpdated").html('').html("Last Update " + data)
             $("#WrittenTime").html('').html("<i class='bi bi-clock'> Written at " + data.time + "</i> <i class='bi bi-clock-fill' id='currentReviewLastUpdated'> Last update " + data.time + "</i >")
             $("#reviewRatingAndId").html('').html("<input id='currentReviewRatingHidden' hidden value=" + data.review.rating + "> <input id='currentReviewIdHidden' hidden value = " + data.review.id + " >")
             $("#currentReviewName").html('').html('<h5>' + data.username + '</h5>')
@@ -168,7 +162,6 @@ $(function () {
             if (data === true) {
                 $("#WrittenTime").html('')
                 $("#commentArea").html('').html('<textarea class="form-control" id="currentReviewTextArea" rows="3"></textarea>')
-                //$("#currentReviewRating")
                 $("#editCurrentReview").hide();
                 $("#deleteCurrentReview").hide();
                 $("#createANewReview").show();
@@ -185,35 +178,21 @@ $(function () {
     })
 
 
-    /*$("#createANewReview").click(function (e) {
-        var comment = $("#newReviewTextArea").val()
-        var rating = $("#newReviewRating :selected").val()
-        var gameId = $("#hiddenGameId").val()
-        console.log(comment)
-        console.log(rating)
-        console.log(gameId)
-
+    $("#buyNow").click(function (e) {
         $.ajax({
-            method: 'POST',
-            url: '/games/CreateReview',
-            data: {
-                rating: rating,
-                comment: comment,
-                gameId: gameId
-            }
-        }).done(function (data) {
-            console.log("done")
+            url: '/Orders/AddToCart?gameid=' + $("#gameId").val()
+        }).done(function () {
+            /*$('#cartAlert').fadeIn(500);
 
-            //window.Location.reload(true) //
-            //window.location.replace("https://localhost:44334/Games/Details/a6129515-22e5-4c38-8f1e-0564291307c6");
-            console.log(data)
-            $("#newReview").html('').html(
+            setTimeout(function () {
+                $('#cartAlert').fadeOut(500);
+            }, 3000);*/
 
-            )
-        })
-    })*/
+            window.location.href = "/Orders/create";
+        });
 
-    //$("#deleteCurrentReview").click(location.reload())
+    })
+
 })
 
 function setAvaregeRating() {
@@ -227,7 +206,6 @@ function setAvaregeRating() {
         } else {
             $('#avgRate').html('').html('<span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">' + data[0].avg.toFixed(2) + '</i></span>')
         }
-        //$('#avaregeRate').html('').append(data[0].avg.toFixed(2));
     })
 }
 

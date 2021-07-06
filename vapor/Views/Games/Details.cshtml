@@ -9,106 +9,124 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-5">
-            <div class="row">
-                <h1>@Model.game.name</h1>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>Developer</h5>
-                </div>
-                <div class="col-md-9">
-                    <a href="/Developers/Details/@(Model.game.developer.id)">@Model.game.developer.name</a>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>Description</h5>
-                </div>
-                <div class="col-md-9">
-                    <span>@Model.game.description</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>Price</h5>
-                </div>
-                <div class="col-md-9">
-                    <span>@(Model.game.price)</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <h5>Release Date</h5>
-                </div>
-                <div class="col-md-9">
-                    <span>@Model.game.releaseDate</span>
-                </div>
-                <div class="col-md-9">
-                    <div id="avgRate">
-                        @if (Model.avarageRate != null)
-                        {
-                            <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">@String.Format("{0:0.00}", Model.avarageRate)</i></span>
-                        }
-                        else
-                        {
-                            <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">0</i></span>
-                        }
-                    </div>
-                </div>
-            </div>
+        <h1>@Model.game.name</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h5>Description</h5>
         </div>
-
-        <div class="col-md-7">
-            <div id="image-carousel" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    @for (int i = 0; i < Model.game.images.Count; i++)
-                    {
-                        <li data-target="#image-carousel" data-slide-to="@i" class=" @(@i == 0 ? "active" : "")"></li>
-                    }
-                </ol>
-                <div class="carousel-inner">
-                    @for (int i = 0; i < Model.game.images.Count; i++)
-                    {
-                        <div class="carousel-item @(@i == 0 ? "active" : "") ">
-                            <img class="d-block w-100" src="@Url.Action("GetGameImage", new {id = Model.game.images[i].id})" />
-                        </div>
-                    }
-                </div>
-                <a class="carousel-control-prev" href="#image-carousel" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#image-carousel" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
+        <div class="col-md-9">
+            <span>@Model.game.description</span>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h5>Developer name</h5>
+        </div>
+        <div class="col-md-9">
+            <span>@(Model.game.developer.name)</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h5>Price</h5>
+        </div>
+        <div class="col-md-9">
+            <span>@(Model.game.price)</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h5>Release Date</h5>
+        </div>
+        <div class="col-md-9">
+            <span>@Model.game.releaseDate</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h5>
+                Geners
+            </h5>
+        </div>
+        <div class="col-md-9">
+            @if (Model.game.genres.Count > 0)
+            {
+                <div class="row">
+                    @foreach (var genre in Model.game.genres)
+                    {
+                        <h4 class="game-genre">
+                            <span class="badge badge-primary">@genre.name</span>
+                        </h4>
+                    }
+                </div>
+            }
+            else
+            {
+                <h4> No genres to present</h4>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div id="avgRate">
+            @if (Model.avarageRate != null)
+            {
+                <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">@String.Format("{0:0.00}", Model.avarageRate)</i></span>
+            }
+            else
+            {
+                <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">0.00</i></span>
+            }
+        </div>
+    </div>
+</div>
+<div id="image-carousel" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        @for (int i = 0; i < Model.game.images.Count; i++)
+        {
+            <li data-target="#image-carousel" data-slide-to="@i" class=" @(@i == 0 ? "active" : "")"></li>
+        }
+    </ol>
+    <div class="carousel-inner">
+        @for (int i = 0; i < Model.game.images.Count; i++)
+        {
+            <div class="carousel-item @(@i == 0 ? "active" : "") ">
+                <img class="d-block w-100" src="@Url.Action("GetGameImage", new {gameImageId = ((List<GameImage>)Model.game.images)[i].id})" />
+            </div>
+        }
+    </div>
+    <a class="carousel-control-prev" href="#image-carousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#image-carousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
 </div>
 
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
     {
         <a asp-action="Edit" asp-route-id="@Model.game.id">Edit</a>
-    } |
-
+    }
+    <a asp-action="Index">Back to List</a>
 </div>
-<input hidden id="hiddenGameId" value="@Model.game.id">
+
 @if (User.IsInRole("Customer"))
 {
     @if (Model.currCustomerOrder == null)
     {
-        <a class="btn btn-success" id="buyNow">buy now</a>
+        @*<a class="btn btn-success" id="buyNow">buy now</a>
+            <a class="btn btn-success" id="addToCart">add to cart</a>*@
+        <a class="btn btn-success" href="/Orders/create?gameid=@Model.game.id">buy now</a>
         <a class="btn btn-success" id="addToCart">add to cart</a>
     }
 
+
+
     else
     {
-        @*@if (@Model.currUserReview != null)
-            {*@
-
         <div class="form-group mt-3 border border-secondary">
             <div id="currentReviewName">
                 @if (@Model.currUserReview != null)
@@ -159,56 +177,9 @@
                 </div>
             </div>
         </div>
-        @*}*@
-        @if (@Model.currUserReview == null)
-        {
-            //Will create a new review form
-            @* <div class="form-group mt-3 border border-secondary">
-                    <h5></h5>
-                    <i class="bi bi-clock"> Written at @Model.currUserReview.writtenAt</i> <i class="bi bi-clock-fill"> Last update @Model.currUserReview.lastUpdate</i>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>"@Model.currUserReview.comment"</textarea>
-                    <i class="bi bi-star-fill">@Model.currUserReview.rating</i>
-                    <a href="/Reviews/Edit/@(Model.currUserReview.id)">Edit Review</a>
-                </div>*@
-
-            @*<div class="form-group mt-3 border border-secondary">
-                    <h5>@Model.currentCustomer.name</h5>
-                    <div id="newReview">
-                        <textarea class="form-control" id="newReviewTextArea" rows="3"></textarea>
-                        <i class="bi bi-star-fill">
-                            <select id="newReviewRating">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10" selected>10</option>
-                            </select>
-                        </i>
-                        <button type="button" class="btn btn-success" id="createANewReview">Crate A Review</button>
-                    </div>
-                </div>*@
-        }
     }
 }
 
-
-@*@if (User.IsInRole("Customer") && Model.currCustomerOrder != null)
-        {
-    <!--@if (Model.currCustomerOrder != null)
-    {
-        <script>alert(@Model.currCustomerOrder)</script>-->
-        @*<div class="form-group mt-3 border border-secondary">
-                <h5>@Model.currUserReview.cusotmer.name</h5>
-                <i class="bi bi-clock"> Written at @Model.currUserReview.writtenAt</i> <i class="bi bi-clock-fill"> Last update @@Model.currUserReview.lastUpdate</i>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" disabled>@Model.currUserReview.comment</textarea>
-                <i class="bi bi-star-fill">@Model.currUserReview.rating</i>
-            </div>*@
-<!--}-->
 
 @foreach (var review in Model.reviews)
 {
@@ -225,18 +196,9 @@
 }
 
 
-<div>
-    @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.game.id">Edit</a>
-    }
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-
     <script type="text/javascript" src="~/js/Games/Details.js"></script>
-
+    <link rel="stylesheet" href="~/css/Games/Games.css" />
     <script type="text/html" id="all_users_review_template">
         <div class="form-group mt-3">
             <label for="exampleFormControlTextarea1">{userName}</label>
@@ -247,7 +209,7 @@
 }
 
 @section Alerts{
-    <div class="alert alert-success mt-2 hide" role="alert" id="cartAlert">
+    <div class="alert alert-success mt-2 hide" role="alert" id="cartAlert" style="display:none;">
         Game added to cart successfully!
     </div>
 

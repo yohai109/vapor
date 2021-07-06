@@ -34,7 +34,7 @@ namespace vapor.Controllers
         {
 
             var games = _context.Game
-                .Include(g => g.generes)
+                .Include(g => g.genres)
                 .Include(g => g.developer)
                 .Include(g => g.images)
                 .Select(g => new Game
@@ -42,7 +42,7 @@ namespace vapor.Controllers
                     id = g.id,
                     name = g.name,
                     developer = g.developer,
-                    generes = (ICollection<Genre>)g.generes.Take(4),
+                    genres = (ICollection<Genre>)g.genres.Take(4),
                     images = new List<GameImage>()
                     {
                         g.images.Select(i => new GameImage { id = i.id }).First()
@@ -87,6 +87,7 @@ namespace vapor.Controllers
             }
 
             var loadedGame = await _context.Game
+                .Include(g => g.genres)
                 .Include(g => g.developer)
                 .Select(game => new
                 {
@@ -184,7 +185,7 @@ namespace vapor.Controllers
         // GET: Games/Create
         public IActionResult Create()
         {
-            ViewData["developerId"] = new SelectList(_context.Developer, "id", "name");
+            ViewBag.genreSelectList = new SelectList(_context.Genre, nameof(Genre.id), nameof(Genre.name)).ToList();
             return View();
         }
 
@@ -194,14 +195,15 @@ namespace vapor.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,price,name,description")] Game game,
+                                                List<String> newGenreIds,
                                                 List<IFormFile> newImages)
         {
+
             if (ModelState.IsValid)
             {
                 GameImage gameImage;
                 game.images = new List<GameImage>();
                 game.releaseDate = DateTime.Now;
-
 
                 // Saves all the new images
                 foreach (IFormFile image in newImages)
@@ -218,6 +220,7 @@ namespace vapor.Controllers
                     }
                 }
 
+                // Connects between the game to the proper developer
                 string currUserID = HttpContext.Session.GetString("userid"); ;
                 var currDev = await _context.User
                     .Where(u => u.Id == currUserID)
@@ -226,6 +229,10 @@ namespace vapor.Controllers
 
                 game.developerId = currDev.id;
                 game.developer = currDev;
+
+                // Connects between the game to the game genres
+                var genresList = await _context.Genre.Where(g => newGenreIds.Contains(g.id)).ToListAsync();
+                game.genres = genresList;
 
                 _context.Add(game);
                 await _context.SaveChangesAsync();
@@ -238,14 +245,32 @@ namespace vapor.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> GetGameImage(string id)
+        public async Task<ActionResult> GetGameImage(string gameImageId)
         {
-            if (id == null)
+            if (gameImageId == null)
             {
                 return NotFound();
             }
 
-            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == id);
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.id == gameImageId);
+
+            if (gameImage == null)
+            {
+                return NotFound();
+            }
+
+            byte[] fileBytes = Convert.FromBase64String(gameImage.fileBase64);
+            return this.File(fileBytes, gameImage.fileContentType);
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetGameImageByGameId(string gameId)
+        {
+            if (gameId == null)
+            {
+                return NotFound();
+            }
+
+            GameImage gameImage = await _context.GameImage.FirstOrDefaultAsync(gi => gi.gameID == gameId);
 
             if (gameImage == null)
             {
@@ -265,6 +290,7 @@ namespace vapor.Controllers
             }
 
             var loadedGame = await _context.Game
+                .Include(g => g.genres)
                 .Select(game => new
                 {
                     game,
@@ -278,6 +304,17 @@ namespace vapor.Controllers
             }
 
             loadedGame.game.images = loadedGame.images;
+            var genreSelectList = new SelectList(_context.Genre, nameof(Genre.id), nameof(Genre.name)).ToList();
+
+            List<String> relatedGenreIds = loadedGame.game.genres.Select(g => g.id).ToList();
+            foreach (var item in genreSelectList)
+            {
+                if (relatedGenreIds.Contains(item.Value))
+                {
+                    item.Selected = true;
+                }
+            }
+            ViewBag.genreSelectList = genreSelectList;
             return View(loadedGame.game);
         }
 
@@ -288,6 +325,7 @@ namespace vapor.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id,
                                               [Bind("id,name,description,price")] Game game,
+                                              List<String> updatedGenreIds,
                                               List<IFormFile> newImages,
                                               List<string> imagesToDelete)
         {
@@ -301,10 +339,20 @@ namespace vapor.Controllers
                 try
                 {
                     // Updates game data
-                    Game updatedGame = await _context.Game.FirstAsync(g => g.id == id);
+                    Game updatedGame = await _context.Game
+                        .Include(g => g.genres)
+                        .FirstAsync(g => g.id == id);
                     updatedGame.name = game.name;
                     updatedGame.description = game.description;
                     updatedGame.price = game.price;
+
+                    // Connects between the game to the game genres
+                    var genresList = await _context.Genre.Where(g => updatedGenreIds.Contains(g.id)).ToListAsync();
+                    updatedGame.genres.Clear();
+                    foreach (Genre genre in genresList)
+                    {
+                        updatedGame.genres.Add(genre);
+                    }
                     _context.Update(updatedGame);
 
                     // Deletes the chosen images
@@ -356,6 +404,8 @@ namespace vapor.Controllers
             }
 
             var loadedGame = await _context.Game
+              .Include(g => g.genres)
+              .Include(g => g.developer)
               .Select(game => new
               {
                   game,
@@ -379,26 +429,31 @@ namespace vapor.Controllers
         {
             var game = await _context.Game.Include(g => g.images).FirstOrDefaultAsync(m => m.id == id);
             _context.Game.Remove(game);
+            //delete all reviews of this game
+            var reviews = await _context.Review.Where(r => r.gameId == id).ToListAsync();
+            _context.Review.RemoveRange(reviews);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Search(string query, List<String> genres, List<String> developers)
+        public async Task<IActionResult> Search(string query, List<String> genres, List<String> developers, float avgRating = 0)
         {
             var searchResult = _context.Game
-                .Include(g => g.generes)
+                .Include(g => g.genres)
                 .Include(g => g.developer)
-                .Where(g => (query != null && query != "") ? g.name.Contains(query) : true)
-                .Where(g => (genres != null && genres.Count != 0) ? g.generes.Any(gg => genres.Contains(gg.id)) : true)
-                .Where(g => (developers != null && developers.Count != 0) ? developers.Contains(g.developer.id) : true)
+                .Include(g => g.reviews)
+                .Where(g => ( query != null && query != "" ) ? g.name.Contains(query) : true)
+                .Where(g => ( genres != null && genres.Count != 0 ) ? g.genres.Any(gg => genres.Contains(gg.id)) : true)
+                .Where(g => ( developers != null && developers.Count != 0 ) ? developers.Contains(g.developer.id) : true)
+                .Where(g => g.reviews.Average(r => r.rating) >= avgRating)
                 .Select(g => new
                 {
                     id = g.id,
                     name = g.name,
                     developer = g.developer.name,
-                    generes = g.generes,
+                    genres = g.genres,
                     imageid = g.images.FirstOrDefault().id
                 });
 
