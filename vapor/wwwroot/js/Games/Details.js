@@ -163,6 +163,14 @@ $(function () {
             console.log("deleted")
             console.log(data)
 
+            if (data === true) {
+                $("#WrittenTime").html('')
+                $("#commentArea").html('').html('<textarea class="form-control" id="currentReviewTextArea" rows="3"></textarea>')
+                //$("#currentReviewRating")
+                $("#editCurrentReview").hide();
+                $("#deleteCurrentReview").hide();
+                $("#createANewReview").show();
+            }
         })
     })
     
