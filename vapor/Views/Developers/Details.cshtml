@@ -12,10 +12,6 @@
     </div>
     <h4>Average game rating: @Model.games.Average(g => g.reviews.Average(r => r.rating))</h4>
     <h3>Games</h3>
-    @*@foreach (var item in Model.games)
-        {
-            <a asp-action="Details" asp-controller="Games" asp-route-id="@item.id" class="btn btn-primary">@item.name</a>
-        }*@
     <div class="row" id="game-list">
         @foreach (var item in Model.games)
         {
@@ -60,6 +56,6 @@
 </div>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
 </div>
