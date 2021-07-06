@@ -440,8 +440,9 @@ namespace vapor.Controllers
         public async Task<IActionResult> EditReview(string id, int rating, string comment)
         {
             Review updatedReview = await _context.Review.FirstAsync(r => r.id == id);
-/*            string username = "";
-*/            if (id != updatedReview.id)
+            /*            string username = "";
+            */
+            if (id != updatedReview.id)
             {
                 return NotFound();
             }
@@ -450,7 +451,7 @@ namespace vapor.Controllers
             updatedReview.rating = rating;
             updatedReview.comment = comment;
 
-          
+
 
             //review.writtenAt = _context.Entry(review). fix written time 0 bug
             try
@@ -519,27 +520,37 @@ namespace vapor.Controllers
             return Json(new { Review = enteredReview, username = username, time = time.ToString("MM/dd/yyyy hh:mm:ss tt") });
         }
 
-        [HttpGet]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReviewUserName(string id)
+        [HttpPost]
+        public async Task<IActionResult> DeleteReview(string id)
         {
-
             if (id == null)
             {
                 return NotFound();
             }
 
-            Customer customer = await _context.Customer.FirstAsync(c => c.id == id);
+            Review review = await _context.Review
+                .Where(r => r.id == id)
+                .FirstOrDefaultAsync();
 
 
-            if(customer == null)
+            if (review == null)
             {
                 return NotFound();
             }
-            string username = customer.name;
 
-            return Json(new { username = username });
+            try
+            {
+                _context.Remove(id);
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
+
+
 
         [HttpGet]
         [AllowAnonymous]

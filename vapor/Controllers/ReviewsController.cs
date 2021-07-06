@@ -156,5 +156,27 @@ namespace vapor.Controllers
         {
             return _context.Review.Any(e => e.id == id);
         }
+
+        [HttpGet]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReviewUserName(string id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Customer customer = await _context.Customer.FirstAsync(c => c.id == id);
+
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            string username = customer.name;
+
+            return Json(new { username = username });
+        }
     }
 }

@@ -2,16 +2,33 @@ $(function () {
     $("#cartAlert").hide();
     $('#reviewUpdateAlert').hide();
     $('#reviewCreateAlert').hide();
+
     
 
     var currentUserRate = $("#currentReviewRatingHidden").val();
     if (typeof currentUserRate !== "undefined") {
         $("#currentReviewRating").val(currentUserRate);
         $("#createANewReview").hide();
+
+        $.ajax({
+            url: '/Customers/CustomerUserName'
+        }).done(function (usernameData) {
+            console.log(usernameData)
+            $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
+        })
     } else {
         $("#editCurrentReview").hide();
         $("#deleteCurrentReview").hide();
+
+        $.ajax({
+            url: '/Customers/CustomerUserName'
+        }).done(function (usernameData) {
+            console.log(usernameData)
+            $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
+        })
     }
+
+
 
     var id = $('#reviews').attr("gameId");
     $.ajax({
@@ -70,13 +87,18 @@ $(function () {
                 comment: comment
             }
         }).done(function (data) {
-
             $.ajax({
-                url: '/games/ReviewUserName?id=' + data.review.customerId
+                url: '/Customers/CustomerUserName'
             }).done(function (usernameData) {
                 console.log(usernameData)
                 $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
             })
+            /*$.ajax({
+                url: '/reviews/ReviewUserName?id=' + data.review.customerId
+            }).done(function (usernameData) {
+                console.log(usernameData)
+                $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
+            })*/
 
             $('#reviewUpdateAlert').fadeIn(500);
             console.log(data)
@@ -126,6 +148,23 @@ $(function () {
         })
     })
 
+
+    $("#deleteCurrentReview").click(function (e) {
+        var reviewId = $("#currentReviewIdHidden").val()
+        console.table("id", reviewId)
+
+        $.ajax({
+            method: 'POST',
+            url: '/games/DeleteReview',
+            data: {
+                id: reviewId
+            }
+        }).done(function (data) {
+            console.log("deleted")
+            console.log(data)
+        })
+    })
+    
 
     /*$("#createANewReview").click(function (e) {
         var comment = $("#newReviewTextArea").val()
