@@ -45,14 +45,16 @@
                     <span>@Model.game.releaseDate</span>
                 </div>
                 <div class="col-md-9">
-                    @if (Model.avarageRate != null)
-                    {
-                        <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">@String.Format("{0:0.00}", Model.avarageRate)</i></span>
-                    }
-                    else
-                    {
-                        <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">0</i></span>
-                    }
+                    <div id="avgRate">
+                        @if (Model.avarageRate != null)
+                        {
+                            <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">@String.Format("{0:0.00}", Model.avarageRate)</i></span>
+                        }
+                        else
+                        {
+                            <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">0</i></span>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -210,15 +212,17 @@
 
 @foreach (var review in Model.reviews)
 {
-    <div class="form-group mt-3 border border-secondary">
+    <div class="form-group mt-3 border border-secondary" id="@review.id">
         <h5>@review.cusotmer.name</h5>
         <i class="bi bi-clock"> Written at @review.writtenAt</i> <i class="bi bi-clock-fill"> Last update @review.lastUpdate</i>
         <textarea class="form-control" id="reviewTextArea" rows="3" disabled>"@review.comment"</textarea>
         <i class="bi bi-star-fill">@review.rating</i>
+        @if (User.IsInRole("Admin"))
+        {
+            <button type="button" class="btn btn-danger" onclick="deleteReview('@review.id')">Delete</button>
+        }
     </div>
 }
-
-<div id="reviews" gameId="@Model.game.id"></div>
 
 
 <div>
@@ -251,7 +255,11 @@
         Review Updated Successfully
     </div>
 
-    <div class="alert alert-primary mt-2 hide" role="alert" id="reviewCreateAlert">
+    <div class="alert alert-danger mt-2 hide" role="alert" id="reviewDeleteAlert">
+        Review Deleted Successfully
+    </div>
+
+    <div class="alert alert-success mt-2 hide" role="alert" id="reviewCreateAlert">
         Review Created Successfully
     </div>
 }

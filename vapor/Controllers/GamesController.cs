@@ -128,6 +128,7 @@ namespace vapor.Controllers
                 .OrderByDescending(r => r.lastUpdate)
                 .Select(r => new Review
                 {
+                    id = r.id,
                     gameId = r.gameId,
                     comment = r.comment,
                     rating = r.rating,
