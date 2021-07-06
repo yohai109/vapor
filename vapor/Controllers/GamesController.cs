@@ -540,14 +540,16 @@ namespace vapor.Controllers
 
             try
             {
-                _context.Remove(id);
+                _context.Review.Remove(review);
+                await _context.SaveChangesAsync();
+
             }
             catch
             {
                 return NotFound();
             }
 
-            return Ok();
+            return Ok(true);
         }
 
 

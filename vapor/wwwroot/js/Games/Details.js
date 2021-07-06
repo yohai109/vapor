@@ -162,6 +162,7 @@ $(function () {
         }).done(function (data) {
             console.log("deleted")
             console.log(data)
+
         })
     })
     
