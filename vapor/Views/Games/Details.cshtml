@@ -1,11 +1,9 @@
-﻿@*@model vapor.Models.Game*@
-@model dynamic
+﻿@model dynamic
 @{
     ViewData["Title"] = "Details";
 }
 
 <input type="hidden" value="@Model.game.id" id="gameId" />
-
 
 <div class="container">
     <div class="row">
@@ -24,7 +22,7 @@
             <h5>Developer name</h5>
         </div>
         <div class="col-md-9">
-            <span>@(Model.game.developer.name)</span>
+            <a href="/Developers/Details/@(Model.game.developer.id)">@Model.game.developer.name</a>
         </div>
     </div>
     <div class="row">
@@ -117,13 +115,9 @@
 {
     @if (Model.currCustomerOrder == null)
     {
-        @*<a class="btn btn-success" id="buyNow">buy now</a>
-            <a class="btn btn-success" id="addToCart">add to cart</a>*@
         <a class="btn btn-success" href="/Orders/create?gameid=@Model.game.id">buy now</a>
         <a class="btn btn-success" id="addToCart">add to cart</a>
     }
-
-
 
     else
     {

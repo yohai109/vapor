@@ -4,8 +4,6 @@ $(function () {
     $('#reviewCreateAlert').hide();
     $('#reviewDeleteAlert').hide();
 
-
-
     var currentUserRate = $("#currentReviewRatingHidden").val();
     if (typeof currentUserRate !== "undefined") {
         $("#currentReviewRating").val(currentUserRate);
@@ -14,8 +12,7 @@ $(function () {
         $.ajax({
             url: '/Customers/CustomerUserName'
         }).done(function (usernameData) {
-            console.log(usernameData)
-            $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
+            /*$("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')*/
         })
     } else {
         $("#editCurrentReview").hide();
@@ -24,32 +21,9 @@ $(function () {
         $.ajax({
             url: '/Customers/CustomerUserName'
         }).done(function (usernameData) {
-            console.log(usernameData)
             $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
         })
     }
-
-
-
-
-
-
-    /*$.ajax({
-        url: '/games/reviews?gameId=' + id
-    }).done(function (data) {
-        $('#reviews').html('');
-        var reviewTemplate = $('#all_users_review_template').html();
-        $.each(data, function (i, review) {
-            var reviewTemp = reviewTemplate;
-
-            reviewTemp = reviewTemp.replaceAll('{userName}',review.cusotmer.name)
-            reviewTemp = reviewTemp.replaceAll('{comment}', '"' + review.comment + '"')
-            reviewTemp = reviewTemp.replaceAll('{rating}', review.rating)
-
-            $('#reviews').append(reviewTemp);
-        });
-    })*/
-
 
     $("#addToCart").click(function (e) {
 
@@ -64,17 +38,10 @@ $(function () {
         })
     })
 
-<<<<<<< HEAD
-
-
-
     $("#editCurrentReview").click(function (e) {
         var comment = $("#currentReviewTextArea").val()
         var rating = $("#currentReviewRating :selected").val()
         var reviewId = $("#currentReviewIdHidden").val()
-        console.log(comment)
-        console.log(rating)
-        console.log(reviewId)
 
         $.ajax({
             method: 'PUT',
@@ -88,18 +55,10 @@ $(function () {
             $.ajax({
                 url: '/Customers/CustomerUserName'
             }).done(function (usernameData) {
-                console.log(usernameData)
                 $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
             })
-            /*$.ajax({
-                url: '/reviews/ReviewUserName?id=' + data.review.customerId
-            }).done(function (usernameData) {
-                console.log(usernameData)
-                $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
-            })*/
 
             $('#reviewUpdateAlert').fadeIn(500);
-            console.log(data)
             $("#currentReviewLastUpdated").html('').html("Last Update " + data.time)
             setTimeout(function () {
                 $('#reviewUpdateAlert').fadeOut(500);
@@ -113,9 +72,7 @@ $(function () {
         var comment = $("#currentReviewTextArea").val()
         var rating = $("#currentReviewRating :selected").val()
         var gameId = $("#gameId").val()
-        console.log(comment)
-        console.log(rating)
-        console.log(gameId)
+
         $.ajax({
             method: 'POST',
             url: '/games/CreateReview',
@@ -135,7 +92,6 @@ $(function () {
 
 
             $('#reviewCreateAlert').fadeIn(500);
-            console.log(data)
             setTimeout(function () {
                 $('#reviewCreateAlert').fadeOut(500);
             }, 3000);
@@ -156,8 +112,6 @@ $(function () {
                 id: reviewId
             }
         }).done(function (data) {
-            console.log("deleted")
-            console.log(data)
 
             if (data === true) {
                 $("#WrittenTime").html('')
@@ -180,7 +134,7 @@ $(function () {
 
     $("#buyNow").click(function (e) {
         $.ajax({
-            url: '/Orders/AddToCart?gameid=' + $("#gameId").val()
+            url: '/Orders/AddToCart?gameid=' + $("#gameId").val()   
         }).done(function () {
             /*$('#cartAlert').fadeIn(500);
 
@@ -200,7 +154,6 @@ function setAvaregeRating() {
     $.ajax({
         url: '/games/RatingAvarage?gameId=' + id
     }).done(function (data) {
-        console.log(data)
         if (data.length === 0) {
             $('#avgRate').html('').html('<span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">0.00</i></span>')
         } else {
