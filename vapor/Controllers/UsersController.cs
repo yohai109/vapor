@@ -45,7 +45,7 @@ namespace vapor.Controllers
 
         public IActionResult AccessDenied()
         {
-            return View();
+            return View("AccessDenied");
         }
 
         // POST: Users/Login

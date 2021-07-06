@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System;
 using vapor.services;
+using Microsoft.AspNetCore.Http;
 
 namespace vapor
 {
@@ -66,8 +67,8 @@ namespace vapor
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-                options.LoginPath = "/Users/Login";
-                options.AccessDeniedPath = "/Users/AccessDenied";
+                options.LoginPath = new PathString("/Users/Login");
+                options.AccessDeniedPath = new PathString("/Users/AccessDenied");
                 options.SlidingExpiration = true;
             });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
@@ -86,6 +87,7 @@ namespace vapor
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
             }
             else
             {
@@ -93,6 +95,15 @@ namespace vapor
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/Home/NotFound";
+                    await next();
+                }
+            });
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -107,7 +118,6 @@ namespace vapor
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Games}/{action=Index}/{id?}");
-                
             });
             
         }
