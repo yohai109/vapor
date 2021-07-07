@@ -51,13 +51,13 @@
                         <span class="col-12">
                             <a asp-action="Details" asp-route-id="@item.id" class="btn btn-primary w-100">Details</a>
                         </span>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                        @if ((User.IsInRole("Developer") || (User.IsInRole("Admin"))) && ((User.Identity.Name == item.developer.name) || User.IsInRole("Admin")))
                         {
                             <span class="col-12 my-1">
                                 <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-warning w-100">Edit</a>
                             </span>
                         }
-                        @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
+                        @if ((User.IsInRole("Developer") || (User.IsInRole("Admin"))) && ((User.Identity.Name == item.developer.name) || User.IsInRole("Admin")))
                         {
                             <span class="col-12">
                                 <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger w-100">Delete</a>
