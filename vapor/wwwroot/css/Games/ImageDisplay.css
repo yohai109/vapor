@@ -16,13 +16,13 @@
 
 /*************************/
 
-.image-display__carousel {
+.item-carousel {
     position: relative;
     display: flex;
     padding-left: 4vw;
 }
 
-.carousel__arrow {
+.item-carousel__arrow {
     position: absolute;
     z-index: 100;
     opacity: .7;
@@ -36,11 +36,11 @@
     color: #FFF;
 }
 
-.carousel__arrow--left {
+.item-carousel__arrow--left {
     left: 0;
 }
 
-.carousel__arrow--right {
+.item-carousel__arrow--right {
     right: 0;
 }
 
@@ -66,6 +66,10 @@
         transform: scale(1.5);
     }
 
+        .item-bar > div:hover img {
+            opacity: 1;
+        }
+
 .item-bar__item {
     position: relative;
     transition: ease-out .3s;
@@ -73,9 +77,9 @@
 }
 
     .item-bar__item img {
-        opacity: .9;
-        width: 15.4vw;
-        height: 9.7vw;
+        opacity: .7;
+        width: 17.8vw;
+        height: 11.25vw;
     }
 
 

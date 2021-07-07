@@ -2,7 +2,7 @@
 var barRowPossition = 0;
 
 function calculateRotateSize() {
-    let vm = 15.4
+    let vm = 17.8
 
     // Convers vm to pixcels
 
@@ -26,7 +26,7 @@ function souldRotateLeft(direction) {
 */
 function rotateItemBar(amount) {
     barRowPossition += amount
-    $(".carousel .item-bar").css("transform", `translateX(${barRowPossition}px)`)
+    $(".item-carousel .item-bar").css("transform", `translateX(${barRowPossition}px)`)
 }
 
 /*
@@ -62,20 +62,20 @@ function ResizeDisplayIfFewPictures() {
     let barWidth = $(".item-bar").width()
 
     if (barWidth < displayWidth) {
-        $(".carousel__arrow").css("display", "none")
-        $(".image-display__carousel").css("padding-left", `${(displayWidth - barWidth) / 2}px` )
+        $(".item-carousel__arrow").css("display", "none")
+        $(".item-carousel").css("padding-left", `${(displayWidth - barWidth) / 2}px` )
     }
 }
 
 $(document).ready(function () {
     $(".item-bar__item").click(selectItem)
-    $(".carousel__arrow--right").click(() => {
+    $(".item-carousel__arrow--right").click(() => {
         if (souldRotateRight()) {
             let rotateSize = calculateRotateSize()
             rotateItemBar(-rotateSize)
         }
     })
-    $(".carousel__arrow--left").click(() => {
+    $(".item-carousel__arrow--left").click(() => {
         if (souldRotateLeft()) {
             let rotateSize = calculateRotateSize()
             rotateItemBar(rotateSize)
