@@ -1,7 +1,10 @@
 ﻿.image-display {
     overflow: hidden;
-    padding: 3vw;
+    padding-bottom: 4vw;
 }
+
+
+/*************************/
 
 .image-screen img {
     width: 100%;
@@ -11,12 +14,37 @@
     object-position: 50% 50%;
 }
 
+/*************************/
 
-/*
-    Item bar styles
-    Responsible for icon resize on hover
+.carousel {
+    position: relative;
+    display: flex;
+    padding-left: 4vw;
+}
 
- */
+.carousel__arrow {
+    position: absolute;
+    z-index: 100;
+    opacity: .7;
+    padding-top: 3vw;
+    width: 4vw;
+    height: 100%;
+    background-color: #141414;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    color: #FFF;
+}
+
+.carousel__arrow--left {
+    left: 0;
+}
+
+.carousel__arrow--right {
+    right: 0;
+}
+
+/*************************/
 
 .item-bar {
     position: relative;
@@ -34,6 +62,7 @@
 
 
     .item-bar > div:hover {
+        z-index: 150;
         transform: scale(1.5);
     }
 
@@ -44,35 +73,16 @@
 }
 
     .item-bar__item img {
-        opacity: .8;
-        width: 16vw;
-        height: 10vw;
+        opacity: .9;
+        width: 15.4vw;
+        height: 9.7vw;
     }
-
-@media (max-width: 768px) {
-    .item-bar__item img {
-    }
-}
-
-@media (min-width: 768px) {
-    .item-bar__item img {
-        width: 18.5vw;
-    }
-}
-
-@media (min-width: 1200px) {
-    .item-bar__item img {
-        width: 16vw;
-    }
-}
 
 
 .item-bar__item--selected {
     border: .2rem solid #FFF;
-    opacity: 1;
 }
 
-/*
-    Imgae screen styles
-    This is the div that contains the selected image
-*/
+    .item-bar__item--selected img {
+        opacity: 1;
+    }

@@ -83,17 +83,25 @@
     <div class="image-screen">
         <img src="@Url.Action("GetGameImage", new {gameImageId = ((List<GameImage>)Model.game.images)[0].id})" />
     </div>
-    <div class="item-bar">
-        @for (int i = 0; i < Model.game.images.Count; i++)
-        {
-            <div class="item-bar__item @(@i == 0 ? "item-bar__item--selected" : "") "
-                 data-image-url="@Url.Action("GetGameImage", new {gameImageId = ((List<GameImage>)Model.game.images)[i].id})">
-                <img src="@Url.Action("GetGameImage", new {gameImageId = ((List<GameImage>)Model.game.images)[i].id})" />
-            </div>
-        }
+    <div class="carousel">
+        <div class="carousel__arrow carousel__arrow--left">
+            <i class="bi bi-arrow-left-circle"></i>
+            <span>Turn Left</span>
+        </div>
+        <div class="carousel__arrow carousel__arrow--right">
+            <i class="bi bi-arrow-right-circle"></i>
+            <span>Turn Right</span>
+        </div>
+        <div class="item-bar">
+            @for (int i = 0; i < Model.game.images.Count; i++)
+            {
+                <div class="item-bar__item @(@i == 0 ? "item-bar__item--selected" : "") "
+                     data-image-url="@Url.Action("GetGameImage", new {gameImageId = ((List<GameImage>)Model.game.images)[i].id})">
+                    <img src="@Url.Action("GetGameImage", new {gameImageId = ((List<GameImage>)Model.game.images)[i].id})" />
+                </div>
+            }
+        </div>
     </div>
-   
-
 </div>
 
 <div id="reviews" gameId="@Model.game.id"></div>
