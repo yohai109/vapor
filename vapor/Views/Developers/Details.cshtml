@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = Model.name + " Details";
+    float avgRating = 0;
+    if (Model.games.Any())
+    {
+        avgRating = Model.games.Average(g => g.reviews.Any() ? g.reviews.Average(r => r.rating) : 0);
+    }
 }
 
 <h1>@Model.name</h1>
@@ -11,8 +16,7 @@
     <div class="embed-responsive embed-responsive-16by9">
         <img class="embed-responsive-item" src="@Url.Action("getDeveloperAvater", new {devId = Model.id})" />
     </div>
-    @*<h4>Average game rating: @Model.games.Average(g => g.reviews.Average(r => r.rating))</h4>*@
-    <span> Avarege Game Rating: <i id="avaregeRate" class="bi bi-star-fill">@String.Format("{0:0.00}", Model.games.Average(g => g.reviews.Average(r => r.rating)))</i></span>
+    <span> Avarege Game Rating: <i id="avaregeRate" class="bi bi-star-fill">@String.Format("{0:0.00}", avgRating)</i></span>
     <h3>Games</h3>
     <div class="row" id="game-list">
         @foreach (var item in Model.games)
