@@ -10,7 +10,7 @@
         if (item.customer.name == User.Identities.First().Name || User.IsInRole("Admin"))
         {
             <div class="profile-card">
-                <img class="profile-img" src=@Url.Action("GetGameImageByGameId", "games", new { gameId = item.gameId }) alt="Avatar" width="100" height="100">
+                <img class="profile-img" src=@Url.Action("GetGameImageByGameId", "games", new { gameId = item.gameId }) alt="Avatar" style="width:17.8vw;height:11.25vw;">
                 <div class="profile-card">
                     <h4><b>Order</b></h4>
                     <p>Customer:@item.customer.name</p>
