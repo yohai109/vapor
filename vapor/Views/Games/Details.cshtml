@@ -83,12 +83,12 @@
     <div class="image-screen">
         <img src="@Url.Action("GetGameImage", new {gameImageId = ((List<GameImage>)Model.game.images)[0].id})" />
     </div>
-    <div class="image-display__carousel">
-        <div class="carousel__arrow carousel__arrow--left">
+    <div class="item-carousel">
+        <div class="item-carousel__arrow item-carousel__arrow--left">
             <i class="bi bi-arrow-left-circle"></i>
             <span>Turn Left</span>
         </div>
-        <div class="carousel__arrow carousel__arrow--right">
+        <div class="item-carousel__arrow item-carousel__arrow--right">
             <i class="bi bi-arrow-right-circle"></i>
             <span>Turn Right</span>
         </div>
