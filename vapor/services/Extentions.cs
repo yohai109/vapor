@@ -16,8 +16,16 @@ namespace vapor.services
 
         public static List<String> GetListOfString(this ISession session, string key)
         {
-            List<string> result = session.GetString(key).Split(';').ToList();
-            return result;
+            String cartString = session.GetString(key);
+            if (cartString != null)
+            {
+                List<string> result = cartString.Length > 0 ? cartString.Split(';').ToList() : new List<string>();
+                return result;
+            }
+            else
+            {
+                return new List<string>();
+            }
         }
     }
 }
