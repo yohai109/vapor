@@ -259,6 +259,7 @@ namespace vapor.Controllers
             return Json(result);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult> getDeveloperAvater(string devId)
         {
