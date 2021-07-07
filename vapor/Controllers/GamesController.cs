@@ -164,7 +164,7 @@ namespace vapor.Controllers
 
             var currCustomerOrder = await _context.Order
             .Include(o => o.customer)
-            .Where(o => o.customer == currCustomer)
+            .Where(o => o.customer == currCustomer && o.gameId==id)
             .FirstOrDefaultAsync();
 
             model.currCustomerOrder = currCustomerOrder;
