@@ -107,9 +107,9 @@
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.game.id">Edit</a>
+        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.game.id">Edit</a>
     }
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
 </div>
 
 @if (User.IsInRole("Customer"))
