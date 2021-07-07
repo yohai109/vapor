@@ -12,7 +12,7 @@ $(function () {
         $.ajax({
             url: '/Customers/CustomerUserName'
         }).done(function (usernameData) {
-            /*$("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')*/
+            $("#currentReviewName").html('').html('<h5>' + usernameData.username + '</h5>')
         })
     } else {
         $("#editCurrentReview").hide();
