@@ -82,7 +82,10 @@
             <div class="row">
                 <div class="form-group">
                     <label for="max-price">number of games</label>
-                    <input type="range" id="num-of-games" class="form-control-range" min="1" max="10" value="1">
+                    <div style="display:flex;">
+                        <input type="range" id="num-of-games" class="form-control-range" min="1" max="10" value="1" onchange="$('#sidbar-range').html(this.value)">
+                        <span id="sidbar-range" class="badge badge-primary" style="font-size:1rem;margin-left:1rem">0</span>
+                    </div>
                 </div>
             </div>
 

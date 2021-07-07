@@ -148,7 +148,10 @@
             <div class="row">
                 <div class="form-group col-6">
                     <label for="min-rating">rating</label>
-                    <input type="range" id="min-rating" class="form-control-range" min="0" max="10" step="1" value="0">
+                    <div style="display:flex;">
+                        <input type="range" id="min-rating" class="form-control-range" min="0" max="10" step="1" value="0" onchange="$('#sidbar-range').html(this.value)">
+                        <span id="sidbar-range" class="badge badge-primary" style="font-size:1rem;margin-left:1rem;">0</span>
+                    </div>
                 </div>
             </div>
 
