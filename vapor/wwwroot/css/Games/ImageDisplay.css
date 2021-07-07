@@ -16,7 +16,7 @@
 
 /*************************/
 
-.carousel {
+.image-display__carousel {
     position: relative;
     display: flex;
     padding-left: 4vw;

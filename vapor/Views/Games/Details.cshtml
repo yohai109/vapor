@@ -1,11 +1,9 @@
-﻿@*@model vapor.Models.Game*@
-@model dynamic
+﻿@model dynamic
 @{
     ViewData["Title"] = "Details";
 }
 
 <input type="hidden" value="@Model.game.id" id="gameId" />
-
 
 <div class="container">
     <div class="row">
@@ -24,7 +22,7 @@
             <h5>Developer name</h5>
         </div>
         <div class="col-md-9">
-            <span>@(Model.game.developer.name)</span>
+            <a href="/Developers/Details/@(Model.game.developer.id)">@Model.game.developer.name</a>
         </div>
     </div>
     <div class="row">
@@ -68,14 +66,16 @@
         </div>
     </div>
     <div class="row">
-        @if (Model.avarageRate != null)
-        {
-            <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill"> @Model.avarageRate</i></span>
-        }
-        else
-        {
-            <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">0</i></span>
-        }
+        <div id="avgRate">
+            @if (Model.avarageRate != null)
+            {
+                <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">@String.Format("{0:0.00}", Model.avarageRate)</i></span>
+            }
+            else
+            {
+                <span> Avarege Rating: <i id="avaregeRate" class="bi bi-star-fill">0.00</i></span>
+            }
+        </div>
     </div>
 </div>
 
@@ -83,7 +83,7 @@
     <div class="image-screen">
         <img src="@Url.Action("GetGameImage", new {gameImageId = ((List<GameImage>)Model.game.images)[0].id})" />
     </div>
-    <div class="carousel">
+    <div class="image-display__carousel">
         <div class="carousel__arrow carousel__arrow--left">
             <i class="bi bi-arrow-left-circle"></i>
             <span>Turn Left</span>
@@ -104,12 +104,6 @@
     </div>
 </div>
 
-<div id="reviews" gameId="@Model.game.id"></div>
-<a class="btn btn-success" href="/Orders/create?gameid=@Model.game.id">buy now</a>
-<a class="btn btn-success" id="addToCart">add to cart</a>
-
-
-
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Developer"))
     {
@@ -117,6 +111,85 @@
     }
     <a asp-action="Index">Back to List</a>
 </div>
+
+@if (User.IsInRole("Customer"))
+{
+    @if (Model.currCustomerOrder == null)
+    {
+        <a class="btn btn-success" href="/Orders/create?gameid=@Model.game.id">buy now</a>
+        <a class="btn btn-success" id="addToCart">add to cart</a>
+    }
+
+    else
+    {
+        <div class="form-group mt-3 border border-secondary">
+            <div id="currentReviewName">
+                @if (@Model.currUserReview != null)
+                {
+                    <h5>@Model.currUserReview.cusotmer.name</h5>
+                }
+            </div>
+            <div id="currentReview">
+                <div id="WrittenTime">
+                    @if (@Model.currUserReview != null)
+                    {
+                        <i class="bi bi-clock"> Written at @Model.currUserReview.writtenAt</i> <i class="bi bi-clock-fill" id="currentReviewLastUpdated"> Last update @Model.currUserReview.lastUpdate</i>
+                    }
+                </div>
+
+                <div id="commentArea">
+                    @if (@Model.currUserReview != null)
+                    {
+                        <textarea class="form-control" id="currentReviewTextArea" rows="3">@Model.currUserReview.comment</textarea>
+                    }
+                    else
+                    {
+                        <textarea class="form-control" id="currentReviewTextArea" rows="3"></textarea>
+                    }
+                </div>
+
+                <i class="bi bi-star-fill">
+                    <select id="currentReviewRating">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </i>
+                <button type="button" class="btn btn-success" id="createANewReview">Crate A Review</button><button type="button" class="btn btn-info" id="editCurrentReview">Edit</button><button type="button" class="btn btn-danger" id="deleteCurrentReview">Delete</button>
+                <div id="reviewRatingAndId">
+                    @if (@Model.currUserReview != null)
+                    {
+                        <input id="currentReviewRatingHidden" hidden value="@Model.currUserReview.rating">
+                        <input id="currentReviewIdHidden" hidden value="@Model.currUserReview.id">
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+@foreach (var review in Model.reviews)
+{
+    <div class="form-group mt-3 border border-secondary" id="@review.id">
+        <h5>@review.cusotmer.name</h5>
+        <i class="bi bi-clock"> Written at @review.writtenAt</i> <i class="bi bi-clock-fill"> Last update @review.lastUpdate</i>
+        <textarea class="form-control" id="reviewTextArea" rows="3" disabled>"@review.comment"</textarea>
+        <i class="bi bi-star-fill">@review.rating</i>
+        @if (User.IsInRole("Admin"))
+        {
+            <button type="button" class="btn btn-danger" onclick="deleteReview('@review.id')">Delete</button>
+        }
+    </div>
+}
+
 
 @section Scripts {
     <script type="text/javascript" src="~/js/Games/Details.js"></script>
@@ -135,5 +208,17 @@
 @section Alerts{
     <div class="alert alert-success mt-2 hide" role="alert" id="cartAlert" style="display:none;">
         Game added to cart successfully!
+    </div>
+
+    <div class="alert alert-primary mt-2 hide" role="alert" id="reviewUpdateAlert">
+        Review Updated Successfully
+    </div>
+
+    <div class="alert alert-danger mt-2 hide" role="alert" id="reviewDeleteAlert">
+        Review Deleted Successfully
+    </div>
+
+    <div class="alert alert-success mt-2 hide" role="alert" id="reviewCreateAlert">
+        Review Created Successfully
     </div>
 }
