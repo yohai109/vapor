@@ -79,7 +79,8 @@ namespace vapor.Controllers
             return this.File(fileBytes, developer.fileContentType);
         }
 
-        [Authorize(Roles = "Admin,Developer")]
+        //[AllowAnonymous][Authorize(Roles = "Admin,Developer")]
+        [AllowAnonymous]
         // GET: Developers/Details/5
         public async Task<IActionResult> Details(string id)
         {

@@ -7,6 +7,7 @@
 <h1>@Model.name</h1>
 
 <div>
+<<<<<<< HEAD
     <div class="embed-responsive embed-responsive-16by9">
         <img class="embed-responsive-item" src="@Url.Action("getDeveloperAvater", new {devId = Model.id})" />
     </div>
@@ -53,6 +54,21 @@
             </div>
         }
     </div>
+=======
+    <h4>Developer</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.name)
+        </dd>
+        <dt class = "col-sm-2">
+            <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetDeveloperImage", new { id = @Model.id })>
+        </dt>
+    </dl>
+>>>>>>> e0bedd8cd43978d61c3273bcc6ff81aa9453a862
 </div>
 
 <div>

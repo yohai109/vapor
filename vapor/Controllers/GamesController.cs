@@ -50,7 +50,6 @@ namespace vapor.Controllers
                 }).ToListAsync();
 
 
-
             dynamic model = new ExpandoObject();
             model.games = await games;
 
@@ -87,13 +86,13 @@ namespace vapor.Controllers
                 return NotFound();
             }
 
-
             var loadedGame = await _context.Game
                 .Include(g => g.genres)
                 .Include(g => g.developer)
                 .Select(game => new
                 {
                     game,
+                    game.developer,
                     images = game.images.Select(i => new GameImage { id = i.id }).ToList()
                 })
                 .FirstOrDefaultAsync(g => g.game.id == id);
@@ -104,6 +103,7 @@ namespace vapor.Controllers
             }
 
             loadedGame.game.images = loadedGame.images;
+            loadedGame.game.developer = loadedGame.developer;
             model.game = loadedGame.game;
             loadedGame.game.images.Count();
             string currUserID = HttpContext.Session.GetString("userid");
@@ -120,12 +120,54 @@ namespace vapor.Controllers
             model.currentCustomer = currCustomer;
             model.customerReview = customerReview;
 
-            var otherReviews = await _context.Review
+            /*var otherReviews = await _context.Review
                 .Where(r => r.cusotmer != currCustomer)
-                .ToListAsync();
+                .ToListAsync();*/
+
+            var otherReviews = _context.Review
+                .Where(r => r.gameId.Equals(id) && r.cusotmer != currCustomer)
+                .OrderByDescending(r => r.lastUpdate)
+                .Select(r => new Review
+                {
+                    id = r.id,
+                    gameId = r.gameId,
+                    comment = r.comment,
+                    rating = r.rating,
+                    writtenAt = r.writtenAt,
+                    lastUpdate = r.lastUpdate,
+                    cusotmer = new Customer
+                    {
+                        name = r.cusotmer.name
+                    }
+                });
 
             model.reviews = otherReviews;
 
+            var currUserReview = _context.Review
+                .Where(r => r.gameId.Equals(id) && r.cusotmer.Equals(currCustomer))
+                .Select(r => new Review
+                {
+                    id = r.id,
+                    gameId = r.gameId,
+                    comment = r.comment,
+                    rating = r.rating,
+                    writtenAt = r.writtenAt,
+                    lastUpdate = r.lastUpdate,
+                    cusotmer = new Customer
+                    {
+                        name = r.cusotmer.name
+                    }
+                })
+                .FirstOrDefaultAsync();
+
+            model.currUserReview = await currUserReview;
+
+            var currCustomerOrder = await _context.Order
+            .Include(o => o.customer)
+            .Where(o => o.customer == currCustomer)
+            .FirstOrDefaultAsync();
+
+            model.currCustomerOrder = currCustomerOrder;
 
             var avarageRate = await _context.Review
                 .Where(r => r.gameId.Equals(id))
@@ -449,6 +491,125 @@ namespace vapor.Controllers
 
             return Json(await reviews.ToListAsync());
         }
+
+        [HttpPut]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditReview(string id, int rating, string comment)
+        {
+            Review updatedReview = await _context.Review.FirstAsync(r => r.id == id);
+            /*            string username = "";
+            */
+            if (id != updatedReview.id)
+            {
+                return NotFound();
+            }
+            DateTime time = DateTime.Now;
+            updatedReview.lastUpdate = time;
+            updatedReview.rating = rating;
+            updatedReview.comment = comment;
+
+
+
+            //review.writtenAt = _context.Entry(review). fix written time 0 bug
+            try
+            {
+                _context.Update(updatedReview);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound();
+            }
+
+            //return Ok(time.ToString("MM/dd/yyyy hh:mm:ss tt"));
+
+            return Json(new { Review = updatedReview, time = time.ToString("MM/dd/yyyy hh:mm:ss tt") });
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateReview(int rating, string comment, string gameId)
+        {
+            string currUserID = HttpContext.Session.GetString("userid");
+
+            var currCustomer = await _context.User
+                    .Where(u => u.Id == currUserID)
+                    .Select(u => u.customer)
+                    .FirstOrDefaultAsync();
+            string customerId = currCustomer.id;
+
+            Review alreadyExistReview = await _context.Review
+                .Where(r => r.customerId == customerId && r.gameId == gameId)
+                .FirstOrDefaultAsync();
+            if (alreadyExistReview != null)
+            {
+                return NotFound();
+            }
+            Review newReview = new Review();
+            newReview.customerId = customerId;
+            newReview.gameId = gameId;
+            newReview.rating = rating;
+            newReview.comment = comment;
+            DateTime time = DateTime.Now;
+            newReview.writtenAt = time;
+            newReview.lastUpdate = time;
+
+            try
+            {
+                _context.Add(newReview);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return NotFound();
+            }
+            //Response.WriteAsync("https://localhost:44334/Games/Details/a6129515-22e5-4c38-8f1e-0564291307c6");
+            //return Ok(time.ToString("MM/dd/yyyy hh:mm:ss tt"));
+            /*Task < IActionResult > task = Details(gameId);
+            return await task;*/
+            Review enteredReview = await _context.Review
+                .Where(r => r.customerId == customerId && r.gameId == gameId)
+                .FirstOrDefaultAsync();
+            string username = enteredReview.cusotmer.name;
+            enteredReview.cusotmer = null;
+
+
+            return Json(new { Review = enteredReview, username = username, time = time.ToString("MM/dd/yyyy hh:mm:ss tt") });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteReview(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Review review = await _context.Review
+                .Where(r => r.id == id)
+                .FirstOrDefaultAsync();
+
+
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _context.Review.Remove(review);
+                await _context.SaveChangesAsync();
+
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+            return Ok(true);
+        }
+
+
 
         [HttpGet]
         [AllowAnonymous]

@@ -1,0 +1,88 @@
+﻿.image-display {
+    overflow: hidden;
+    padding-bottom: 4vw;
+}
+
+
+/*************************/
+
+.image-screen img {
+    width: 100%;
+    height: 30vw;
+    max-height: 50vw;
+    object-fit: cover;
+    object-position: 50% 50%;
+}
+
+/*************************/
+
+.image-display__carousel {
+    position: relative;
+    display: flex;
+    padding-left: 4vw;
+}
+
+.carousel__arrow {
+    position: absolute;
+    z-index: 100;
+    opacity: .7;
+    padding-top: 3vw;
+    width: 4vw;
+    height: 100%;
+    background-color: #141414;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    color: #FFF;
+}
+
+.carousel__arrow--left {
+    left: 0;
+}
+
+.carousel__arrow--right {
+    right: 0;
+}
+
+/*************************/
+
+.item-bar {
+    position: relative;
+    display: inline-flex;
+    transition: ease-out .3s;
+}
+
+    .item-bar:hover > div {
+        transform: translateX(-25%);
+    }
+
+    .item-bar > div:hover ~ div {
+        transform: translateX(25%);
+    }
+
+
+    .item-bar > div:hover {
+        z-index: 150;
+        transform: scale(1.5);
+    }
+
+.item-bar__item {
+    position: relative;
+    transition: ease-out .3s;
+    cursor: pointer;
+}
+
+    .item-bar__item img {
+        opacity: .9;
+        width: 15.4vw;
+        height: 9.7vw;
+    }
+
+
+.item-bar__item--selected {
+    border: .2rem solid #FFF;
+}
+
+    .item-bar__item--selected img {
+        opacity: 1;
+    }

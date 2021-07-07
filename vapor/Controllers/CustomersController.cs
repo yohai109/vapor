@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using vapor.Data;
 using vapor.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+
 
 namespace vapor.Controllers
-{   [Authorize]
+{
+    [Authorize]
     public class CustomersController : Controller
     {
         private readonly vaporContext _context;
@@ -149,6 +152,39 @@ namespace vapor.Controllers
         private bool CustomerExists(string id)
         {
             return _context.Customer.Any(e => e.id == id);
+        }
+
+        [HttpGet]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> CustomerUserName()
+        {
+            try
+            {
+                string currUserID = HttpContext.Session.GetString("userid");
+                if (currUserID == null)
+                {
+                    return Json(new { username = "" });
+                }
+                User user = await _context.User
+                .Where(u => u.Id == currUserID)
+                .FirstOrDefaultAsync();
+
+                return Json(new { username = user.Username });
+
+            }
+            catch
+            {
+                return Json(new { username = "" });
+            }
+
+            /*if (customer == null)
+            {
+                return NotFound();
+            }
+            string username = customer.name;
+
+            return Json(new { username = username });*/
+            //return Json(new { });
         }
     }
 }
