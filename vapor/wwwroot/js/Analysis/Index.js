@@ -56,7 +56,6 @@ $(document).ready(function () {
 function drawTimeSeariesGraph(graphID, times, xAsixName, yAsixName) {
     // Date format in graph disaplay
     let formatDate = d3.timeFormat("%d/%m/%Y");
-
     times.sort((d1, d2) => (d3.ascending(d1, d2)))
 
     var xAsixDomain = d3.extent(times, date => (date));
@@ -74,9 +73,6 @@ function drawTimeSeariesGraph(graphID, times, xAsixName, yAsixName) {
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    svg.attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
 
     // X axis: scale and draw and label
     let xAxis = d3.scaleTime()
@@ -140,7 +136,7 @@ function drawTimeSeariesGraph(graphID, times, xAsixName, yAsixName) {
         .attr("data-time-start", function (d) { return d.length ? formatDate(d[0]) : ""; })            // Data for toolkip
         .attr("data-time-end", function (d) { return d.length ? formatDate(d[d.length - 1]) : ""; })   // Data for toolkip
         .attr("data-count", function (d) { return d.length })                                              // Data for toolkip
-        .on("mouseenter", function (event) {
+        .on("mouseover", function (event) {
             let timeStart = event.target.getAttribute("data-time-start")
             let timeEnd = event.target.getAttribute("data-time-end")
             let count = event.target.getAttribute("data-count")
@@ -188,10 +184,6 @@ function drawCategoryGraph(graphID, graphData, xAsixName, yAsixName, maxYValue =
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-    svg.attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
 
     // X axis scale 
     var xAxis = d3.scaleBand()
