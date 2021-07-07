@@ -57,6 +57,15 @@ function selectItem() {
     $(".image-screen img").attr("src", newSelectedItem)
 }
 
+function ResizeDisplayIfFewPictures() {
+    let displayWidth = $(".image-display").width()
+    let barWidth = $(".item-bar").width()
+
+    if (barWidth < displayWidth) {
+        $(".carousel__arrow").css("display", "none")
+        $(".image-display__carousel").css("padding-left", `${(displayWidth - barWidth) / 2}px` )
+    }
+}
 
 $(document).ready(function () {
     $(".item-bar__item").click(selectItem)
@@ -73,4 +82,5 @@ $(document).ready(function () {
         }
     })
     rotateItemBar(0)
+    ResizeDisplayIfFewPictures()
 })
