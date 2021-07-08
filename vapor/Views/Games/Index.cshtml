@@ -5,7 +5,7 @@
 @{
     ViewData["Title"] = "Home";
 }
-<div class="tcontainer">
+<div class="tcontainer" style="margin-bottom: 1rem;">
     <div class="ticker-wrap">
         <div class="ticker-move" id="treadmill">
             @section News{
@@ -32,7 +32,7 @@
     @foreach (var item in Model.games)
     {
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
-            <div class="card bg-dark text-black h-100">
+            <div class="card text-black h-100 profile-card">
                 <div class="embed-responsive embed-responsive-16by9">
                     <img class="card-img card-img-top embed-responsive-item" src=@Url.Action("GetGameImage", new {gameImageId = item.images[0].id})>
                 </div>

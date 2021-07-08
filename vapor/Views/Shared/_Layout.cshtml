@@ -24,11 +24,11 @@
     <link rel="stylesheet" href="~/css/Users/UsersIndex.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 </head>
-<body class="bg-dark text-white">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark text-white border-bottom box-shadow mb-3">
-            <div class="container bg-dark text-white">
-                <a class="navbar-brand bg-dark text-white" asp-area="" asp-controller="Games" asp-action="Index">vapor</a><i class="bi bi-controller"></i>
+<body class="text-white">
+    <header id="site__header" >
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light  text-white border-bottom box-shadow mb-3">
+            <div  class="container text-white">
+                <a class="navbar-brand  text-white" asp-area="" asp-controller="Games" asp-action="Index">vapor</a><i class="bi bi-controller"></i>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid bg-dark text-white">
+    <div id="site__body"  class="container-fluid  text-white">
         <div class="row flex-xl-nowrap">
             <div class="col-md-3 col-xl-2 bd-sidebar">
                 @RenderSection("sidebar", required: false)
@@ -108,12 +108,12 @@
         </div>
     </div>
 
-    <div class="container align-items-end text-muted bg-dark text-white">
+    <div class="container align-items-end text-muted  text-white">
         @await RenderSectionAsync("Alerts", required: false)
     </div>
 
-    <footer class="border-top footer text-muted bg-dark text-white">
-        <div class="container bg-dark text-white">
+    <footer id="site__footer" class="border-top footer text-muted  text-white">
+        <div class="container  text-white">
             &copy; 2021 - vapor 
         </div>
     </footer>
