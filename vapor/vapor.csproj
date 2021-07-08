@@ -27,7 +27,6 @@
     <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\css\General\" />
     <Folder Include="wwwroot\Image\with_name\" />
     <Folder Include="wwwroot\js\AboutPage\" />
