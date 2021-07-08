@@ -85,7 +85,7 @@ namespace vapor.Controllers
                     price = g.price
                 })
                 .ToListAsync();
-            AddToCart(gameid);
+            HttpContext.Session.SetListOfString("cart", cart);
             return View(await game);
         }
 
