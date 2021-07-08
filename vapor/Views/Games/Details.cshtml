@@ -118,6 +118,9 @@
     {
         <a class="btn btn-success" href="/Orders/create?gameid=@Model.game.id">buy now</a>
         <a class="btn btn-success" id="addToCart">add to cart</a>
+        <div class="alert alert-success mt-2 hide" role="alert" id="cartAlert" style="display:none;">
+            Game added to cart successfully!
+        </div>
     }
 
     else
@@ -206,10 +209,6 @@
 }
 
 @section Alerts{
-    <div class="alert alert-success mt-2 hide" role="alert" id="cartAlert" style="display:none;">
-        Game added to cart successfully!
-    </div>
-
     <div class="alert alert-primary mt-2 hide" role="alert" id="reviewUpdateAlert">
         Review Updated Successfully
     </div>
