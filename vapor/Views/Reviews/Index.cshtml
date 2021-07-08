@@ -7,24 +7,18 @@
 <div class="row profile-container">
     @foreach (var item in Model)
     {
-
-
-
-
-<div class="profile-card">
-    <div class="profile-card">
-        <h4><b>@item.game.name</b></h4>
-        <h5>@item.cusotmer.name</h5>
-        <p>@item.comment</p>
-        <p>@item.rating - GPU's /10</p>
-        <p>Date: @item.lastUpdate</p>
-        @if (User.IsInRole("Admin"))
-        {
-            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.id">Edit</a>
-            <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.id">Details</a>
-            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.id">Delete</a>
-        }
-    </div>
-    </div>
+        <div class="profile-card" style="margin:1.5rem;">
+            <h4><b>@item.game.name</b></h4>
+            <h5>@item.cusotmer.name</h5>
+            <p>@item.comment</p>
+            <p>@item.rating - GPU's /10</p>
+            <p>Date: @item.lastUpdate</p>
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.id">Edit</a>
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.id">Details</a>
+                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.id">Delete</a>
+            }
+        </div>
     }
 </div>
