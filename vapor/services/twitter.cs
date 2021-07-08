@@ -20,7 +20,7 @@ namespace vapor.services
         public twitter()
         {
             client = new HttpClient();
-            standard_url = "https://v1.nocodeapi.com/vapor/twitter/qKGXDIYbBwqJkPxZ";
+            standard_url = "https://v1.nocodeapi.com/vapor/twitter/CLXSGtoiwdnjxnnA";
 
             url = "https://app.ayrshare.com/api/post";
             restClient = new RestClient("https://app.ayrshare.com/api/post");
