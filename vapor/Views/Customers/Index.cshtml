@@ -15,9 +15,9 @@
 <div class="row profile-container">
     @foreach (var item in Model)
     {
-    <div class="profile-card">
+    <div class="profile-card" style="margin:1.5rem;>
         <img class="profile-img" src="~/Image/profile.png" alt="Avatar" width="100" height="100">
-        <div class="profile-card">
+        <div>
             <h4><b>@item.name</b></h4>
             <h5>Email: @item.email</h5>
             <p>First Name: @item.firstName</p>
