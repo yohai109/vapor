@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using vapor.Models;
 
 namespace vapor.Data
@@ -208,6 +207,9 @@ namespace vapor.Data
                         Game forzaMotorsport5 = CreateGame(_context, kompedia.id, 60, "Forza Motors Sports 5",
                             "Your Ultimate Horizon Adventure awaits! Explore the vibrant and ever-evolving open world landscapes of Mexico with limitless, fun driving action in hundreds of the world’s greatest cars. Begin Your Horizon Adventure today and add to your Wishlist!",
                             "09/05/2021", new List<Genre> { Adventure, Racing, Simulation, SinglePlayer });
+                        Game MelehHafalafel = CreateGame(_context, kompedia.id, 60, "Meleh Hafalafel",
+    "Challenge your Israeli Skills! Manage the israeli Hutzpa, and serve falafel to angry customers.",
+    "09/05/2001", new List<Genre> { Adventure, Simulation, SinglePlayer });
 
                         GameImage minecraft_4 = new GameImage()
                         {
