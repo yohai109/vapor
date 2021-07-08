@@ -81,5 +81,18 @@ body {
 }
 
 .main-title {
-    text-shadow: 4px -4px 2px #1861ac;
+    text-shadow: 4px -4px 2px #172734;
 }
+
+body {
+    background-color: #013E52;
+}
+
+#site__header {
+    background-color: #172734;
+}
+
+#site__footer {
+    background-color: #203647;
+}
+
