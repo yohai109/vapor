@@ -67,6 +67,22 @@ namespace vapor.Data
             return customerUser;
         }
 
+        private static Game CreateGame(vaporContext _context, string developerId, int price, string name, string description, string date, List<Genre> geners)
+        {
+            Game game = new Game()
+            {
+                developerId = developerId,
+                price = price,
+                name = name,
+                description = description,
+                releaseDate = DateTime.Parse(date),
+                genres = geners
+            };
+            _context.Game.Add(game);
+            _context.SaveChanges();
+
+            return game;
+        }
 
         public static void Seed(vaporContext _context)
         {
@@ -122,13 +138,14 @@ namespace vapor.Data
                     Customer theRealGamer = CreateCustomer(_context, "theGamer@vapor.com", "Yoav", "Shlezinger", "05058330445", "theRealGamer");
                     User theRealGamer_user = CreateCustomerUser(_context, "theRealGamer", "gamingTM", theRealGamer.id);
 
-
                     Customer sharpShooter = CreateCustomer(_context, "shooter@vapor.com", "Max", "Russo", "050585200258", "sharpShooter");
                     User sharpShooter_user = CreateCustomerUser(_context, "sharpShooter", "noScope", sharpShooter.id);
 
                     Customer noobPlayGames = CreateCustomer(_context, "noob@play.games", "Oze", "Ben", "0505789465", "noobPlayGames");
                     User noobPlayGames_user = CreateCustomerUser(_context, "noobPlayGames", "noob4Life", noobPlayGames.id);
 
+                    Customer zarZamel = CreateCustomer(_context, "zari@monkey.gmail", "Zari", "Kofman", "789456125", "zarZamel");
+                    User zarZamel_user = CreateCustomerUser(_context, "zarZamel", "mokey", zarZamel.id);
 
                     if (!_context.Game.Any())
                     {
@@ -153,15 +170,37 @@ namespace vapor.Data
                         {
                             name = "Shooter"
                         };
-                        _context.Genre.AddRange(MMO, Action, Adventure, Horror, Shooter);
+                        Genre SinglePlayer = new Genre
+                        {
+                            name = "Single Player"
+                        };
+                        Genre Multiplayer = new Genre
+                        {
+                            name = "Multi player"
+                        };
+                        Genre Racing = new Genre
+                        {
+                            name = "Racing"
+                        };
+                        Genre Simulation = new Genre
+                        {
+                            name = "Simulation"
+                        };
+                        Genre BattleRoyal = new Genre
+                        {
+                            name = "Battle Royal"
+                        };
+                        _context.Genre.AddRange(MMO, Action, Adventure, Horror, Shooter, SinglePlayer, Multiplayer, Racing, Simulation, BattleRoyal);
                         _context.SaveChanges();
 
-                        Game apexLegends = new Game()
+                        Game apexLegends = CreateGame(_context, ea.id, 0, "Apex Legends",
+                            "Apex Legends is the award-winning, free-to-play Hero shooter from Respawn Entertainment. Master an ever-growing roster of legendary characters with powerful abilities and experience strategic squad play and innovative gameplay in the next evolution of Hero Shooter and Battle Royale.",
+                            "05/11/2020", new List<Genre> { Action, Shooter, BattleRoyal });
                         {
                             developerId = ea.id,
                             price = 0,
                             name = "Apex Legends",
-                            description = "Apex Legends is the award-winning, free-to-play Hero shooter from Respawn Entertainment. Master an ever-growing roster of legendary characters with powerful abilities and experience strategic squad play and innovative gameplay in the next evolution of Hero Shooter and Battle Royale.",
+                            description = 
                             releaseDate = DateTime.Parse("05/11/2020"),
                             genres = new List<Genre> { Action, Shooter }
                         };
